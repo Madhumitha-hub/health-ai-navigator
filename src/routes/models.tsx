@@ -149,6 +149,10 @@ function ModelsPage() {
         <FeatureImportanceGrid />
       </div>
 
+      <HyperparameterTuningSection />
+
+
+
 
 
       {bestByDisease.length > 0 && (
