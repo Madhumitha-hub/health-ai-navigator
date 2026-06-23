@@ -19,9 +19,15 @@ import { PageHeader } from "@/components/page-header";
 import { FeatureImportanceGrid } from "@/components/feature-importance-chart";
 import { supabase } from "@/integrations/supabase/client";
 
+import { RequireRole } from "@/components/require-role";
+
 export const Route = createFileRoute("/models")({
   head: () => ({ meta: [{ title: "Model Performance — HealthPredict" }] }),
-  component: ModelsPage,
+  component: () => (
+    <RequireRole path="/models">
+      <ModelsPage />
+    </RequireRole>
+  ),
 });
 
 type Model = {

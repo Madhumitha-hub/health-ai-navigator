@@ -24,6 +24,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { downloadReport, type ReportType, type ReportContext } from "@/lib/report-pdf";
 
+import { RequireRole } from "@/components/require-role";
+
 export const Route = createFileRoute("/reports")({
   head: () => ({
     meta: [
@@ -31,7 +33,11 @@ export const Route = createFileRoute("/reports")({
       { name: "description", content: "Generate and download clinical and ML reports." },
     ],
   }),
-  component: ReportsPage,
+  component: () => (
+    <RequireRole path="/reports">
+      <ReportsPage />
+    </RequireRole>
+  ),
 });
 
 type ReportCardDef = {

@@ -18,9 +18,15 @@ import { PageHeader } from "@/components/page-header";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 
+import { RequireRole } from "@/components/require-role";
+
 export const Route = createFileRoute("/patients")({
   head: () => ({ meta: [{ title: "Patient Records — HealthPredict" }] }),
-  component: PatientsPage,
+  component: () => (
+    <RequireRole path="/patients">
+      <PatientsPage />
+    </RequireRole>
+  ),
 });
 
 const RISK_BADGE: Record<string, string> = {

@@ -19,9 +19,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { DatasetQualityReport } from "@/components/dataset-quality-report";
 
+import { RequireRole } from "@/components/require-role";
+
 export const Route = createFileRoute("/datasets")({
   head: () => ({ meta: [{ title: "Dataset Manager — HealthPredict" }] }),
-  component: DatasetsPage,
+  component: () => (
+    <RequireRole path="/datasets">
+      <DatasetsPage />
+    </RequireRole>
+  ),
 });
 
 const DISEASE_BADGE: Record<string, string> = {
