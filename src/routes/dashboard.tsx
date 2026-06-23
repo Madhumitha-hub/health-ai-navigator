@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/components/page-header";
 import { SystemStatusWidget } from "@/components/system-status-widget";
+import { AlertsWidget } from "@/components/alerts-widget";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
 
