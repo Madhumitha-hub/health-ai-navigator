@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/page-header";
+import { FeatureImportanceGrid } from "@/components/feature-importance-chart";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/analytics")({
@@ -254,6 +255,13 @@ function AnalyticsPage() {
           </>
         }
       />
+
+      <div>
+        <h2 className="mb-3 font-display text-lg font-semibold">Feature Importance by Disease</h2>
+        <FeatureImportanceGrid />
+      </div>
+
+
 
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-2">
