@@ -10,6 +10,7 @@ from app.schemas import PredictRequest, PredictResponse, TopFactor
 from app.services.explain import top_factors
 from app.services.features import FEATURES, risk_level, to_vector
 from app.services.registry import registry
+from app.services.risk import categorize_risk
 
 router = APIRouter()
 
