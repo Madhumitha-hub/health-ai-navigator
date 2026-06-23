@@ -735,6 +735,10 @@ function ResultPanel({
         </CardContent>
       </Card>
 
+      <ClinicalDecisionSupport disease={disease} risk={result.risk} />
+
+
+
       <Card className={`border-l-4 ${band.borderClass}`}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
