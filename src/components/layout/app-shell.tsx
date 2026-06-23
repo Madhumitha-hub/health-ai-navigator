@@ -236,7 +236,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Footer />
         </div>
         <HelpButton />
-        <AiAssistant />
       </div>
     </SidebarProvider>
   );
