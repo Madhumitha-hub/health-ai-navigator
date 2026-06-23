@@ -6,7 +6,7 @@
  * safety rules (no diagnosis, always recommend a clinician).
  */
 import { createFileRoute } from "@tanstack/react-router";
-import { requireAuthInRoute } from "@/lib/route-auth";
+import { requireRoleInRoute } from "@/lib/route-auth";
 
 type ClientMessage = { role: "user" | "assistant"; content: string };
 type RequestBody = { messages?: ClientMessage[]; context?: Record<string, unknown> };
