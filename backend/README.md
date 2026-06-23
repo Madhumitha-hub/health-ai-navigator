@@ -15,7 +15,7 @@ FastAPI service that powers the four disease-prediction modules. **Not** built o
 2. **Push the repo to GitHub** (Render pulls from a Git remote).
 3. **Render → New → Web Service → Docker**, point at the `backend/` directory.
 4. On Render, set env var:
-   `ALLOWED_ORIGINS=https://id-preview--0e3105bb-a07b-46e7-8373-ab73c89362fc.lovable.app,https://*.lovable.app`
+   `ALLOWED_ORIGINS=https://id-preview--0e3105bb-a07b-46e7-8373-ab73c89362fc.lovable.app,https://0e3105bb-a07b-46e7-8373-ab73c89362fc.lovableproject.com`
 5. After the build finishes, open `https://<service>.onrender.com/health` — must return `{"status":"online", ...}`.
 6. In Lovable → **Project Settings → Environment Variables**, set
    `VITE_ML_API_URL=https://<service>.onrender.com` (no trailing slash) and reload the preview.
@@ -103,7 +103,7 @@ docker build -t healthpredict-ml .
 docker run -p 8000:8000 healthpredict-ml
 ```
 
-Set CORS origins via env var `ALLOWED_ORIGINS` (comma-separated). Default allows localhost + `*.lovable.app`.
+Set CORS origins via env var `ALLOWED_ORIGINS` (comma-separated). Default allows localhost + Lovable preview/published domains.
 
 ## API
 
