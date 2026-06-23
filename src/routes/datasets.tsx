@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -81,7 +82,7 @@ function DatasetsPage() {
   async function handleDelete(id: string) {
     if (!confirm("Delete this dataset?")) return;
     const { error } = await supabase.from("datasets").delete().eq("id", id);
-    if (error) toast.error(error.message);
+    if (error) toast.error(userMessage(error));
     else { toast.success("Deleted"); qc.invalidateQueries({ queryKey: ["datasets"] }); }
   }
 
@@ -243,7 +244,7 @@ function UploadDialog({ open, onOpenChange, userId, onUploaded }: { open: boolea
       uploaded_by: userId,
     });
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Dataset metadata saved");
     setName(""); setDisease(""); setSource(""); setNotes(""); setCsvPreview(null); setQuality(null);
     onOpenChange(false); onUploaded();

@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -95,7 +96,7 @@ function SettingsPage() {
       .update({ full_name: fullName, institution })
       .eq("id", user.id);
     setSavingProfile(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Profile updated");
     refreshProfile?.();
   };
@@ -106,7 +107,7 @@ function SettingsPage() {
     setSavingPw(true);
     const { error } = await supabase.auth.updateUser({ password: pw });
     setSavingPw(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Password updated");
     setPw(""); setPw2("");
   };

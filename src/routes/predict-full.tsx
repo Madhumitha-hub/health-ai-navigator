@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -272,7 +273,7 @@ function FullAssessmentPage() {
         if (rows.length) {
           const { data: inserted, error } = await supabase
             .from("predictions").insert(rows).select("id, disease_type");
-          if (error) toast.error("Saved partially", { description: error.message });
+          if (error) toast.error("Saved partially", { description: userMessage(error) });
           await Promise.all(okItems.map(async (i) => {
             const predRow = inserted?.find((row) => row.disease_type.startsWith(i.disease));
             await maybeRaiseAlert({
