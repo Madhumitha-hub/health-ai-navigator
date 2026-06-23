@@ -26,6 +26,7 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientsIdRouteImport } from './routes/patients.$id'
 import { Route as ApiMlIndexRouteImport } from './routes/api.ml.index'
+import { Route as ApiMlRecommendationsRouteImport } from './routes/api.ml.recommendations'
 import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
 import { Route as ApiMlMetricsRouteImport } from './routes/api.ml.metrics'
 import { Route as ApiMlHealthRouteImport } from './routes/api.ml.health'
@@ -117,6 +118,11 @@ const ApiMlIndexRoute = ApiMlIndexRouteImport.update({
   path: '/api/ml/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMlRecommendationsRoute = ApiMlRecommendationsRouteImport.update({
+  id: '/api/ml/recommendations',
+  path: '/api/ml/recommendations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMlModelsRoute = ApiMlModelsRouteImport.update({
   id: '/api/ml/models',
   path: '/api/ml/models',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/api/ml/health': typeof ApiMlHealthRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
+  '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
 }
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/api/ml/health': typeof ApiMlHealthRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
+  '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml': typeof ApiMlIndexRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
 }
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/api/ml/health': typeof ApiMlHealthRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
+  '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
 }
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/api/ml/health'
     | '/api/ml/metrics'
     | '/api/ml/models'
+    | '/api/ml/recommendations'
     | '/api/ml/'
     | '/api/ml/predict/$disease'
   fileRoutesByTo: FileRoutesByTo
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/api/ml/health'
     | '/api/ml/metrics'
     | '/api/ml/models'
+    | '/api/ml/recommendations'
     | '/api/ml'
     | '/api/ml/predict/$disease'
   id:
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/api/ml/health'
     | '/api/ml/metrics'
     | '/api/ml/models'
+    | '/api/ml/recommendations'
     | '/api/ml/'
     | '/api/ml/predict/$disease'
   fileRoutesById: FileRoutesById
@@ -311,6 +323,7 @@ export interface RootRouteChildren {
   ApiMlHealthRoute: typeof ApiMlHealthRoute
   ApiMlMetricsRoute: typeof ApiMlMetricsRoute
   ApiMlModelsRoute: typeof ApiMlModelsRoute
+  ApiMlRecommendationsRoute: typeof ApiMlRecommendationsRoute
   ApiMlIndexRoute: typeof ApiMlIndexRoute
   ApiMlPredictDiseaseRoute: typeof ApiMlPredictDiseaseRoute
 }
@@ -436,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMlIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ml/recommendations': {
+      id: '/api/ml/recommendations'
+      path: '/api/ml/recommendations'
+      fullPath: '/api/ml/recommendations'
+      preLoaderRoute: typeof ApiMlRecommendationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ml/models': {
       id: '/api/ml/models'
       path: '/api/ml/models'
@@ -506,6 +526,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMlHealthRoute: ApiMlHealthRoute,
   ApiMlMetricsRoute: ApiMlMetricsRoute,
   ApiMlModelsRoute: ApiMlModelsRoute,
+  ApiMlRecommendationsRoute: ApiMlRecommendationsRoute,
   ApiMlIndexRoute: ApiMlIndexRoute,
   ApiMlPredictDiseaseRoute: ApiMlPredictDiseaseRoute,
 }
