@@ -1,21 +1,37 @@
-## What's happening
+## Plan: Fix published Supabase env error without code changes
 
-The hosted site at `ai-healthcare1.lovable.app` is showing the "Missing Supabase environment variable(s)" error, while the Lovable preview works fine.
+1. **Confirm current diagnosis**
+   - Treat the preview as the known-good environment.
+   - Verify the error is only on the published URL and points to missing production/build-time Supabase env values, not a Vite config or application-code issue.
 
-The error is thrown from `src/integrations/supabase/client.ts`. It reads the Supabase URL/key from two places:
-1. `import.meta.env.VITE_SUPABASE_*` — baked into the JS bundle **at build time**
-2. `process.env.SUPABASE_*` — read from the server runtime (Cloudflare Worker secrets) at request time
+2. **Verify production Supabase connection**
+   - Check the project’s runtime secrets for `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.
+   - Confirm the connected Supabase project is the expected one for this app.
 
-Both are currently present in this sandbox (`.env` has all six variables, and the Supabase secrets dashboard also lists `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`). The preview works because it builds and runs against the current environment.
+3. **Verify build-time environment availability**
+   - Confirm the client-facing variables required by the browser bundle are present for the build:
+     - `VITE_SUPABASE_URL`
+     - `VITE_SUPABASE_PUBLISHABLE_KEY`
+   - Confirm the server/runtime equivalents are present for published server routes:
+     - `SUPABASE_URL`
+     - `SUPABASE_PUBLISHABLE_KEY`
 
-The hosted bundle at `ai-healthcare1.lovable.app` was published **before** those values were wired into the project (or before a successful Supabase reconnection). That old bundle has neither the build-time values nor a working server-side fallback, so as soon as the Supabase client is first accessed it throws and the root error boundary renders "Something went wrong". A re-publish is required — frontend env values are baked into the bundle, so they only update when you publish again.
+4. **Check for stale published deployment**
+   - Compare the published behavior against the healthy preview behavior.
+   - If the published site still throws while preview works, treat it as a stale published bundle or production env mismatch.
 
-## Plan
+5. **Trigger full rebuild and redeploy**
+   - Run a fresh Lovable publish using the current environment configuration.
+   - Do **not** modify `vite.config.ts` or application code.
+   - After publish is scheduled, wait about a minute, then hard-refresh the published URL.
 
-1. Re-publish the project so the current `.env` values (VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY) are baked into a fresh bundle and the Worker picks up the current server-side Supabase secrets.
-2. After publish, hard-refresh `ai-healthcare1.lovable.app` (Ctrl/Cmd-Shift-R) to bypass cached HTML/JS.
-3. If the error still appears after a fresh publish + hard refresh, the next step is to check the production environment secrets in Lovable Cloud (Settings → Secrets) and confirm `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are present for the **production** environment — secrets are scoped per environment, and a value set only for dev won't reach the published Worker.
+6. **Post-publish validation**
+   - Reopen the published URL in a fresh tab/incognito or hard refresh.
+   - Confirm the Supabase missing-env error no longer appears.
+   - If it still appears, the next action is to reconnect/refresh Supabase integration for production and publish again, because the publish environment still is not receiving the build-time `VITE_SUPABASE_*` values.
 
-No code changes are needed; the client fallback chain is already correct.
+## Technical notes
 
-Approve this plan and I'll trigger the re-publish.
+- The app’s Supabase browser client reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` at build time, so production only updates after a new successful publish.
+- `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` runtime secrets alone are not enough for browser code if the built JS bundle was created without the `VITE_*` values.
+- `vite.config.ts` should remain unchanged because this TanStack Start project uses Lovable’s TanStack Vite config wrapper.
