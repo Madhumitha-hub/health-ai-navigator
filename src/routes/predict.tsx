@@ -642,7 +642,10 @@ function ResultPanel({
   }, [result.timestamp]);
 
   const downloadReportPdf = () => {
+    const support = `Clinical Decision Support — Specialist: ${disease === "diabetes" ? "Endocrinologist" : disease === "heart" ? "Cardiologist" : disease === "kidney" ? "Nephrologist" : "Hepatologist / Gastroenterologist"}`;
     const recs = flattenRecommendations(bundle, phrasing);
+    recs.push("");
+    recs.push(support);
     if (doctorNotes.trim()) {
       recs.push("");
       recs.push("Doctor Notes:");
@@ -665,6 +668,7 @@ function ResultPanel({
         recommendations: recs,
       },
     });
+    void logAudit("report.download", "prediction", patient.id, { disease });
   };
 
   return (
