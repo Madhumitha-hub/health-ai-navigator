@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          created_at: string
+          disease: string
+          doctor_id: string
+          id: string
+          message: string
+          patient_id: string | null
+          prediction_id: string | null
+          risk_category: string
+          risk_level: string
+          risk_score: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          disease: string
+          doctor_id: string
+          id?: string
+          message: string
+          patient_id?: string | null
+          prediction_id?: string | null
+          risk_category: string
+          risk_level: string
+          risk_score: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          disease?: string
+          doctor_id?: string
+          id?: string
+          message?: string
+          patient_id?: string | null
+          prediction_id?: string | null
+          risk_category?: string
+          risk_level?: string
+          risk_score?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alerts_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       datasets: {
         Row: {
           created_at: string
@@ -54,6 +114,44 @@ export type Database = {
             columns: ["uploaded_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      health_scores: {
+        Row: {
+          band: string
+          components: Json
+          created_at: string
+          doctor_id: string
+          id: string
+          patient_id: string
+          score: number
+        }
+        Insert: {
+          band: string
+          components?: Json
+          created_at?: string
+          doctor_id: string
+          id?: string
+          patient_id: string
+          score: number
+        }
+        Update: {
+          band?: string
+          components?: Json
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          patient_id?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_scores_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
             referencedColumns: ["id"]
           },
         ]
