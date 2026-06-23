@@ -337,6 +337,51 @@ function qualityLabel(score: number) {
   return "Needs attention";
 }
 
+function downloadMarkdown(disease: Disease, d: EdaPayload) {
+  const lines: string[] = [];
+  lines.push(`# EDA Report — ${disease}`);
+  lines.push("");
+  lines.push(`- **Source file:** \`${d.source_file}\``);
+  lines.push(`- **Generated:** ${new Date(d.generated_at).toLocaleString()}`);
+  lines.push(`- **Rows:** ${d.shape.rows} · **Columns:** ${d.shape.columns}`);
+  lines.push(`- **Target column:** \`${d.target_column}\``);
+  lines.push(`- **Missing overall:** ${d.missing.overall_pct}% · **Duplicates:** ${d.duplicates}`);
+  lines.push(`- **Data quality score:** ${d.data_quality_score} / 100 (${qualityLabel(d.data_quality_score)})`);
+  if (d.is_synthetic) lines.push(`- **Synthetic dataset:** ${d.synthetic_disclaimer ?? "yes"}`);
+  lines.push("");
+  lines.push("## Class Balance");
+  lines.push("| Class | Count | % |");
+  lines.push("|---|---:|---:|");
+  for (const [k, v] of Object.entries(d.class_balance)) lines.push(`| ${k} | ${v.count} | ${v.pct} |`);
+  lines.push("");
+  lines.push("## Top Correlations with Target");
+  lines.push("| Feature | Correlation |");
+  lines.push("|---|---:|");
+  for (const r of d.top_correlations_with_target) lines.push(`| ${r.feature} | ${r.corr} |`);
+  lines.push("");
+  lines.push("## Feature Stats & Outliers");
+  lines.push("| Feature | Mean | Std | Min | Median | Max | Skew | Missing | Outliers |");
+  lines.push("|---|---:|---:|---:|---:|---:|---:|---:|---:|");
+  for (const f of Object.keys(d.feature_stats)) {
+    const s = d.feature_stats[f];
+    const m = d.missing.per_column[f];
+    lines.push(
+      `| ${f} | ${s.mean} | ${s.std} | ${s.min} | ${s.median} | ${s.max} | ${s.skew} | ${m?.count ?? 0} (${m?.pct ?? 0}%) | ${d.outliers[f] ?? 0} |`
+    );
+  }
+  lines.push("");
+
+  const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${disease}-eda.md`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 function CorrelationHeatmap({ matrix }: { matrix: Record<string, Record<string, number>> }) {
   const features = Object.keys(matrix);
   if (!features.length) return <p className="text-sm text-muted-foreground">No numeric features.</p>;
