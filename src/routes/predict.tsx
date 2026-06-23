@@ -129,7 +129,6 @@ const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emo
     tagline: "Based on bilirubin, enzyme levels, albumin",
     fields: [
       { name: "age", label: "Age", unit: "years" },
-      { name: "gender", label: "Gender", type: "select", options: [{ label: "Male", value: "1" }, { label: "Female", value: "0" }] },
       { name: "totalBilirubin", label: "Total Bilirubin", unit: "mg/dL", normal: "0.1–1.2" },
       { name: "directBilirubin", label: "Direct Bilirubin", unit: "mg/dL", normal: "<0.3" },
       { name: "alkPhos", label: "Alkaline Phosphotase", unit: "IU/L", normal: "44–147" },
