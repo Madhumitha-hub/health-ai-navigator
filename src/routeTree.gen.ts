@@ -31,9 +31,11 @@ import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
 import { Route as ApiMlMetricsRouteImport } from './routes/api.ml.metrics'
 import { Route as ApiMlHealthScoreRouteImport } from './routes/api.ml.health-score'
 import { Route as ApiMlHealthRouteImport } from './routes/api.ml.health'
+import { Route as ApiMlClinicalSupportRouteImport } from './routes/api.ml.clinical-support'
 import { Route as ApiMlAnalyticsRouteImport } from './routes/api.ml.analytics'
 import { Route as ApiMlPredictFullAssessmentRouteImport } from './routes/api.ml.predict.full-assessment'
 import { Route as ApiMlPredictDiseaseRouteImport } from './routes/api.ml.predict.$disease'
+import { Route as ApiMlFeatureImportanceDiseaseRouteImport } from './routes/api.ml.feature-importance.$disease'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -145,6 +147,11 @@ const ApiMlHealthRoute = ApiMlHealthRouteImport.update({
   path: '/api/ml/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMlClinicalSupportRoute = ApiMlClinicalSupportRouteImport.update({
+  id: '/api/ml/clinical-support',
+  path: '/api/ml/clinical-support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMlAnalyticsRoute = ApiMlAnalyticsRouteImport.update({
   id: '/api/ml/analytics',
   path: '/api/ml/analytics',
@@ -161,6 +168,12 @@ const ApiMlPredictDiseaseRoute = ApiMlPredictDiseaseRouteImport.update({
   path: '/api/ml/predict/$disease',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMlFeatureImportanceDiseaseRoute =
+  ApiMlFeatureImportanceDiseaseRouteImport.update({
+    id: '/api/ml/feature-importance/$disease',
+    path: '/api/ml/feature-importance/$disease',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -180,12 +193,14 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
+  '/api/ml/clinical-support': typeof ApiMlClinicalSupportRoute
   '/api/ml/health': typeof ApiMlHealthRoute
   '/api/ml/health-score': typeof ApiMlHealthScoreRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
+  '/api/ml/feature-importance/$disease': typeof ApiMlFeatureImportanceDiseaseRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
   '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
 }
@@ -207,12 +222,14 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
+  '/api/ml/clinical-support': typeof ApiMlClinicalSupportRoute
   '/api/ml/health': typeof ApiMlHealthRoute
   '/api/ml/health-score': typeof ApiMlHealthScoreRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml': typeof ApiMlIndexRoute
+  '/api/ml/feature-importance/$disease': typeof ApiMlFeatureImportanceDiseaseRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
   '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
 }
@@ -235,12 +252,14 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
+  '/api/ml/clinical-support': typeof ApiMlClinicalSupportRoute
   '/api/ml/health': typeof ApiMlHealthRoute
   '/api/ml/health-score': typeof ApiMlHealthScoreRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
+  '/api/ml/feature-importance/$disease': typeof ApiMlFeatureImportanceDiseaseRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
   '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
 }
@@ -264,12 +283,14 @@ export interface FileRouteTypes {
     | '/settings'
     | '/patients/$id'
     | '/api/ml/analytics'
+    | '/api/ml/clinical-support'
     | '/api/ml/health'
     | '/api/ml/health-score'
     | '/api/ml/metrics'
     | '/api/ml/models'
     | '/api/ml/recommendations'
     | '/api/ml/'
+    | '/api/ml/feature-importance/$disease'
     | '/api/ml/predict/$disease'
     | '/api/ml/predict/full-assessment'
   fileRoutesByTo: FileRoutesByTo
@@ -291,12 +312,14 @@ export interface FileRouteTypes {
     | '/settings'
     | '/patients/$id'
     | '/api/ml/analytics'
+    | '/api/ml/clinical-support'
     | '/api/ml/health'
     | '/api/ml/health-score'
     | '/api/ml/metrics'
     | '/api/ml/models'
     | '/api/ml/recommendations'
     | '/api/ml'
+    | '/api/ml/feature-importance/$disease'
     | '/api/ml/predict/$disease'
     | '/api/ml/predict/full-assessment'
   id:
@@ -318,12 +341,14 @@ export interface FileRouteTypes {
     | '/settings'
     | '/patients/$id'
     | '/api/ml/analytics'
+    | '/api/ml/clinical-support'
     | '/api/ml/health'
     | '/api/ml/health-score'
     | '/api/ml/metrics'
     | '/api/ml/models'
     | '/api/ml/recommendations'
     | '/api/ml/'
+    | '/api/ml/feature-importance/$disease'
     | '/api/ml/predict/$disease'
     | '/api/ml/predict/full-assessment'
   fileRoutesById: FileRoutesById
@@ -345,12 +370,14 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
   ApiMlAnalyticsRoute: typeof ApiMlAnalyticsRoute
+  ApiMlClinicalSupportRoute: typeof ApiMlClinicalSupportRoute
   ApiMlHealthRoute: typeof ApiMlHealthRoute
   ApiMlHealthScoreRoute: typeof ApiMlHealthScoreRoute
   ApiMlMetricsRoute: typeof ApiMlMetricsRoute
   ApiMlModelsRoute: typeof ApiMlModelsRoute
   ApiMlRecommendationsRoute: typeof ApiMlRecommendationsRoute
   ApiMlIndexRoute: typeof ApiMlIndexRoute
+  ApiMlFeatureImportanceDiseaseRoute: typeof ApiMlFeatureImportanceDiseaseRoute
   ApiMlPredictDiseaseRoute: typeof ApiMlPredictDiseaseRoute
   ApiMlPredictFullAssessmentRoute: typeof ApiMlPredictFullAssessmentRoute
 }
@@ -511,6 +538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMlHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ml/clinical-support': {
+      id: '/api/ml/clinical-support'
+      path: '/api/ml/clinical-support'
+      fullPath: '/api/ml/clinical-support'
+      preLoaderRoute: typeof ApiMlClinicalSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ml/analytics': {
       id: '/api/ml/analytics'
       path: '/api/ml/analytics'
@@ -530,6 +564,13 @@ declare module '@tanstack/react-router' {
       path: '/api/ml/predict/$disease'
       fullPath: '/api/ml/predict/$disease'
       preLoaderRoute: typeof ApiMlPredictDiseaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/feature-importance/$disease': {
+      id: '/api/ml/feature-importance/$disease'
+      path: '/api/ml/feature-importance/$disease'
+      fullPath: '/api/ml/feature-importance/$disease'
+      preLoaderRoute: typeof ApiMlFeatureImportanceDiseaseRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -564,12 +605,14 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
   ApiMlAnalyticsRoute: ApiMlAnalyticsRoute,
+  ApiMlClinicalSupportRoute: ApiMlClinicalSupportRoute,
   ApiMlHealthRoute: ApiMlHealthRoute,
   ApiMlHealthScoreRoute: ApiMlHealthScoreRoute,
   ApiMlMetricsRoute: ApiMlMetricsRoute,
   ApiMlModelsRoute: ApiMlModelsRoute,
   ApiMlRecommendationsRoute: ApiMlRecommendationsRoute,
   ApiMlIndexRoute: ApiMlIndexRoute,
+  ApiMlFeatureImportanceDiseaseRoute: ApiMlFeatureImportanceDiseaseRoute,
   ApiMlPredictDiseaseRoute: ApiMlPredictDiseaseRoute,
   ApiMlPredictFullAssessmentRoute: ApiMlPredictFullAssessmentRoute,
 }
