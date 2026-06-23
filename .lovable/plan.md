@@ -1,37 +1,30 @@
-## Plan: Fix published Supabase env error without code changes
+## What's happening
 
-1. **Confirm current diagnosis**
-   - Treat the preview as the known-good environment.
-   - Verify the error is only on the published URL and points to missing production/build-time Supabase env values, not a Vite config or application-code issue.
+The published bundle is missing the Supabase URL and publishable key. I confirmed by fetching `https://ai-healthcare23.lovable.app/assets/index-Bf95r4Rz.js` — the project ref `pdmsdzstekicqaljdpmj` does not appear anywhere in the production JS, only the string `"Missing Supabase"` does.
 
-2. **Verify production Supabase connection**
-   - Check the project’s runtime secrets for `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.
-   - Confirm the connected Supabase project is the expected one for this app.
+`src/integrations/supabase/client.ts` reads its config from `import.meta.env.VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Those values live in the local `.env` (which works for the in-sandbox preview/dev server), but the published Cloudflare Worker build does not pick them up — so at runtime on the hosted domain the values are `undefined`, the lazy `supabase` Proxy throws `Missing Supabase environment variable(s)` on first access during hydration, the React tree errors, and the root `errorComponent` renders the exact "Something went wrong / An unexpected error occurred. / Try again" card you're seeing.
 
-3. **Verify build-time environment availability**
-   - Confirm the client-facing variables required by the browser bundle are present for the build:
-     - `VITE_SUPABASE_URL`
-     - `VITE_SUPABASE_PUBLISHABLE_KEY`
-   - Confirm the server/runtime equivalents are present for published server routes:
-     - `SUPABASE_URL`
-     - `SUPABASE_PUBLISHABLE_KEY`
+SSR itself works (the initial HTML shows the loading spinner correctly) — the crash is on the client right after hydration, which is why the in-editor preview looks fine but the bare published URL doesn't.
 
-4. **Check for stale published deployment**
-   - Compare the published behavior against the healthy preview behavior.
-   - If the published site still throws while preview works, treat it as a stale published bundle or production env mismatch.
+## Fix
 
-5. **Trigger full rebuild and redeploy**
-   - Run a fresh Lovable publish using the current environment configuration.
-   - Do **not** modify `vite.config.ts` or application code.
-   - After publish is scheduled, wait about a minute, then hard-refresh the published URL.
+Edit `src/integrations/supabase/client.ts` to inline the publishable Supabase URL and anon key as constants, with `import.meta.env.VITE_*` only as an override. These are publishable (anon) credentials — they're already committed in `.env` and are intended to ship to the browser; this is the standard Lovable pattern for the generated client.
 
-6. **Post-publish validation**
-   - Reopen the published URL in a fresh tab/incognito or hard refresh.
-   - Confirm the Supabase missing-env error no longer appears.
-   - If it still appears, the next action is to reconnect/refresh Supabase integration for production and publish again, because the publish environment still is not receiving the build-time `VITE_SUPABASE_*` values.
+```ts
+// src/integrations/supabase/client.ts
+const SUPABASE_URL = "https://pdmsdzstekicqaljdpmj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIs..."; // existing anon key from .env
+```
 
-## Technical notes
+Drop the `Missing Supabase environment variable(s)` throw — with constants it can't happen. Keep the Proxy + lazy init so SSR doesn't construct the client at module load.
 
-- The app’s Supabase browser client reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` at build time, so production only updates after a new successful publish.
-- `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` runtime secrets alone are not enough for browser code if the built JS bundle was created without the `VITE_*` values.
-- `vite.config.ts` should remain unchanged because this TanStack Start project uses Lovable’s TanStack Vite config wrapper.
+No other files need changes. The server-side fallback (`process.env.SUPABASE_URL` for SSR) is unaffected because the SSR path still has those values where it needs them, and middleware/server functions use their own clients.
+
+## After the fix
+
+Re-publish from the editor. The hosted root URL will then render the spinner → redirect to `/login` (or `/dashboard` if a session exists), matching the in-editor preview.
+
+## Out of scope
+
+- No changes to auth flow, routes, RLS, or backend.
+- No changes to `VITE_ML_API_URL` — it's only read inside server-side code (`src/lib/ml-proxy.ts` uses `process.env` in the Worker), which works at runtime.
