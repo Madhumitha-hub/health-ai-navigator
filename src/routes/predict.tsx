@@ -22,6 +22,8 @@ import { useMlHealth } from "@/hooks/use-ml-health";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { downloadReport } from "@/lib/report-pdf";
+import { generateRecommendations, flattenRecommendations } from "@/lib/recommendations";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/predict")({
   head: () => ({ meta: [{ title: "Disease Prediction — HealthPredict" }] }),

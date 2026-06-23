@@ -13,6 +13,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PredictFullRouteImport } from './routes/predict-full'
 import { Route as PredictRouteImport } from './routes/predict'
 import { Route as PatientsRouteImport } from './routes/patients'
 import { Route as ModelsRouteImport } from './routes/models'
@@ -49,6 +50,11 @@ const ReportsRoute = ReportsRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictFullRoute = PredictFullRouteImport.update({
+  id: '/predict-full',
+  path: '/predict-full',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PredictRoute = PredictRouteImport.update({
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/models': typeof ModelsRoute
   '/patients': typeof PatientsRouteWithChildren
   '/predict': typeof PredictRoute
+  '/predict-full': typeof PredictFullRoute
   '/register': typeof RegisterRoute
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/models': typeof ModelsRoute
   '/patients': typeof PatientsRouteWithChildren
   '/predict': typeof PredictRoute
+  '/predict-full': typeof PredictFullRoute
   '/register': typeof RegisterRoute
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/models': typeof ModelsRoute
   '/patients': typeof PatientsRouteWithChildren
   '/predict': typeof PredictRoute
+  '/predict-full': typeof PredictFullRoute
   '/register': typeof RegisterRoute
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/patients'
     | '/predict'
+    | '/predict-full'
     | '/register'
     | '/reports'
     | '/reset-password'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/patients'
     | '/predict'
+    | '/predict-full'
     | '/register'
     | '/reports'
     | '/reset-password'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/patients'
     | '/predict'
+    | '/predict-full'
     | '/register'
     | '/reports'
     | '/reset-password'
@@ -290,6 +302,7 @@ export interface RootRouteChildren {
   ModelsRoute: typeof ModelsRoute
   PatientsRoute: typeof PatientsRouteWithChildren
   PredictRoute: typeof PredictRoute
+  PredictFullRoute: typeof PredictFullRoute
   RegisterRoute: typeof RegisterRoute
   ReportsRoute: typeof ReportsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict-full': {
+      id: '/predict-full'
+      path: '/predict-full'
+      fullPath: '/predict-full'
+      preLoaderRoute: typeof PredictFullRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/predict': {
@@ -477,6 +497,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModelsRoute: ModelsRoute,
   PatientsRoute: PatientsRouteWithChildren,
   PredictRoute: PredictRoute,
+  PredictFullRoute: PredictFullRoute,
   RegisterRoute: RegisterRoute,
   ReportsRoute: ReportsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
