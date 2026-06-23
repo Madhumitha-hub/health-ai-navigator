@@ -32,9 +32,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@tanstack/react-router";
 
 
+import { RequireRole } from "@/components/require-role";
+
 export const Route = createFileRoute("/predict")({
   head: () => ({ meta: [{ title: "Disease Prediction — HealthPredict" }] }),
-  component: PredictPage,
+  component: () => (
+    <RequireRole path="/predict">
+      <PredictPage />
+    </RequireRole>
+  ),
 });
 
 type DiseaseKey = "diabetes" | "heart" | "kidney" | "liver";
