@@ -112,13 +112,14 @@ export async function proxyMlPredictionRequest(disease: string, request: Request
     headers: { "Content-Type": request.headers.get("Content-Type") || "application/json" },
     body,
   });
-  if (response.status !== 503 || !["diabetes", "heart", "kidney", "liver"].includes(disease)) {
+  const upstreamFailed = response.status >= 500;
+  if (!upstreamFailed || !["diabetes", "heart", "kidney", "liver"].includes(disease)) {
     return response;
   }
   try {
-    const payload = JSON.parse(body) as { features?: Record<string, unknown> };
+    const payload = body ? (JSON.parse(body) as { features?: Record<string, unknown> }) : {};
     return fallbackPrediction(disease as DiseaseKey, payload.features ?? {});
   } catch {
-    return response;
+    return fallbackPrediction(disease as DiseaseKey, {});
   }
 }
