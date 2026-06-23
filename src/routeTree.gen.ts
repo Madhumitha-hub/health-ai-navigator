@@ -37,6 +37,7 @@ import { Route as ApiMlAnalyticsRouteImport } from './routes/api.ml.analytics'
 import { Route as ApiMlPredictFullAssessmentRouteImport } from './routes/api.ml.predict.full-assessment'
 import { Route as ApiMlPredictDiseaseRouteImport } from './routes/api.ml.predict.$disease'
 import { Route as ApiMlFeatureImportanceDiseaseRouteImport } from './routes/api.ml.feature-importance.$disease'
+import { Route as ApiMlEdaDiseaseRouteImport } from './routes/api.ml.eda.$disease'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -180,6 +181,11 @@ const ApiMlFeatureImportanceDiseaseRoute =
     path: '/api/ml/feature-importance/$disease',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiMlEdaDiseaseRoute = ApiMlEdaDiseaseRouteImport.update({
+  id: '/api/ml/eda/$disease',
+  path: '/api/ml/eda/$disease',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
+  '/api/ml/eda/$disease': typeof ApiMlEdaDiseaseRoute
   '/api/ml/feature-importance/$disease': typeof ApiMlFeatureImportanceDiseaseRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
   '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml': typeof ApiMlIndexRoute
+  '/api/ml/eda/$disease': typeof ApiMlEdaDiseaseRoute
   '/api/ml/feature-importance/$disease': typeof ApiMlFeatureImportanceDiseaseRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
   '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
+  '/api/ml/eda/$disease': typeof ApiMlEdaDiseaseRoute
   '/api/ml/feature-importance/$disease': typeof ApiMlFeatureImportanceDiseaseRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
   '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
@@ -300,6 +309,7 @@ export interface FileRouteTypes {
     | '/api/ml/models'
     | '/api/ml/recommendations'
     | '/api/ml/'
+    | '/api/ml/eda/$disease'
     | '/api/ml/feature-importance/$disease'
     | '/api/ml/predict/$disease'
     | '/api/ml/predict/full-assessment'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/api/ml/models'
     | '/api/ml/recommendations'
     | '/api/ml'
+    | '/api/ml/eda/$disease'
     | '/api/ml/feature-importance/$disease'
     | '/api/ml/predict/$disease'
     | '/api/ml/predict/full-assessment'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/api/ml/models'
     | '/api/ml/recommendations'
     | '/api/ml/'
+    | '/api/ml/eda/$disease'
     | '/api/ml/feature-importance/$disease'
     | '/api/ml/predict/$disease'
     | '/api/ml/predict/full-assessment'
@@ -390,6 +402,7 @@ export interface RootRouteChildren {
   ApiMlModelsRoute: typeof ApiMlModelsRoute
   ApiMlRecommendationsRoute: typeof ApiMlRecommendationsRoute
   ApiMlIndexRoute: typeof ApiMlIndexRoute
+  ApiMlEdaDiseaseRoute: typeof ApiMlEdaDiseaseRoute
   ApiMlFeatureImportanceDiseaseRoute: typeof ApiMlFeatureImportanceDiseaseRoute
   ApiMlPredictDiseaseRoute: typeof ApiMlPredictDiseaseRoute
   ApiMlPredictFullAssessmentRoute: typeof ApiMlPredictFullAssessmentRoute
@@ -593,6 +606,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMlFeatureImportanceDiseaseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ml/eda/$disease': {
+      id: '/api/ml/eda/$disease'
+      path: '/api/ml/eda/$disease'
+      fullPath: '/api/ml/eda/$disease'
+      preLoaderRoute: typeof ApiMlEdaDiseaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -633,6 +653,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMlModelsRoute: ApiMlModelsRoute,
   ApiMlRecommendationsRoute: ApiMlRecommendationsRoute,
   ApiMlIndexRoute: ApiMlIndexRoute,
+  ApiMlEdaDiseaseRoute: ApiMlEdaDiseaseRoute,
   ApiMlFeatureImportanceDiseaseRoute: ApiMlFeatureImportanceDiseaseRoute,
   ApiMlPredictDiseaseRoute: ApiMlPredictDiseaseRoute,
   ApiMlPredictFullAssessmentRoute: ApiMlPredictFullAssessmentRoute,
