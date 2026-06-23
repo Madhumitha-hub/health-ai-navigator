@@ -26,8 +26,8 @@ export const Route = createFileRoute("/api/ai-assistant")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const unauthorized = await requireAuthInRoute(request);
-        if (unauthorized) return unauthorized;
+        const denied = await requireRoleInRoute(request, ["admin", "doctor"]);
+        if (denied) return denied;
         const apiKey = process.env.LOVABLE_API_KEY;
         if (!apiKey) {
           return new Response(JSON.stringify({ error: "AI assistant is not configured." }), {
