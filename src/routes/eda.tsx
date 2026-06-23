@@ -122,41 +122,41 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
   }
   const payload = data as EdaPayload;
 
-  const classBalance = Object.entries(data.class_balance).map(([k, v]) => ({
+  const classBalance = Object.entries(payload.class_balance).map(([k, v]) => ({
     label: `Class ${k}`,
     count: v.count,
     pct: v.pct,
   }));
-  const topCorr = data.top_correlations_with_target.map((r) => ({
+  const topCorr = payload.top_correlations_with_target.map((r) => ({
     feature: r.feature,
     abs: Math.abs(r.corr),
     corr: r.corr,
   }));
-  const features = Object.keys(data.feature_stats);
+  const features = Object.keys(payload.feature_stats);
 
   return (
     <div className="space-y-6">
       {/* Snapshot */}
       <div className="grid gap-4 md:grid-cols-4">
-        <StatCard label="Rows" value={String(data.shape.rows)} />
-        <StatCard label="Columns" value={String(data.shape.columns)} />
+        <StatCard label="Rows" value={String(payload.shape.rows)} />
+        <StatCard label="Columns" value={String(payload.shape.columns)} />
         <StatCard
           label="Missing"
-          value={`${data.missing.overall_pct}%`}
-          hint={`${data.duplicates} duplicate rows`}
+          value={`${payload.missing.overall_pct}%`}
+          hint={`${payload.duplicates} duplicate rows`}
         />
         <StatCard
           label="Quality Score"
-          value={`${data.data_quality_score} / 100`}
-          hint={qualityLabel(data.data_quality_score)}
+          value={`${payload.data_quality_score} / 100`}
+          hint={qualityLabel(payload.data_quality_score)}
         />
       </div>
 
-      {data.is_synthetic && (
+      {payload.is_synthetic && (
         <Alert>
           <Info className="h-4 w-4" />
           <AlertTitle>Synthetic dataset</AlertTitle>
-          <AlertDescription>{data.synthetic_disclaimer}</AlertDescription>
+          <AlertDescription>{payload.synthetic_disclaimer}</AlertDescription>
         </Alert>
       )}
 
@@ -167,7 +167,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>Class Balance</CardTitle>
-                <CardDescription>Target column: <code>{data.target_column}</code></CardDescription>
+                <CardDescription>Target column: <code>{payload.target_column}</code></CardDescription>
               </div>
               <Badge className={tone}>{disease}</Badge>
             </div>
@@ -203,7 +203,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
               <Download className="mr-2 h-4 w-4" /> Download Markdown
             </Button>
             <p className="text-xs text-muted-foreground">
-              Generated {new Date(data.generated_at).toLocaleString()}
+              Generated {new Date(payload.generated_at).toLocaleString()}
             </p>
           </CardContent>
         </Card>
@@ -237,7 +237,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {features.map((feat) => {
-              const h = data.histograms[feat];
+              const h = payload.histograms[feat];
               if (!h) return null;
               const bars = h.counts.map((count, i) => ({
                 bin: `${h.bins[i].toFixed(1)}`,
@@ -248,7 +248,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
                   <div className="mb-1 flex items-center justify-between">
                     <div className="text-sm font-medium">{feat}</div>
                     <span className="text-[10px] text-muted-foreground">
-                      μ {data.feature_stats[feat].mean} · σ {data.feature_stats[feat].std}
+                      μ {payload.feature_stats[feat].mean} · σ {payload.feature_stats[feat].std}
                     </span>
                   </div>
                   <ResponsiveContainer width="100%" height={120}>
@@ -273,7 +273,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
           <CardDescription>Pearson correlation between numeric features.</CardDescription>
         </CardHeader>
         <CardContent>
-          <CorrelationHeatmap matrix={data.correlation_matrix} />
+          <CorrelationHeatmap matrix={payload.correlation_matrix} />
         </CardContent>
       </Card>
 
@@ -298,10 +298,10 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
                 <TableRow key={f}>
                   <TableCell className="font-medium">{f}</TableCell>
                   <TableCell>
-                    {data.missing.per_column[f]?.count ?? 0} ({data.missing.per_column[f]?.pct ?? 0}%)
+                    {payload.missing.per_column[f]?.count ?? 0} ({payload.missing.per_column[f]?.pct ?? 0}%)
                   </TableCell>
-                  <TableCell>{data.outliers[f] ?? 0}</TableCell>
-                  <TableCell>{data.feature_stats[f]?.skew ?? 0}</TableCell>
+                  <TableCell>{payload.outliers[f] ?? 0}</TableCell>
+                  <TableCell>{payload.feature_stats[f]?.skew ?? 0}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
