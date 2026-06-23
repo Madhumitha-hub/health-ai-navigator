@@ -165,17 +165,6 @@ function PredictPage() {
   const healthQ = useMlHealth();
   const apiOnline = !!healthQ.data?.online;
 
-  useAssistantContext(
-    patient
-      ? `Current patient: ${patient.name}, age ${patient.age ?? "?"}, gender ${patient.gender ?? "?"}.` +
-        (disease ? ` Disease being assessed: ${disease}.` : "") +
-        (result
-          ? ` Latest prediction: risk score ${(((result as any).risk_score ?? (result as any).probability ?? 0) * 100).toFixed(1)}% (${(result as any).risk_level ?? (result as any).riskLevel ?? "n/a"}). Top factors: ${(((result as any).top_factors ?? (result as any).topFactors ?? []) as any[]).map((f) => f.name ?? f).join(", ") || "n/a"}.`
-          : "") +
-        ` Input values: ${Object.entries(values).map(([k, v]) => `${k}=${v}`).join(", ") || "none"}.`
-      : null,
-  );
-
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <PageHeader

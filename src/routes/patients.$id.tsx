@@ -72,16 +72,6 @@ function PatientProfile() {
     navigate({ to: "/patients" });
   }
 
-  useAssistantContext(
-    patient
-      ? `Viewing patient profile: ${patient.name}, age ${patient.age ?? "?"}, gender ${patient.gender ?? "?"}.` +
-        ` Total predictions on file: ${preds.length}.` +
-        (preds.length
-          ? ` Recent results: ${preds.slice(-3).map((p: any) => `${p.disease_type} ${(Number(p.risk_score) * 100).toFixed(0)}% (${p.risk_level})`).join("; ")}.`
-          : "")
-      : null,
-  );
-
   if (isLoading) return <div className="mx-auto max-w-7xl p-6"><Skeleton className="h-96" /></div>;
   if (!patient) return <div className="p-8">Patient not found.</div>;
 
