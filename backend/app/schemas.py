@@ -57,7 +57,8 @@ class TopFactor(BaseModel):
 class PredictResponse(BaseModel):
     disease: str
     probability: float
-    risk_level: str  # Low | Moderate | High
+    risk_level: str  # Low | Moderate | High (legacy 3-band)
+    risk_category: str  # Very Low | Low | Moderate | High | Critical (5-band)
     top_factors: list[TopFactor]
     confidence: float
     prediction_time_ms: int

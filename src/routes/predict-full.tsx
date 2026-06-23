@@ -16,6 +16,8 @@ import { runFullAssessment, healthScoreBand, type FullAssessmentReport } from "@
 import { generateRecommendations, flattenRecommendations } from "@/lib/recommendations";
 import { diseaseDisplayName, type DiseaseKey } from "@/lib/predict-api";
 import { downloadReport } from "@/lib/report-pdf";
+import { categorizeRisk } from "@/lib/risk-category";
+import { maybeRaiseAlert } from "@/lib/alerts";
 
 export const Route = createFileRoute("/predict-full")({
   head: () => ({ meta: [{ title: "Full Health Assessment — HealthPredict" }] }),
@@ -41,7 +43,7 @@ function FullAssessmentPage() {
       });
       setReport(r);
 
-      // Auto-persist every successful sub-prediction
+      // Auto-persist every successful sub-prediction + raise alerts + save health score
       if (user) {
         const rows = r.items.filter((i) => i.ok && i.result).map((i) => ({
           patient_id: patient.id,
@@ -58,9 +60,38 @@ function FullAssessmentPage() {
           confidence: i.result!.confidence,
         }));
         if (rows.length) {
-          const { error } = await supabase.from("predictions").insert(rows);
+          const { data: inserted, error } = await supabase
+            .from("predictions").insert(rows).select("id, disease_type");
           if (error) toast.error("Saved partially", { description: error.message });
+
+          // Raise alerts for any disease above the 60% threshold
+          await Promise.all(r.items.filter((i) => i.ok && i.result).map(async (i) => {
+            const predRow = inserted?.find((row) => row.disease_type.startsWith(i.disease));
+            await maybeRaiseAlert({
+              doctorId: user.id,
+              patientId: patient.id,
+              patientName: patient.name,
+              disease: i.disease,
+              probability: i.result!.probability,
+              riskLevel: i.result!.risk,
+              predictionId: predRow?.id ?? null,
+            });
+          }));
         }
+
+        // Persist overall AI Health Score for the dashboard / patient profile
+        const band = healthScoreBand(r.overallScore);
+        const components = Object.fromEntries(
+          r.items.filter((i) => i.ok && i.result).map((i) => [i.disease, Math.round(i.result!.probability * 100)]),
+        );
+        const { error: scoreErr } = await supabase.from("health_scores").insert({
+          patient_id: patient.id,
+          doctor_id: user.id,
+          score: r.overallScore,
+          band: band.label,
+          components,
+        });
+        if (scoreErr) toast.error("Health score not saved", { description: scoreErr.message });
       }
 
       toast.success("Full health assessment complete");
@@ -179,23 +210,21 @@ function DiseaseCard({ item, patient }: { item: FullAssessmentReport["items"][nu
   }
   const r = item.result;
   const pct = Math.round(r.probability * 100);
-  const tone = r.risk === "high" ? "border-destructive/50 bg-destructive/5 text-destructive"
-    : r.risk === "medium" ? "border-amber-500/50 bg-amber-500/5 text-amber-600"
-    : "border-success/50 bg-success/5 text-success";
+  const cat = categorizeRisk(r.probability);
 
   const bundle = generateRecommendations({ disease: item.disease, result: r, patient: { age: patient.age, gender: patient.gender } });
 
   return (
-    <Card className={`border-2 ${tone.split(" ")[0]}`}>
+    <Card className={`border-2 ${cat.borderClass}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm capitalize">{diseaseDisplayName(item.disease)}</CardTitle>
-          <Badge variant="outline" className={tone}>{r.riskLabel}</Badge>
+          <Badge variant="outline" className={cat.badgeClass}>{cat.category}</Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-baseline justify-between">
-          <span className={`font-display text-3xl font-bold ${tone.split(" ").pop()}`}>{pct}%</span>
+          <span className={`font-display text-3xl font-bold ${cat.textClass}`}>{pct}%</span>
           <span className="text-xs text-muted-foreground">Confidence {Math.round(r.confidence * 100)}%</span>
         </div>
         <Progress value={pct} className="h-2" />

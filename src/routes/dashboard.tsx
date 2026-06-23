@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/components/page-header";
 import { SystemStatusWidget } from "@/components/system-status-widget";
+import { AlertsWidget } from "@/components/alerts-widget";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
 
@@ -178,6 +179,10 @@ function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      <AlertsWidget />
+
+
 
       {/* Activity + Risk distribution */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">

@@ -10,6 +10,7 @@ from app.schemas import PredictRequest, PredictResponse, TopFactor
 from app.services.explain import top_factors
 from app.services.features import FEATURES, risk_level, to_vector
 from app.services.registry import registry
+from app.services.risk import categorize_risk
 
 router = APIRouter()
 
@@ -44,6 +45,7 @@ def predict(disease: str, req: PredictRequest) -> PredictResponse:
         disease=disease,
         probability=round(max(0.0, min(1.0, proba)), 4),
         risk_level=risk_level(proba),
+        risk_category=categorize_risk(proba),
         top_factors=[TopFactor(**f) for f in factors],
         confidence=round(0.5 + abs(proba - 0.5), 4),
         prediction_time_ms=elapsed_ms,

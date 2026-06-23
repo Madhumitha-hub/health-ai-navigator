@@ -23,6 +23,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { downloadReport } from "@/lib/report-pdf";
 import { generateRecommendations, flattenRecommendations } from "@/lib/recommendations";
+import { categorizeRisk } from "@/lib/risk-category";
+import { maybeRaiseAlert } from "@/lib/alerts";
+import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/predict")({
@@ -562,11 +565,11 @@ function ResultPanel({
 }) {
   const { user } = useAuth();
   const [saving, setSaving] = useState(false);
+  const [doctorNotes, setDoctorNotes] = useState("");
   const pct = Math.round(result.probability * 100);
-  const tone =
-    result.risk === "high" ? { bg: "bg-destructive/10", text: "text-destructive", border: "border-destructive/40", Icon: AlertTriangle, label: "HIGH RISK", pulse: "animate-pulse" } :
-    result.risk === "medium" ? { bg: "bg-amber-500/10", text: "text-amber-600", border: "border-amber-500/40", Icon: AlertTriangle, label: "MEDIUM RISK", pulse: "" } :
-    { bg: "bg-success/10", text: "text-success", border: "border-success/40", Icon: CheckCircle2, label: "LOW RISK", pulse: "" };
+  const band = categorizeRisk(result.probability);
+  const ToneIcon = band.category === "Very Low" || band.category === "Low" ? CheckCircle2 : AlertTriangle;
+  const pulseClass = band.category === "Critical" ? "animate-pulse" : "";
 
   const bundle = generateRecommendations({
     disease,
@@ -577,7 +580,7 @@ function ResultPanel({
   const dbDiseaseType =
     disease === "heart" ? "heart_disease" : disease === "kidney" ? "kidney_disease" : disease === "liver" ? "liver_disease" : "diabetes";
 
-  const phrasing = `Estimated ${diseaseDisplayName(disease)} risk: ${pct}% (${result.riskLabel} Risk)`;
+  const phrasing = `Estimated ${diseaseDisplayName(disease)} risk: ${pct}% (${band.category} Risk)`;
 
   const savePrediction = async (silent = false) => {
     if (!user) {
@@ -585,7 +588,7 @@ function ResultPanel({
       return;
     }
     setSaving(true);
-    const { error } = await supabase.from("predictions").insert({
+    const { data: inserted, error } = await supabase.from("predictions").insert({
       patient_id: patient.id,
       doctor_id: user.id,
       disease_type: dbDiseaseType,
@@ -595,23 +598,43 @@ function ResultPanel({
       risk_level: result.risk,
       model_used: result.modelVersion,
       confidence: result.confidence,
-    });
+    }).select("id").maybeSingle();
     setSaving(false);
     if (error) {
       if (!silent) toast.error(error.message);
       return;
     }
-    if (!silent) toast.success("Saved to patient record");
+
+    const alertOutcome = await maybeRaiseAlert({
+      doctorId: user.id,
+      patientId: patient.id,
+      patientName: patient.name,
+      disease,
+      probability: result.probability,
+      riskLevel: result.risk,
+      predictionId: inserted?.id ?? null,
+    });
+    if (alertOutcome.raised && !silent) {
+      toast.warning("Early-warning alert created", { description: `Risk ${pct}% triggered an alert.` });
+    } else if (!silent) {
+      toast.success("Saved to patient record");
+    }
     onSaved();
   };
 
-  // Auto-save the very first time we see a fresh result for the timeline feature.
+  // Auto-save the very first time we see a fresh result for the timeline + alerts feature.
   useEffect(() => {
     if (!saved && user) void savePrediction(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result.timestamp]);
 
   const downloadReportPdf = () => {
+    const recs = flattenRecommendations(bundle, phrasing);
+    if (doctorNotes.trim()) {
+      recs.push("");
+      recs.push("Doctor Notes:");
+      recs.push(doctorNotes.trim());
+    }
     downloadReport({
       type: "patient",
       title: `${diseases[disease].label} Report`,
@@ -620,26 +643,26 @@ function ResultPanel({
         predictions: [{
           created_at: result.timestamp,
           disease_type: dbDiseaseType,
-          risk_level: result.risk,
+          risk_level: band.category,
           risk_score: result.probability,
           confidence: result.confidence,
           model_used: result.modelVersion,
         }],
         featureImportance: Object.fromEntries(result.topFactors.map((f) => [f.name, f.impact])),
-        recommendations: flattenRecommendations(bundle, phrasing),
+        recommendations: recs,
       },
     });
   };
 
   return (
     <div className="space-y-5">
-      <div className={`rounded-2xl border-2 ${tone.border} ${tone.bg} p-5`}>
+      <div className={`rounded-2xl border-2 ${band.borderClass} ${band.bgClass} p-5`}>
         <div className="flex flex-wrap items-center gap-4">
-          <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-background ${tone.pulse}`}>
-            <tone.Icon className={`h-8 w-8 ${tone.text}`} />
+          <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-background ${pulseClass}`}>
+            <ToneIcon className={`h-8 w-8 ${band.textClass}`} />
           </div>
           <div className="flex-1">
-            <p className={`font-display text-2xl font-bold ${tone.text}`}>{tone.label}</p>
+            <p className={`font-display text-2xl font-bold uppercase ${band.textClass}`}>{band.category} Risk</p>
             <p className="text-sm text-muted-foreground">
               {diseases[disease].label} · {patient.name}
               {patient.age != null ? ` · ${patient.age} yrs` : ""}
@@ -647,7 +670,7 @@ function ResultPanel({
             </p>
           </div>
           <div className="text-right">
-            <p className={`font-display text-4xl font-bold ${tone.text}`}>{pct}%</p>
+            <p className={`font-display text-4xl font-bold ${band.textClass}`}>{pct}%</p>
             <p className="text-xs text-muted-foreground">Risk Score</p>
           </div>
         </div>
@@ -695,11 +718,11 @@ function ResultPanel({
         </CardContent>
       </Card>
 
-      <Card className={`border-l-4 ${tone.border}`}>
+      <Card className={`border-l-4 ${band.borderClass}`}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">AI Health Recommendations</CardTitle>
-            <Badge variant="outline" className={`${tone.text} ${tone.border}`}>
+            <Badge variant="outline" className={`${band.textClass} ${band.borderClass}`}>
               Priority: {bundle.consultation_priority}
             </Badge>
           </div>
@@ -734,6 +757,18 @@ function ResultPanel({
               </ul>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm">Doctor Notes</CardTitle></CardHeader>
+        <CardContent>
+          <Textarea
+            value={doctorNotes}
+            onChange={(e) => setDoctorNotes(e.target.value)}
+            placeholder="Add clinical observations to include in the PDF report (optional)…"
+            rows={3}
+          />
         </CardContent>
       </Card>
 
