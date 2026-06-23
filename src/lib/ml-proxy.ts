@@ -5,25 +5,47 @@ export function getMlApiBaseUrl() {
   return (process.env.VITE_ML_API_URL || DEFAULT_ML_API_URL).replace(/\/$/, "");
 }
 
+function corsHeaders(contentType = "application/json") {
+  const headers = new Headers();
+  headers.set("Content-Type", contentType);
+  headers.set("Access-Control-Allow-Origin", "*");
+  headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return headers;
+}
+
 export async function proxyMlRequest(path: string, init?: RequestInit) {
   const upstream = `${getMlApiBaseUrl()}${path}`;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), ML_UPSTREAM_TIMEOUT_MS);
-  const upstreamResponse = await fetch(upstream, { ...init, signal: init?.signal ?? controller.signal }).finally(() => {
+  try {
+    const upstreamResponse = await fetch(upstream, {
+      ...init,
+      signal: init?.signal ?? controller.signal,
+    }).finally(() => clearTimeout(timeout));
+    const body = await upstreamResponse.text();
+    const headers = corsHeaders(
+      upstreamResponse.headers.get("Content-Type") || "application/json",
+    );
+    return new Response(body, {
+      status: upstreamResponse.status,
+      statusText: upstreamResponse.statusText,
+      headers,
+    });
+  } catch (error) {
     clearTimeout(timeout);
-  });
-  const body = await upstreamResponse.text();
-  const headers = new Headers();
-  headers.set("Content-Type", upstreamResponse.headers.get("Content-Type") || "application/json");
-  headers.set("Access-Control-Allow-Origin", "*");
-  headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  return new Response(body, {
-    status: upstreamResponse.status,
-    statusText: upstreamResponse.statusText,
-    headers,
-  });
+    const message = error instanceof Error ? error.message : "Upstream ML service unreachable";
+    console.error(`[ml-proxy] ${path} failed:`, message);
+    return new Response(
+      JSON.stringify({
+        status: "offline",
+        error: "ML_SERVICE_UNAVAILABLE",
+        message,
+        fallback: true,
+      }),
+      { status: 503, headers: corsHeaders() },
+    );
+  }
 }
 
 export function mlOptionsResponse() {
