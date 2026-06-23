@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart3, Download, FileWarning, Info } from "lucide-react";
+import { authedFetch } from "@/lib/authed-fetch";
 import {
   Bar,
   BarChart,

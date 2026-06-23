@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { authedFetch } from "@/lib/authed-fetch";
 import { BrainCircuit, Crown, ArrowUpDown } from "lucide-react";
 import {
   Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ReferenceLine,
