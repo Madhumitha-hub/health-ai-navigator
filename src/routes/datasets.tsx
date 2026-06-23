@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/page-header";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
+import { DatasetQualityReport } from "@/components/dataset-quality-report";
 
 export const Route = createFileRoute("/datasets")({
   head: () => ({ meta: [{ title: "Dataset Manager — HealthPredict" }] }),
@@ -194,16 +195,19 @@ function UploadDialog({ open, onOpenChange, userId, onUploaded }: { open: boolea
   const [source, setSource] = useState("");
   const [notes, setNotes] = useState("");
   const [csvPreview, setCsvPreview] = useState<{ headers: string[]; rows: string[][]; total: number } | null>(null);
+  const [quality, setQuality] = useState<import("@/lib/dataset-quality").QualityReport | null>(null);
   const [saving, setSaving] = useState(false);
 
   function handleFile(file: File) {
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       const text = String(reader.result ?? "");
       const lines = text.split(/\r?\n/).filter(Boolean);
       const headers = lines[0]?.split(",") ?? [];
       const rows = lines.slice(1, 6).map((l) => l.split(","));
       setCsvPreview({ headers, rows, total: lines.length - 1 });
+      const { analyzeCSV } = await import("@/lib/dataset-quality");
+      setQuality(analyzeCSV(text));
     };
     reader.readAsText(file);
   }
@@ -220,13 +224,13 @@ function UploadDialog({ open, onOpenChange, userId, onUploaded }: { open: boolea
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("Dataset metadata saved");
-    setName(""); setDisease(""); setSource(""); setNotes(""); setCsvPreview(null);
+    setName(""); setDisease(""); setSource(""); setNotes(""); setCsvPreview(null); setQuality(null);
     onOpenChange(false); onUploaded();
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
         <DialogHeader><DialogTitle>Upload Dataset</DialogTitle></DialogHeader>
         <div className="space-y-4">
           <div className="grid gap-3 md:grid-cols-2">
@@ -268,6 +272,7 @@ function UploadDialog({ open, onOpenChange, userId, onUploaded }: { open: boolea
               </div>
             </div>
           )}
+          {quality && <DatasetQualityReport report={quality} />}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
