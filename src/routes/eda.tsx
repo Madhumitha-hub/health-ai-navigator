@@ -198,7 +198,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => downloadMarkdown(disease, data)}
+              onClick={() => downloadMarkdown(disease, payload)}
             >
               <Download className="mr-2 h-4 w-4" /> Download Markdown
             </Button>
