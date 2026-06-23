@@ -192,10 +192,12 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
                 <Download className="mr-2 h-4 w-4" /> Download JSON
               </a>
             </Button>
-            <Button asChild variant="outline" className="w-full">
-              <a href={`/api/ml/eda/${disease}`} download={`${disease}-eda.json`}>
-                <Download className="mr-2 h-4 w-4" /> Save JSON to file
-              </a>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => downloadMarkdown(disease, data)}
+            >
+              <Download className="mr-2 h-4 w-4" /> Download Markdown
             </Button>
             <p className="text-xs text-muted-foreground">
               Generated {new Date(data.generated_at).toLocaleString()}
