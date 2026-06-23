@@ -73,11 +73,6 @@ const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emo
     tagline: "Based on cholesterol, ECG, blood pressure",
     fields: [
       { name: "age", label: "Age", unit: "years" },
-    label: "Heart Disease Prediction", emoji: "❤️", icon: HeartPulse,
-    tagline: "Based on cholesterol, ECG, blood pressure",
-    fields: [
-      { name: "age", label: "Age", unit: "years" },
-      { name: "sex", label: "Sex", type: "select", options: [{ label: "Male", value: "1" }, { label: "Female", value: "0" }] },
       { name: "cp", label: "Chest Pain Type", type: "select", options: [
         { label: "Typical Angina", value: "0" }, { label: "Atypical Angina", value: "1" },
         { label: "Non-Anginal", value: "2" }, { label: "Asymptomatic", value: "3" },
