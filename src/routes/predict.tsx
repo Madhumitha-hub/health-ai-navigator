@@ -28,6 +28,7 @@ import { maybeRaiseAlert } from "@/lib/alerts";
 import { validateFeatures } from "@/lib/validation";
 import { logAudit } from "@/lib/audit-log";
 import { ClinicalDecisionSupport } from "@/components/clinical-decision-support";
+import { MedicalDisclaimer } from "@/components/medical-disclaimer";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@tanstack/react-router";
 
@@ -199,6 +200,9 @@ function PredictPage() {
           </div>
         }
       />
+
+      <MedicalDisclaimer />
+
 
       {!healthQ.isLoading && !apiOnline && (
         <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">

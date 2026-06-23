@@ -20,6 +20,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { PageHeader } from "@/components/page-header";
+import { MedicalDisclaimer } from "@/components/medical-disclaimer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { downloadReport, type ReportType, type ReportContext } from "@/lib/report-pdf";
@@ -110,6 +111,12 @@ function ReportsPage() {
         description="Generate clinical and ML reports as downloadable PDFs."
         icon={FileText}
       />
+
+      <div className="mb-6">
+        <MedicalDisclaimer />
+      </div>
+
+
 
       <section className="mb-8">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
