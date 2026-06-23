@@ -1,0 +1,548 @@
+{
+  "disease": "diabetes",
+  "source_file": "diabetes.csv",
+  "generated_at": "2026-06-23T11:40:58.920931+00:00",
+  "is_synthetic": true,
+  "synthetic_disclaimer": "Synthetic demo datasets were used for end-to-end system validation. The system can be retrained with real clinical datasets.",
+  "shape": {
+    "rows": 500,
+    "columns": 9
+  },
+  "target_column": "Outcome",
+  "duplicates": 0,
+  "missing": {
+    "overall_pct": 0.0,
+    "per_column": {
+      "Age": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Gender": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "BMI": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Glucose": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Insulin": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "BloodPressure": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "SkinThickness": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "DiabetesPedigreeFunction": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Outcome": {
+        "count": 0,
+        "pct": 0.0
+      }
+    }
+  },
+  "class_balance": {
+    "1": {
+      "count": 264,
+      "pct": 52.8
+    },
+    "0": {
+      "count": 236,
+      "pct": 47.2
+    }
+  },
+  "feature_stats": {
+    "Age": {
+      "mean": 50.316,
+      "std": 16.8858,
+      "min": 20.0,
+      "q25": 36.0,
+      "median": 50.0,
+      "q75": 65.0,
+      "max": 79.0,
+      "skew": -0.0304
+    },
+    "Gender": {
+      "mean": 0.484,
+      "std": 0.5002,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 0.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": 0.0642
+    },
+    "BMI": {
+      "mean": 29.1275,
+      "std": 6.1303,
+      "min": 18.0404,
+      "q25": 24.027,
+      "median": 29.1782,
+      "q75": 34.2858,
+      "max": 39.9347,
+      "skew": -0.0107
+    },
+    "Glucose": {
+      "mean": 134.4491,
+      "std": 36.1462,
+      "min": 70.2613,
+      "q25": 105.5453,
+      "median": 134.1098,
+      "q75": 164.4079,
+      "max": 199.6848,
+      "skew": 0.0448
+    },
+    "Insulin": {
+      "mean": 153.1764,
+      "std": 82.3286,
+      "min": 15.5112,
+      "q25": 81.4383,
+      "median": 155.6388,
+      "q75": 223.0454,
+      "max": 299.2755,
+      "skew": 0.091
+    },
+    "BloodPressure": {
+      "mean": 118.0527,
+      "std": 34.5943,
+      "min": 60.0473,
+      "q25": 88.4817,
+      "median": 117.6599,
+      "q75": 148.0996,
+      "max": 179.9358,
+      "skew": 0.0757
+    },
+    "SkinThickness": {
+      "mean": 30.0613,
+      "std": 11.263,
+      "min": 10.1044,
+      "q25": 20.3294,
+      "median": 29.7557,
+      "q75": 39.6106,
+      "max": 49.8994,
+      "skew": 0.0189
+    },
+    "DiabetesPedigreeFunction": {
+      "mean": 1.2514,
+      "std": 0.6704,
+      "min": 0.1021,
+      "q25": 0.6978,
+      "median": 1.251,
+      "q75": 1.8103,
+      "max": 2.487,
+      "skew": 0.108
+    },
+    "Outcome": {
+      "mean": 0.528,
+      "std": 0.4997,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 1.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": -0.1125
+    }
+  },
+  "histograms": {
+    "Age": {
+      "bins": [
+        20.0,
+        25.9,
+        31.8,
+        37.7,
+        43.6,
+        49.5,
+        55.4,
+        61.3,
+        67.2,
+        73.1,
+        79.0
+      ],
+      "counts": [
+        37,
+        46,
+        60,
+        51,
+        45,
+        49,
+        59,
+        43,
+        60,
+        50
+      ]
+    },
+    "Gender": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        258,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        242
+      ]
+    },
+    "BMI": {
+      "bins": [
+        18.04,
+        20.23,
+        22.419,
+        24.609,
+        26.798,
+        28.988,
+        31.177,
+        33.366,
+        35.556,
+        37.745,
+        39.935
+      ],
+      "counts": [
+        43,
+        42,
+        57,
+        54,
+        50,
+        54,
+        48,
+        62,
+        44,
+        46
+      ]
+    },
+    "Glucose": {
+      "bins": [
+        70.261,
+        83.204,
+        96.146,
+        109.088,
+        122.031,
+        134.973,
+        147.915,
+        160.858,
+        173.8,
+        186.742,
+        199.685
+      ],
+      "counts": [
+        44,
+        46,
+        51,
+        60,
+        55,
+        63,
+        42,
+        52,
+        40,
+        47
+      ]
+    },
+    "Insulin": {
+      "bins": [
+        15.511,
+        43.888,
+        72.264,
+        100.64,
+        129.017,
+        157.393,
+        185.77,
+        214.146,
+        242.523,
+        270.899,
+        299.275
+      ],
+      "counts": [
+        51,
+        54,
+        62,
+        44,
+        43,
+        61,
+        44,
+        48,
+        41,
+        52
+      ]
+    },
+    "BloodPressure": {
+      "bins": [
+        60.047,
+        72.036,
+        84.025,
+        96.014,
+        108.003,
+        119.992,
+        131.98,
+        143.969,
+        155.958,
+        167.947,
+        179.936
+      ],
+      "counts": [
+        53,
+        56,
+        41,
+        62,
+        49,
+        57,
+        45,
+        41,
+        48,
+        48
+      ]
+    },
+    "SkinThickness": {
+      "bins": [
+        10.104,
+        14.084,
+        18.063,
+        22.043,
+        26.022,
+        30.002,
+        33.981,
+        37.961,
+        41.94,
+        45.92,
+        49.899
+      ],
+      "counts": [
+        38,
+        57,
+        56,
+        53,
+        47,
+        47,
+        56,
+        52,
+        42,
+        52
+      ]
+    },
+    "DiabetesPedigreeFunction": {
+      "bins": [
+        0.102,
+        0.341,
+        0.579,
+        0.818,
+        1.056,
+        1.295,
+        1.533,
+        1.771,
+        2.01,
+        2.248,
+        2.487
+      ],
+      "counts": [
+        51,
+        45,
+        60,
+        54,
+        61,
+        47,
+        51,
+        45,
+        41,
+        45
+      ]
+    },
+    "Outcome": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        236,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        264
+      ]
+    }
+  },
+  "outliers": {
+    "Age": 0,
+    "Gender": 0,
+    "BMI": 0,
+    "Glucose": 0,
+    "Insulin": 0,
+    "BloodPressure": 0,
+    "SkinThickness": 0,
+    "DiabetesPedigreeFunction": 0,
+    "Outcome": 0
+  },
+  "correlation_matrix": {
+    "Age": {
+      "Age": 1.0,
+      "Gender": -0.067,
+      "BMI": -0.054,
+      "Glucose": -0.011,
+      "Insulin": 0.023,
+      "BloodPressure": 0.0,
+      "SkinThickness": -0.03,
+      "DiabetesPedigreeFunction": 0.011,
+      "Outcome": -0.088
+    },
+    "Gender": {
+      "Age": -0.067,
+      "Gender": 1.0,
+      "BMI": 0.023,
+      "Glucose": -0.026,
+      "Insulin": -0.026,
+      "BloodPressure": 0.034,
+      "SkinThickness": 0.026,
+      "DiabetesPedigreeFunction": 0.026,
+      "Outcome": 0.082
+    },
+    "BMI": {
+      "Age": -0.054,
+      "Gender": 0.023,
+      "BMI": 1.0,
+      "Glucose": -0.084,
+      "Insulin": -0.035,
+      "BloodPressure": -0.011,
+      "SkinThickness": 0.041,
+      "DiabetesPedigreeFunction": 0.054,
+      "Outcome": -0.005
+    },
+    "Glucose": {
+      "Age": -0.011,
+      "Gender": -0.026,
+      "BMI": -0.084,
+      "Glucose": 1.0,
+      "Insulin": -0.041,
+      "BloodPressure": -0.003,
+      "SkinThickness": -0.05,
+      "DiabetesPedigreeFunction": -0.061,
+      "Outcome": -0.038
+    },
+    "Insulin": {
+      "Age": 0.023,
+      "Gender": -0.026,
+      "BMI": -0.035,
+      "Glucose": -0.041,
+      "Insulin": 1.0,
+      "BloodPressure": 0.003,
+      "SkinThickness": 0.037,
+      "DiabetesPedigreeFunction": -0.038,
+      "Outcome": 0.029
+    },
+    "BloodPressure": {
+      "Age": 0.0,
+      "Gender": 0.034,
+      "BMI": -0.011,
+      "Glucose": -0.003,
+      "Insulin": 0.003,
+      "BloodPressure": 1.0,
+      "SkinThickness": -0.029,
+      "DiabetesPedigreeFunction": -0.011,
+      "Outcome": 0.002
+    },
+    "SkinThickness": {
+      "Age": -0.03,
+      "Gender": 0.026,
+      "BMI": 0.041,
+      "Glucose": -0.05,
+      "Insulin": 0.037,
+      "BloodPressure": -0.029,
+      "SkinThickness": 1.0,
+      "DiabetesPedigreeFunction": -0.043,
+      "Outcome": -0.024
+    },
+    "DiabetesPedigreeFunction": {
+      "Age": 0.011,
+      "Gender": 0.026,
+      "BMI": 0.054,
+      "Glucose": -0.061,
+      "Insulin": -0.038,
+      "BloodPressure": -0.011,
+      "SkinThickness": -0.043,
+      "DiabetesPedigreeFunction": 1.0,
+      "Outcome": 0.006
+    },
+    "Outcome": {
+      "Age": -0.088,
+      "Gender": 0.082,
+      "BMI": -0.005,
+      "Glucose": -0.038,
+      "Insulin": 0.029,
+      "BloodPressure": 0.002,
+      "SkinThickness": -0.024,
+      "DiabetesPedigreeFunction": 0.006,
+      "Outcome": 1.0
+    }
+  },
+  "top_correlations_with_target": [
+    {
+      "feature": "Age",
+      "corr": -0.088
+    },
+    {
+      "feature": "Gender",
+      "corr": 0.082
+    },
+    {
+      "feature": "Glucose",
+      "corr": -0.038
+    },
+    {
+      "feature": "Insulin",
+      "corr": 0.029
+    },
+    {
+      "feature": "SkinThickness",
+      "corr": -0.024
+    },
+    {
+      "feature": "DiabetesPedigreeFunction",
+      "corr": 0.006
+    },
+    {
+      "feature": "BMI",
+      "corr": -0.005
+    },
+    {
+      "feature": "BloodPressure",
+      "corr": 0.002
+    }
+  ],
+  "data_quality_score": 98
+}

@@ -1,0 +1,615 @@
+{
+  "disease": "kidney",
+  "source_file": "kidney.csv",
+  "generated_at": "2026-06-23T11:40:58.981129+00:00",
+  "is_synthetic": true,
+  "synthetic_disclaimer": "Synthetic demo datasets were used for end-to-end system validation. The system can be retrained with real clinical datasets.",
+  "shape": {
+    "rows": 500,
+    "columns": 10
+  },
+  "target_column": "Outcome",
+  "duplicates": 0,
+  "missing": {
+    "overall_pct": 0.0,
+    "per_column": {
+      "Age": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "BloodPressure": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "SpecificGravity": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Albumin": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "BloodGlucoseRandom": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "BloodUrea": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "SerumCreatinine": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Hemoglobin": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "PackedCellVolume": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Outcome": {
+        "count": 0,
+        "pct": 0.0
+      }
+    }
+  },
+  "class_balance": {
+    "1": {
+      "count": 253,
+      "pct": 50.6
+    },
+    "0": {
+      "count": 247,
+      "pct": 49.4
+    }
+  },
+  "feature_stats": {
+    "Age": {
+      "mean": 50.556,
+      "std": 19.6008,
+      "min": 20.0,
+      "q25": 34.0,
+      "median": 48.0,
+      "q75": 69.0,
+      "max": 84.0,
+      "skew": 0.1226
+    },
+    "BloodPressure": {
+      "mean": 120.33,
+      "std": 34.1886,
+      "min": 60.0,
+      "q25": 92.0,
+      "median": 119.0,
+      "q75": 151.0,
+      "max": 179.0,
+      "skew": -0.0096
+    },
+    "SpecificGravity": {
+      "mean": 1.0175,
+      "std": 0.0073,
+      "min": 1.005,
+      "q25": 1.011,
+      "median": 1.0181,
+      "q75": 1.0238,
+      "max": 1.0298,
+      "skew": -0.0081
+    },
+    "Albumin": {
+      "mean": 2.55,
+      "std": 1.7532,
+      "min": 0.0,
+      "q25": 1.0,
+      "median": 3.0,
+      "q75": 4.0,
+      "max": 5.0,
+      "skew": -0.0041
+    },
+    "BloodGlucoseRandom": {
+      "mean": 237.636,
+      "std": 93.4664,
+      "min": 70.0,
+      "q25": 161.0,
+      "median": 234.0,
+      "q75": 323.25,
+      "max": 398.0,
+      "skew": 0.0021
+    },
+    "BloodUrea": {
+      "mean": 106.842,
+      "std": 54.9275,
+      "min": 10.0,
+      "q25": 61.75,
+      "median": 103.0,
+      "q75": 155.25,
+      "max": 199.0,
+      "skew": -0.0194
+    },
+    "SerumCreatinine": {
+      "mean": 7.7655,
+      "std": 4.1143,
+      "min": 0.5068,
+      "q25": 4.3557,
+      "median": 7.69,
+      "q75": 11.3122,
+      "max": 14.9816,
+      "skew": 0.0136
+    },
+    "Hemoglobin": {
+      "mean": 11.279,
+      "std": 3.6721,
+      "min": 5.0237,
+      "q25": 8.0303,
+      "median": 11.2832,
+      "q75": 14.1324,
+      "max": 17.9992,
+      "skew": 0.0765
+    },
+    "PackedCellVolume": {
+      "mean": 36.402,
+      "std": 9.9355,
+      "min": 20.0,
+      "q25": 27.0,
+      "median": 36.0,
+      "q75": 45.0,
+      "max": 54.0,
+      "skew": 0.08
+    },
+    "Outcome": {
+      "mean": 0.506,
+      "std": 0.5005,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 1.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": -0.0241
+    }
+  },
+  "histograms": {
+    "Age": {
+      "bins": [
+        20.0,
+        26.4,
+        32.8,
+        39.2,
+        45.6,
+        52.0,
+        58.4,
+        64.8,
+        71.2,
+        77.6,
+        84.0
+      ],
+      "counts": [
+        70,
+        45,
+        63,
+        49,
+        44,
+        34,
+        37,
+        66,
+        36,
+        56
+      ]
+    },
+    "BloodPressure": {
+      "bins": [
+        60.0,
+        71.9,
+        83.8,
+        95.7,
+        107.6,
+        119.5,
+        131.4,
+        143.3,
+        155.2,
+        167.1,
+        179.0
+      ],
+      "counts": [
+        40,
+        53,
+        50,
+        53,
+        58,
+        39,
+        51,
+        51,
+        61,
+        44
+      ]
+    },
+    "SpecificGravity": {
+      "bins": [
+        1.005,
+        1.008,
+        1.01,
+        1.012,
+        1.015,
+        1.017,
+        1.02,
+        1.022,
+        1.025,
+        1.027,
+        1.03
+      ],
+      "counts": [
+        44,
+        54,
+        58,
+        47,
+        35,
+        58,
+        45,
+        55,
+        50,
+        54
+      ]
+    },
+    "Albumin": {
+      "bins": [
+        0.0,
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        2.5,
+        3.0,
+        3.5,
+        4.0,
+        4.5,
+        5.0
+      ],
+      "counts": [
+        81,
+        0,
+        90,
+        0,
+        77,
+        0,
+        74,
+        0,
+        81,
+        97
+      ]
+    },
+    "BloodGlucoseRandom": {
+      "bins": [
+        70.0,
+        102.8,
+        135.6,
+        168.4,
+        201.2,
+        234.0,
+        266.8,
+        299.6,
+        332.4,
+        365.2,
+        398.0
+      ],
+      "counts": [
+        42,
+        52,
+        44,
+        57,
+        51,
+        57,
+        38,
+        51,
+        56,
+        52
+      ]
+    },
+    "BloodUrea": {
+      "bins": [
+        10.0,
+        28.9,
+        47.8,
+        66.7,
+        85.6,
+        104.5,
+        123.4,
+        142.3,
+        161.2,
+        180.1,
+        199.0
+      ],
+      "counts": [
+        46,
+        44,
+        48,
+        53,
+        64,
+        44,
+        43,
+        45,
+        60,
+        53
+      ]
+    },
+    "SerumCreatinine": {
+      "bins": [
+        0.507,
+        1.954,
+        3.402,
+        4.849,
+        6.297,
+        7.744,
+        9.192,
+        10.639,
+        12.087,
+        13.534,
+        14.982
+      ],
+      "counts": [
+        46,
+        43,
+        52,
+        59,
+        53,
+        61,
+        31,
+        56,
+        49,
+        50
+      ]
+    },
+    "Hemoglobin": {
+      "bins": [
+        5.024,
+        6.321,
+        7.619,
+        8.916,
+        10.214,
+        11.511,
+        12.809,
+        14.107,
+        15.404,
+        16.702,
+        17.999
+      ],
+      "counts": [
+        52,
+        48,
+        58,
+        48,
+        55,
+        61,
+        50,
+        45,
+        35,
+        48
+      ]
+    },
+    "PackedCellVolume": {
+      "bins": [
+        20.0,
+        23.4,
+        26.8,
+        30.2,
+        33.6,
+        37.0,
+        40.4,
+        43.8,
+        47.2,
+        50.6,
+        54.0
+      ],
+      "counts": [
+        46,
+        65,
+        65,
+        41,
+        41,
+        44,
+        50,
+        61,
+        41,
+        46
+      ]
+    },
+    "Outcome": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        247,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        253
+      ]
+    }
+  },
+  "outliers": {
+    "Age": 0,
+    "BloodPressure": 0,
+    "SpecificGravity": 0,
+    "Albumin": 0,
+    "BloodGlucoseRandom": 0,
+    "BloodUrea": 0,
+    "SerumCreatinine": 0,
+    "Hemoglobin": 0,
+    "PackedCellVolume": 0,
+    "Outcome": 0
+  },
+  "correlation_matrix": {
+    "Age": {
+      "Age": 1.0,
+      "BloodPressure": 0.015,
+      "SpecificGravity": 0.012,
+      "Albumin": 0.012,
+      "BloodGlucoseRandom": 0.072,
+      "BloodUrea": 0.045,
+      "SerumCreatinine": 0.039,
+      "Hemoglobin": 0.04,
+      "PackedCellVolume": -0.003,
+      "Outcome": -0.032
+    },
+    "BloodPressure": {
+      "Age": 0.015,
+      "BloodPressure": 1.0,
+      "SpecificGravity": 0.049,
+      "Albumin": 0.005,
+      "BloodGlucoseRandom": 0.051,
+      "BloodUrea": -0.033,
+      "SerumCreatinine": -0.021,
+      "Hemoglobin": 0.041,
+      "PackedCellVolume": -0.008,
+      "Outcome": -0.039
+    },
+    "SpecificGravity": {
+      "Age": 0.012,
+      "BloodPressure": 0.049,
+      "SpecificGravity": 1.0,
+      "Albumin": 0.001,
+      "BloodGlucoseRandom": 0.018,
+      "BloodUrea": -0.006,
+      "SerumCreatinine": 0.0,
+      "Hemoglobin": 0.071,
+      "PackedCellVolume": -0.042,
+      "Outcome": -0.004
+    },
+    "Albumin": {
+      "Age": 0.012,
+      "BloodPressure": 0.005,
+      "SpecificGravity": 0.001,
+      "Albumin": 1.0,
+      "BloodGlucoseRandom": -0.008,
+      "BloodUrea": -0.018,
+      "SerumCreatinine": 0.068,
+      "Hemoglobin": 0.036,
+      "PackedCellVolume": -0.016,
+      "Outcome": -0.069
+    },
+    "BloodGlucoseRandom": {
+      "Age": 0.072,
+      "BloodPressure": 0.051,
+      "SpecificGravity": 0.018,
+      "Albumin": -0.008,
+      "BloodGlucoseRandom": 1.0,
+      "BloodUrea": -0.008,
+      "SerumCreatinine": -0.016,
+      "Hemoglobin": -0.041,
+      "PackedCellVolume": -0.011,
+      "Outcome": -0.068
+    },
+    "BloodUrea": {
+      "Age": 0.045,
+      "BloodPressure": -0.033,
+      "SpecificGravity": -0.006,
+      "Albumin": -0.018,
+      "BloodGlucoseRandom": -0.008,
+      "BloodUrea": 1.0,
+      "SerumCreatinine": -0.024,
+      "Hemoglobin": -0.034,
+      "PackedCellVolume": -0.037,
+      "Outcome": -0.086
+    },
+    "SerumCreatinine": {
+      "Age": 0.039,
+      "BloodPressure": -0.021,
+      "SpecificGravity": 0.0,
+      "Albumin": 0.068,
+      "BloodGlucoseRandom": -0.016,
+      "BloodUrea": -0.024,
+      "SerumCreatinine": 1.0,
+      "Hemoglobin": 0.02,
+      "PackedCellVolume": 0.039,
+      "Outcome": -0.018
+    },
+    "Hemoglobin": {
+      "Age": 0.04,
+      "BloodPressure": 0.041,
+      "SpecificGravity": 0.071,
+      "Albumin": 0.036,
+      "BloodGlucoseRandom": -0.041,
+      "BloodUrea": -0.034,
+      "SerumCreatinine": 0.02,
+      "Hemoglobin": 1.0,
+      "PackedCellVolume": 0.014,
+      "Outcome": -0.038
+    },
+    "PackedCellVolume": {
+      "Age": -0.003,
+      "BloodPressure": -0.008,
+      "SpecificGravity": -0.042,
+      "Albumin": -0.016,
+      "BloodGlucoseRandom": -0.011,
+      "BloodUrea": -0.037,
+      "SerumCreatinine": 0.039,
+      "Hemoglobin": 0.014,
+      "PackedCellVolume": 1.0,
+      "Outcome": 0.011
+    },
+    "Outcome": {
+      "Age": -0.032,
+      "BloodPressure": -0.039,
+      "SpecificGravity": -0.004,
+      "Albumin": -0.069,
+      "BloodGlucoseRandom": -0.068,
+      "BloodUrea": -0.086,
+      "SerumCreatinine": -0.018,
+      "Hemoglobin": -0.038,
+      "PackedCellVolume": 0.011,
+      "Outcome": 1.0
+    }
+  },
+  "top_correlations_with_target": [
+    {
+      "feature": "BloodUrea",
+      "corr": -0.086
+    },
+    {
+      "feature": "Albumin",
+      "corr": -0.069
+    },
+    {
+      "feature": "BloodGlucoseRandom",
+      "corr": -0.068
+    },
+    {
+      "feature": "BloodPressure",
+      "corr": -0.039
+    },
+    {
+      "feature": "Hemoglobin",
+      "corr": -0.038
+    },
+    {
+      "feature": "Age",
+      "corr": -0.032
+    },
+    {
+      "feature": "SerumCreatinine",
+      "corr": -0.018
+    },
+    {
+      "feature": "PackedCellVolume",
+      "corr": 0.011
+    },
+    {
+      "feature": "SpecificGravity",
+      "corr": -0.004
+    }
+  ],
+  "data_quality_score": 100
+}

@@ -1,0 +1,684 @@
+{
+  "disease": "liver",
+  "source_file": "liver.csv",
+  "generated_at": "2026-06-23T11:40:59.014404+00:00",
+  "is_synthetic": true,
+  "synthetic_disclaimer": "Synthetic demo datasets were used for end-to-end system validation. The system can be retrained with real clinical datasets.",
+  "shape": {
+    "rows": 500,
+    "columns": 11
+  },
+  "target_column": "Outcome",
+  "duplicates": 0,
+  "missing": {
+    "overall_pct": 0.0,
+    "per_column": {
+      "Age": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Gender": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "TotalBilirubin": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "DirectBilirubin": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "AlkalinePhosphotase": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "SGPT": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "SGOT": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "TotalProteins": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Albumin": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "AlbuminAndGlobulinRatio": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Outcome": {
+        "count": 0,
+        "pct": 0.0
+      }
+    }
+  },
+  "class_balance": {
+    "0": {
+      "count": 269,
+      "pct": 53.8
+    },
+    "1": {
+      "count": 231,
+      "pct": 46.2
+    }
+  },
+  "feature_stats": {
+    "Age": {
+      "mean": 50.88,
+      "std": 18.8399,
+      "min": 20.0,
+      "q25": 35.0,
+      "median": 51.0,
+      "q75": 66.0,
+      "max": 84.0,
+      "skew": 0.0839
+    },
+    "Gender": {
+      "mean": 0.492,
+      "std": 0.5004,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 0.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": 0.0321
+    },
+    "TotalBilirubin": {
+      "mean": 7.2972,
+      "std": 4.3264,
+      "min": 0.1071,
+      "q25": 3.6555,
+      "median": 7.2292,
+      "q75": 10.822,
+      "max": 14.9979,
+      "skew": 0.0425
+    },
+    "DirectBilirubin": {
+      "mean": 4.0169,
+      "std": 2.3547,
+      "min": 0.0094,
+      "q25": 2.009,
+      "median": 4.0244,
+      "q75": 6.046,
+      "max": 7.9462,
+      "skew": -0.0038
+    },
+    "AlkalinePhosphotase": {
+      "mean": 275.066,
+      "std": 130.2308,
+      "min": 51.0,
+      "q25": 161.0,
+      "median": 272.5,
+      "q75": 390.25,
+      "max": 499.0,
+      "skew": -0.0117
+    },
+    "SGPT": {
+      "mean": 152.924,
+      "std": 83.7499,
+      "min": 10.0,
+      "q25": 81.75,
+      "median": 150.5,
+      "q75": 225.25,
+      "max": 299.0,
+      "skew": 0.0646
+    },
+    "SGOT": {
+      "mean": 163.586,
+      "std": 87.709,
+      "min": 10.0,
+      "q25": 81.75,
+      "median": 172.0,
+      "q75": 242.0,
+      "max": 299.0,
+      "skew": -0.1408
+    },
+    "TotalProteins": {
+      "mean": 6.503,
+      "std": 1.3867,
+      "min": 4.0037,
+      "q25": 5.3347,
+      "median": 6.4912,
+      "q75": 7.623,
+      "max": 8.9845,
+      "skew": -0.0276
+    },
+    "Albumin": {
+      "mean": 4.0008,
+      "std": 1.1808,
+      "min": 2.0006,
+      "q25": 3.0156,
+      "median": 4.0247,
+      "q75": 5.0755,
+      "max": 5.9972,
+      "skew": -0.0597
+    },
+    "AlbuminAndGlobulinRatio": {
+      "mean": 1.5026,
+      "std": 0.5858,
+      "min": 0.5006,
+      "q25": 0.9853,
+      "median": 1.4965,
+      "q75": 1.9993,
+      "max": 2.4966,
+      "skew": 0.002
+    },
+    "Outcome": {
+      "mean": 0.462,
+      "std": 0.4991,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 0.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": 0.1529
+    }
+  },
+  "histograms": {
+    "Age": {
+      "bins": [
+        20.0,
+        26.4,
+        32.8,
+        39.2,
+        45.6,
+        52.0,
+        58.4,
+        64.8,
+        71.2,
+        77.6,
+        84.0
+      ],
+      "counts": [
+        58,
+        55,
+        57,
+        40,
+        43,
+        55,
+        52,
+        48,
+        40,
+        52
+      ]
+    },
+    "Gender": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        254,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        246
+      ]
+    },
+    "TotalBilirubin": {
+      "bins": [
+        0.107,
+        1.596,
+        3.085,
+        4.574,
+        6.063,
+        7.552,
+        9.042,
+        10.531,
+        12.02,
+        13.509,
+        14.998
+      ],
+      "counts": [
+        60,
+        50,
+        45,
+        56,
+        46,
+        55,
+        51,
+        46,
+        41,
+        50
+      ]
+    },
+    "DirectBilirubin": {
+      "bins": [
+        0.009,
+        0.803,
+        1.597,
+        2.39,
+        3.184,
+        3.978,
+        4.771,
+        5.565,
+        6.359,
+        7.153,
+        7.946
+      ],
+      "counts": [
+        58,
+        36,
+        61,
+        47,
+        42,
+        48,
+        52,
+        48,
+        47,
+        61
+      ]
+    },
+    "AlkalinePhosphotase": {
+      "bins": [
+        51.0,
+        95.8,
+        140.6,
+        185.4,
+        230.2,
+        275.0,
+        319.8,
+        364.6,
+        409.4,
+        454.2,
+        499.0
+      ],
+      "counts": [
+        54,
+        36,
+        59,
+        52,
+        52,
+        45,
+        42,
+        55,
+        60,
+        45
+      ]
+    },
+    "SGPT": {
+      "bins": [
+        10.0,
+        38.9,
+        67.8,
+        96.7,
+        125.6,
+        154.5,
+        183.4,
+        212.3,
+        241.2,
+        270.1,
+        299.0
+      ],
+      "counts": [
+        54,
+        51,
+        39,
+        48,
+        66,
+        57,
+        40,
+        46,
+        47,
+        52
+      ]
+    },
+    "SGOT": {
+      "bins": [
+        10.0,
+        38.9,
+        67.8,
+        96.7,
+        125.6,
+        154.5,
+        183.4,
+        212.3,
+        241.2,
+        270.1,
+        299.0
+      ],
+      "counts": [
+        48,
+        47,
+        50,
+        36,
+        46,
+        39,
+        55,
+        53,
+        57,
+        69
+      ]
+    },
+    "TotalProteins": {
+      "bins": [
+        4.004,
+        4.502,
+        5.0,
+        5.498,
+        5.996,
+        6.494,
+        6.992,
+        7.49,
+        7.988,
+        8.486,
+        8.984
+      ],
+      "counts": [
+        44,
+        48,
+        45,
+        56,
+        57,
+        49,
+        58,
+        49,
+        52,
+        42
+      ]
+    },
+    "Albumin": {
+      "bins": [
+        2.001,
+        2.4,
+        2.8,
+        3.2,
+        3.599,
+        3.999,
+        4.399,
+        4.798,
+        5.198,
+        5.598,
+        5.997
+      ],
+      "counts": [
+        58,
+        46,
+        45,
+        52,
+        45,
+        44,
+        52,
+        53,
+        57,
+        48
+      ]
+    },
+    "AlbuminAndGlobulinRatio": {
+      "bins": [
+        0.501,
+        0.7,
+        0.9,
+        1.099,
+        1.299,
+        1.499,
+        1.698,
+        1.898,
+        2.097,
+        2.297,
+        2.497
+      ],
+      "counts": [
+        50,
+        55,
+        53,
+        39,
+        53,
+        49,
+        47,
+        47,
+        52,
+        55
+      ]
+    },
+    "Outcome": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        269,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        231
+      ]
+    }
+  },
+  "outliers": {
+    "Age": 0,
+    "Gender": 0,
+    "TotalBilirubin": 0,
+    "DirectBilirubin": 0,
+    "AlkalinePhosphotase": 0,
+    "SGPT": 0,
+    "SGOT": 0,
+    "TotalProteins": 0,
+    "Albumin": 0,
+    "AlbuminAndGlobulinRatio": 0,
+    "Outcome": 0
+  },
+  "correlation_matrix": {
+    "Age": {
+      "Age": 1.0,
+      "Gender": 0.063,
+      "TotalBilirubin": 0.039,
+      "DirectBilirubin": -0.011,
+      "AlkalinePhosphotase": 0.029,
+      "SGPT": -0.014,
+      "SGOT": -0.051,
+      "TotalProteins": 0.099,
+      "Albumin": 0.024,
+      "AlbuminAndGlobulinRatio": 0.023,
+      "Outcome": -0.065
+    },
+    "Gender": {
+      "Age": 0.063,
+      "Gender": 1.0,
+      "TotalBilirubin": 0.027,
+      "DirectBilirubin": -0.033,
+      "AlkalinePhosphotase": 0.033,
+      "SGPT": -0.006,
+      "SGOT": -0.055,
+      "TotalProteins": -0.04,
+      "Albumin": -0.015,
+      "AlbuminAndGlobulinRatio": -0.079,
+      "Outcome": -0.061
+    },
+    "TotalBilirubin": {
+      "Age": 0.039,
+      "Gender": 0.027,
+      "TotalBilirubin": 1.0,
+      "DirectBilirubin": -0.077,
+      "AlkalinePhosphotase": 0.063,
+      "SGPT": -0.036,
+      "SGOT": -0.004,
+      "TotalProteins": -0.013,
+      "Albumin": -0.045,
+      "AlbuminAndGlobulinRatio": 0.024,
+      "Outcome": 0.035
+    },
+    "DirectBilirubin": {
+      "Age": -0.011,
+      "Gender": -0.033,
+      "TotalBilirubin": -0.077,
+      "DirectBilirubin": 1.0,
+      "AlkalinePhosphotase": -0.014,
+      "SGPT": 0.011,
+      "SGOT": 0.004,
+      "TotalProteins": 0.043,
+      "Albumin": 0.024,
+      "AlbuminAndGlobulinRatio": 0.035,
+      "Outcome": 0.042
+    },
+    "AlkalinePhosphotase": {
+      "Age": 0.029,
+      "Gender": 0.033,
+      "TotalBilirubin": 0.063,
+      "DirectBilirubin": -0.014,
+      "AlkalinePhosphotase": 1.0,
+      "SGPT": -0.087,
+      "SGOT": -0.049,
+      "TotalProteins": 0.018,
+      "Albumin": -0.029,
+      "AlbuminAndGlobulinRatio": -0.121,
+      "Outcome": -0.023
+    },
+    "SGPT": {
+      "Age": -0.014,
+      "Gender": -0.006,
+      "TotalBilirubin": -0.036,
+      "DirectBilirubin": 0.011,
+      "AlkalinePhosphotase": -0.087,
+      "SGPT": 1.0,
+      "SGOT": -0.007,
+      "TotalProteins": -0.067,
+      "Albumin": -0.086,
+      "AlbuminAndGlobulinRatio": 0.026,
+      "Outcome": 0.023
+    },
+    "SGOT": {
+      "Age": -0.051,
+      "Gender": -0.055,
+      "TotalBilirubin": -0.004,
+      "DirectBilirubin": 0.004,
+      "AlkalinePhosphotase": -0.049,
+      "SGPT": -0.007,
+      "SGOT": 1.0,
+      "TotalProteins": 0.031,
+      "Albumin": 0.031,
+      "AlbuminAndGlobulinRatio": -0.019,
+      "Outcome": -0.054
+    },
+    "TotalProteins": {
+      "Age": 0.099,
+      "Gender": -0.04,
+      "TotalBilirubin": -0.013,
+      "DirectBilirubin": 0.043,
+      "AlkalinePhosphotase": 0.018,
+      "SGPT": -0.067,
+      "SGOT": 0.031,
+      "TotalProteins": 1.0,
+      "Albumin": -0.008,
+      "AlbuminAndGlobulinRatio": -0.004,
+      "Outcome": -0.088
+    },
+    "Albumin": {
+      "Age": 0.024,
+      "Gender": -0.015,
+      "TotalBilirubin": -0.045,
+      "DirectBilirubin": 0.024,
+      "AlkalinePhosphotase": -0.029,
+      "SGPT": -0.086,
+      "SGOT": 0.031,
+      "TotalProteins": -0.008,
+      "Albumin": 1.0,
+      "AlbuminAndGlobulinRatio": -0.023,
+      "Outcome": -0.003
+    },
+    "AlbuminAndGlobulinRatio": {
+      "Age": 0.023,
+      "Gender": -0.079,
+      "TotalBilirubin": 0.024,
+      "DirectBilirubin": 0.035,
+      "AlkalinePhosphotase": -0.121,
+      "SGPT": 0.026,
+      "SGOT": -0.019,
+      "TotalProteins": -0.004,
+      "Albumin": -0.023,
+      "AlbuminAndGlobulinRatio": 1.0,
+      "Outcome": -0.061
+    },
+    "Outcome": {
+      "Age": -0.065,
+      "Gender": -0.061,
+      "TotalBilirubin": 0.035,
+      "DirectBilirubin": 0.042,
+      "AlkalinePhosphotase": -0.023,
+      "SGPT": 0.023,
+      "SGOT": -0.054,
+      "TotalProteins": -0.088,
+      "Albumin": -0.003,
+      "AlbuminAndGlobulinRatio": -0.061,
+      "Outcome": 1.0
+    }
+  },
+  "top_correlations_with_target": [
+    {
+      "feature": "TotalProteins",
+      "corr": -0.088
+    },
+    {
+      "feature": "Age",
+      "corr": -0.065
+    },
+    {
+      "feature": "Gender",
+      "corr": -0.061
+    },
+    {
+      "feature": "AlbuminAndGlobulinRatio",
+      "corr": -0.061
+    },
+    {
+      "feature": "SGOT",
+      "corr": -0.054
+    },
+    {
+      "feature": "DirectBilirubin",
+      "corr": 0.042
+    },
+    {
+      "feature": "TotalBilirubin",
+      "corr": 0.035
+    },
+    {
+      "feature": "AlkalinePhosphotase",
+      "corr": -0.023
+    },
+    {
+      "feature": "SGPT",
+      "corr": 0.023
+    },
+    {
+      "feature": "Albumin",
+      "corr": -0.003
+    }
+  ],
+  "data_quality_score": 97
+}

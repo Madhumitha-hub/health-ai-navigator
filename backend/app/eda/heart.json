@@ -1,0 +1,684 @@
+{
+  "disease": "heart",
+  "source_file": "heart.csv",
+  "generated_at": "2026-06-23T11:40:58.951732+00:00",
+  "is_synthetic": true,
+  "synthetic_disclaimer": "Synthetic demo datasets were used for end-to-end system validation. The system can be retrained with real clinical datasets.",
+  "shape": {
+    "rows": 500,
+    "columns": 11
+  },
+  "target_column": "Outcome",
+  "duplicates": 0,
+  "missing": {
+    "overall_pct": 0.0,
+    "per_column": {
+      "Age": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Gender": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "ChestPainType": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "RestingBP": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Cholesterol": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "FastingBS": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "RestingECG": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "MaxHR": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "ExerciseAngina": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "STDepression": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Outcome": {
+        "count": 0,
+        "pct": 0.0
+      }
+    }
+  },
+  "class_balance": {
+    "0": {
+      "count": 250,
+      "pct": 50.0
+    },
+    "1": {
+      "count": 250,
+      "pct": 50.0
+    }
+  },
+  "feature_stats": {
+    "Age": {
+      "mean": 50.476,
+      "std": 18.5466,
+      "min": 20.0,
+      "q25": 35.0,
+      "median": 50.0,
+      "q75": 66.0,
+      "max": 84.0,
+      "skew": 0.089
+    },
+    "Gender": {
+      "mean": 0.494,
+      "std": 0.5005,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 0.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": 0.0241
+    },
+    "ChestPainType": {
+      "mean": 1.418,
+      "std": 1.0999,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 1.0,
+      "q75": 2.0,
+      "max": 3.0,
+      "skew": 0.1233
+    },
+    "RestingBP": {
+      "mean": 140.242,
+      "std": 34.4178,
+      "min": 80.0,
+      "q25": 111.0,
+      "median": 138.5,
+      "q75": 169.25,
+      "max": 199.0,
+      "skew": 0.0286
+    },
+    "Cholesterol": {
+      "mean": 250.488,
+      "std": 84.249,
+      "min": 100.0,
+      "q25": 182.75,
+      "median": 251.5,
+      "q75": 321.0,
+      "max": 399.0,
+      "skew": 0.0292
+    },
+    "FastingBS": {
+      "mean": 0.482,
+      "std": 0.5002,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 0.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": 0.0723
+    },
+    "RestingECG": {
+      "mean": 0.932,
+      "std": 0.8371,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 1.0,
+      "q75": 2.0,
+      "max": 2.0,
+      "skew": 0.1286
+    },
+    "MaxHR": {
+      "mean": 139.366,
+      "std": 46.9436,
+      "min": 60.0,
+      "q25": 97.0,
+      "median": 141.0,
+      "q75": 179.0,
+      "max": 219.0,
+      "skew": 0.0323
+    },
+    "ExerciseAngina": {
+      "mean": 0.474,
+      "std": 0.4998,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 0.0,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": 0.1045
+    },
+    "STDepression": {
+      "mean": 3.1241,
+      "std": 1.761,
+      "min": 0.0069,
+      "q25": 1.6077,
+      "median": 3.0986,
+      "q75": 4.6849,
+      "max": 5.9909,
+      "skew": -0.0303
+    },
+    "Outcome": {
+      "mean": 0.5,
+      "std": 0.5005,
+      "min": 0.0,
+      "q25": 0.0,
+      "median": 0.5,
+      "q75": 1.0,
+      "max": 1.0,
+      "skew": 0.0
+    }
+  },
+  "histograms": {
+    "Age": {
+      "bins": [
+        20.0,
+        26.4,
+        32.8,
+        39.2,
+        45.6,
+        52.0,
+        58.4,
+        64.8,
+        71.2,
+        77.6,
+        84.0
+      ],
+      "counts": [
+        64,
+        50,
+        49,
+        49,
+        56,
+        50,
+        45,
+        51,
+        37,
+        49
+      ]
+    },
+    "Gender": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        253,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        247
+      ]
+    },
+    "ChestPainType": {
+      "bins": [
+        0.0,
+        0.3,
+        0.6,
+        0.9,
+        1.2,
+        1.5,
+        1.8,
+        2.1,
+        2.4,
+        2.7,
+        3.0
+      ],
+      "counts": [
+        130,
+        0,
+        0,
+        142,
+        0,
+        0,
+        117,
+        0,
+        0,
+        111
+      ]
+    },
+    "RestingBP": {
+      "bins": [
+        80.0,
+        91.9,
+        103.8,
+        115.7,
+        127.6,
+        139.5,
+        151.4,
+        163.3,
+        175.2,
+        187.1,
+        199.0
+      ],
+      "counts": [
+        45,
+        48,
+        49,
+        56,
+        56,
+        47,
+        43,
+        49,
+        51,
+        56
+      ]
+    },
+    "Cholesterol": {
+      "bins": [
+        100.0,
+        129.9,
+        159.8,
+        189.7,
+        219.6,
+        249.5,
+        279.4,
+        309.3,
+        339.2,
+        369.1,
+        399.0
+      ],
+      "counts": [
+        38,
+        59,
+        40,
+        64,
+        46,
+        62,
+        52,
+        43,
+        43,
+        53
+      ]
+    },
+    "FastingBS": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        259,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        241
+      ]
+    },
+    "RestingECG": {
+      "bins": [
+        0.0,
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1.0,
+        1.2,
+        1.4,
+        1.6,
+        1.8,
+        2.0
+      ],
+      "counts": [
+        193,
+        0,
+        0,
+        0,
+        0,
+        148,
+        0,
+        0,
+        0,
+        159
+      ]
+    },
+    "MaxHR": {
+      "bins": [
+        60.0,
+        75.9,
+        91.8,
+        107.7,
+        123.6,
+        139.5,
+        155.4,
+        171.3,
+        187.2,
+        203.1,
+        219.0
+      ],
+      "counts": [
+        52,
+        51,
+        54,
+        50,
+        39,
+        56,
+        57,
+        36,
+        49,
+        56
+      ]
+    },
+    "ExerciseAngina": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        263,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        237
+      ]
+    },
+    "STDepression": {
+      "bins": [
+        0.007,
+        0.605,
+        1.204,
+        1.802,
+        2.4,
+        2.999,
+        3.597,
+        4.196,
+        4.794,
+        5.392,
+        5.991
+      ],
+      "counts": [
+        43,
+        47,
+        58,
+        47,
+        45,
+        39,
+        55,
+        53,
+        51,
+        62
+      ]
+    },
+    "Outcome": {
+      "bins": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "counts": [
+        250,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        250
+      ]
+    }
+  },
+  "outliers": {
+    "Age": 0,
+    "Gender": 0,
+    "ChestPainType": 0,
+    "RestingBP": 0,
+    "Cholesterol": 0,
+    "FastingBS": 0,
+    "RestingECG": 0,
+    "MaxHR": 0,
+    "ExerciseAngina": 0,
+    "STDepression": 0,
+    "Outcome": 0
+  },
+  "correlation_matrix": {
+    "Age": {
+      "Age": 1.0,
+      "Gender": 0.032,
+      "ChestPainType": 0.032,
+      "RestingBP": 0.062,
+      "Cholesterol": 0.027,
+      "FastingBS": -0.013,
+      "RestingECG": 0.014,
+      "MaxHR": -0.065,
+      "ExerciseAngina": 0.071,
+      "STDepression": -0.024,
+      "Outcome": -0.068
+    },
+    "Gender": {
+      "Age": 0.032,
+      "Gender": 1.0,
+      "ChestPainType": -0.045,
+      "RestingBP": -0.034,
+      "Cholesterol": -0.006,
+      "FastingBS": 0.08,
+      "RestingECG": -0.125,
+      "MaxHR": -0.022,
+      "ExerciseAngina": -0.089,
+      "STDepression": 0.08,
+      "Outcome": -0.004
+    },
+    "ChestPainType": {
+      "Age": 0.032,
+      "Gender": -0.045,
+      "ChestPainType": 1.0,
+      "RestingBP": 0.038,
+      "Cholesterol": 0.1,
+      "FastingBS": -0.025,
+      "RestingECG": 0.007,
+      "MaxHR": -0.04,
+      "ExerciseAngina": -0.106,
+      "STDepression": -0.11,
+      "Outcome": -0.042
+    },
+    "RestingBP": {
+      "Age": 0.062,
+      "Gender": -0.034,
+      "ChestPainType": 0.038,
+      "RestingBP": 1.0,
+      "Cholesterol": 0.005,
+      "FastingBS": 0.108,
+      "RestingECG": 0.008,
+      "MaxHR": 0.098,
+      "ExerciseAngina": 0.064,
+      "STDepression": -0.0,
+      "Outcome": -0.048
+    },
+    "Cholesterol": {
+      "Age": 0.027,
+      "Gender": -0.006,
+      "ChestPainType": 0.1,
+      "RestingBP": 0.005,
+      "Cholesterol": 1.0,
+      "FastingBS": 0.029,
+      "RestingECG": 0.023,
+      "MaxHR": 0.018,
+      "ExerciseAngina": 0.078,
+      "STDepression": 0.031,
+      "Outcome": -0.007
+    },
+    "FastingBS": {
+      "Age": -0.013,
+      "Gender": 0.08,
+      "ChestPainType": -0.025,
+      "RestingBP": 0.108,
+      "Cholesterol": 0.029,
+      "FastingBS": 1.0,
+      "RestingECG": -0.113,
+      "MaxHR": 0.023,
+      "ExerciseAngina": 0.038,
+      "STDepression": -0.052,
+      "Outcome": 0.02
+    },
+    "RestingECG": {
+      "Age": 0.014,
+      "Gender": -0.125,
+      "ChestPainType": 0.007,
+      "RestingBP": 0.008,
+      "Cholesterol": 0.023,
+      "FastingBS": -0.113,
+      "RestingECG": 1.0,
+      "MaxHR": -0.046,
+      "ExerciseAngina": 0.072,
+      "STDepression": 0.009,
+      "Outcome": -0.014
+    },
+    "MaxHR": {
+      "Age": -0.065,
+      "Gender": -0.022,
+      "ChestPainType": -0.04,
+      "RestingBP": 0.098,
+      "Cholesterol": 0.018,
+      "FastingBS": 0.023,
+      "RestingECG": -0.046,
+      "MaxHR": 1.0,
+      "ExerciseAngina": 0.07,
+      "STDepression": 0.123,
+      "Outcome": -0.063
+    },
+    "ExerciseAngina": {
+      "Age": 0.071,
+      "Gender": -0.089,
+      "ChestPainType": -0.106,
+      "RestingBP": 0.064,
+      "Cholesterol": 0.078,
+      "FastingBS": 0.038,
+      "RestingECG": 0.072,
+      "MaxHR": 0.07,
+      "ExerciseAngina": 1.0,
+      "STDepression": -0.043,
+      "Outcome": -0.036
+    },
+    "STDepression": {
+      "Age": -0.024,
+      "Gender": 0.08,
+      "ChestPainType": -0.11,
+      "RestingBP": -0.0,
+      "Cholesterol": 0.031,
+      "FastingBS": -0.052,
+      "RestingECG": 0.009,
+      "MaxHR": 0.123,
+      "ExerciseAngina": -0.043,
+      "STDepression": 1.0,
+      "Outcome": 0.01
+    },
+    "Outcome": {
+      "Age": -0.068,
+      "Gender": -0.004,
+      "ChestPainType": -0.042,
+      "RestingBP": -0.048,
+      "Cholesterol": -0.007,
+      "FastingBS": 0.02,
+      "RestingECG": -0.014,
+      "MaxHR": -0.063,
+      "ExerciseAngina": -0.036,
+      "STDepression": 0.01,
+      "Outcome": 1.0
+    }
+  },
+  "top_correlations_with_target": [
+    {
+      "feature": "Age",
+      "corr": -0.068
+    },
+    {
+      "feature": "MaxHR",
+      "corr": -0.063
+    },
+    {
+      "feature": "RestingBP",
+      "corr": -0.048
+    },
+    {
+      "feature": "ChestPainType",
+      "corr": -0.042
+    },
+    {
+      "feature": "ExerciseAngina",
+      "corr": -0.036
+    },
+    {
+      "feature": "FastingBS",
+      "corr": 0.02
+    },
+    {
+      "feature": "RestingECG",
+      "corr": -0.014
+    },
+    {
+      "feature": "STDepression",
+      "corr": 0.01
+    },
+    {
+      "feature": "Cholesterol",
+      "corr": -0.007
+    },
+    {
+      "feature": "Gender",
+      "corr": -0.004
+    }
+  ],
+  "data_quality_score": 100
+}
