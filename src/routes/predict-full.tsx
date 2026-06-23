@@ -43,7 +43,7 @@ function FullAssessmentPage() {
       });
       setReport(r);
 
-      // Auto-persist every successful sub-prediction
+      // Auto-persist every successful sub-prediction + raise alerts + save health score
       if (user) {
         const rows = r.items.filter((i) => i.ok && i.result).map((i) => ({
           patient_id: patient.id,
@@ -60,9 +60,38 @@ function FullAssessmentPage() {
           confidence: i.result!.confidence,
         }));
         if (rows.length) {
-          const { error } = await supabase.from("predictions").insert(rows);
+          const { data: inserted, error } = await supabase
+            .from("predictions").insert(rows).select("id, disease_type");
           if (error) toast.error("Saved partially", { description: error.message });
+
+          // Raise alerts for any disease above the 60% threshold
+          await Promise.all(r.items.filter((i) => i.ok && i.result).map(async (i) => {
+            const predRow = inserted?.find((row) => row.disease_type.startsWith(i.disease));
+            await maybeRaiseAlert({
+              doctorId: user.id,
+              patientId: patient.id,
+              patientName: patient.name,
+              disease: i.disease,
+              probability: i.result!.probability,
+              riskLevel: i.result!.risk,
+              predictionId: predRow?.id ?? null,
+            });
+          }));
         }
+
+        // Persist overall AI Health Score for the dashboard / patient profile
+        const band = healthScoreBand(r.overallScore);
+        const components = Object.fromEntries(
+          r.items.filter((i) => i.ok && i.result).map((i) => [i.disease, Math.round(i.result!.probability * 100)]),
+        );
+        const { error: scoreErr } = await supabase.from("health_scores").insert({
+          patient_id: patient.id,
+          doctor_id: user.id,
+          score: r.overallScore,
+          band: band.label,
+          components,
+        });
+        if (scoreErr) toast.error("Health score not saved", { description: scoreErr.message });
       }
 
       toast.success("Full health assessment complete");
