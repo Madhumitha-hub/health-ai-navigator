@@ -30,6 +30,8 @@ export const Route = createFileRoute("/predict")({
 
 type DiseaseKey = "diabetes" | "heart" | "kidney" | "liver";
 
+type GenderKey = "Male" | "Female" | "Other";
+
 type FieldSpec = {
   name: string;
   label: string;
@@ -37,17 +39,26 @@ type FieldSpec = {
   min?: number;
   max?: number;
   normal?: string;
+  normalByGender?: Partial<Record<GenderKey, string>>;
   help?: string;
   type?: "number" | "select" | "toggle";
   options?: { label: string; value: string }[];
+  visibleFor?: GenderKey[];
 };
+
+function normalizeGender(g: string | null | undefined): GenderKey {
+  const s = (g ?? "").trim().toLowerCase();
+  if (s === "male" || s === "m") return "Male";
+  if (s === "female" || s === "f") return "Female";
+  return "Other";
+}
 
 const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emoji: string; tagline: string; fields: FieldSpec[] }> = {
   diabetes: {
     label: "Diabetes Prediction", emoji: "🩺", icon: Droplet,
     tagline: "Based on glucose, BMI, insulin levels",
     fields: [
-      { name: "pregnancies", label: "Pregnancies", min: 0, max: 20 },
+      { name: "pregnancies", label: "Pregnancies", min: 0, max: 20, visibleFor: ["Female"], help: "Number of times pregnant." },
       { name: "glucose", label: "Glucose", unit: "mg/dL", min: 0, max: 300, normal: "70–140", help: "Plasma glucose concentration." },
       { name: "bloodPressure", label: "Blood Pressure", unit: "mm Hg", min: 0, max: 200, normal: "60–120" },
       { name: "skinThickness", label: "Skin Thickness", unit: "mm", min: 0, max: 100 },
@@ -62,7 +73,6 @@ const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emo
     tagline: "Based on cholesterol, ECG, blood pressure",
     fields: [
       { name: "age", label: "Age", unit: "years" },
-      { name: "sex", label: "Sex", type: "select", options: [{ label: "Male", value: "1" }, { label: "Female", value: "0" }] },
       { name: "cp", label: "Chest Pain Type", type: "select", options: [
         { label: "Typical Angina", value: "0" }, { label: "Atypical Angina", value: "1" },
         { label: "Non-Anginal", value: "2" }, { label: "Asymptomatic", value: "3" },
@@ -99,10 +109,13 @@ const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emo
       { name: "sc", label: "Serum Creatinine", unit: "mg/dL", normal: "0.7–1.3" },
       { name: "sod", label: "Sodium", unit: "mEq/L", normal: "135–145" },
       { name: "pot", label: "Potassium", unit: "mEq/L", normal: "3.5–5.0" },
-      { name: "hemo", label: "Hemoglobin", unit: "g/dL", normal: "12–17" },
-      { name: "pcv", label: "Packed Cell Volume", unit: "%" },
+      { name: "hemo", label: "Hemoglobin", unit: "g/dL", normal: "12.1–17.2",
+        normalByGender: { Male: "13.8–17.2", Female: "12.1–15.1" } },
+      { name: "pcv", label: "Packed Cell Volume", unit: "%", normal: "36–53",
+        normalByGender: { Male: "41–53", Female: "36–46" } },
       { name: "wc", label: "WBC Count", unit: "cells/µL" },
-      { name: "rc", label: "RBC Count", unit: "million/µL" },
+      { name: "rc", label: "RBC Count", unit: "million/µL", normal: "4.2–6.1",
+        normalByGender: { Male: "4.7–6.1", Female: "4.2–5.4" } },
       { name: "htn", label: "Hypertension", type: "toggle" },
       { name: "dm", label: "Diabetes Mellitus", type: "toggle" },
       { name: "cad", label: "Coronary Artery Disease", type: "toggle" },
@@ -116,7 +129,6 @@ const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emo
     tagline: "Based on bilirubin, enzyme levels, albumin",
     fields: [
       { name: "age", label: "Age", unit: "years" },
-      { name: "gender", label: "Gender", type: "select", options: [{ label: "Male", value: "1" }, { label: "Female", value: "0" }] },
       { name: "totalBilirubin", label: "Total Bilirubin", unit: "mg/dL", normal: "0.1–1.2" },
       { name: "directBilirubin", label: "Direct Bilirubin", unit: "mg/dL", normal: "<0.3" },
       { name: "alkPhos", label: "Alkaline Phosphotase", unit: "IU/L", normal: "44–147" },
@@ -253,6 +265,8 @@ function PredictPage() {
             onChange={setValues}
             loading={loading}
             disabled={!apiOnline}
+            patientGender={normalizeGender(patient.gender)}
+            disease={disease}
             onSubmit={async () => {
               if (!apiOnline) {
                 toast.error("ML service offline", { description: "Cannot run predictions until the API is back online." });
@@ -260,10 +274,22 @@ function PredictPage() {
               }
               setLoading(true);
               try {
+                const gender = normalizeGender(patient.gender);
                 const features: Record<string, number | string | boolean> = {};
                 for (const f of diseases[disease].fields) {
+                  if (f.visibleFor && !f.visibleFor.includes(gender)) continue;
                   const raw = values[f.name] ?? "";
                   features[f.name] = f.type === "select" || f.type === "toggle" ? raw : parseFloat(raw || "0");
+                }
+                // Inject gender-derived hidden defaults so the backend keeps working.
+                if (disease === "diabetes" && gender !== "Female") {
+                  features.pregnancies = 0;
+                }
+                if (disease === "heart") {
+                  features.sex = gender === "Male" ? "1" : "0";
+                }
+                if (disease === "liver") {
+                  features.gender = gender === "Male" ? "1" : "0";
                 }
                 const r = await predictDisease({
                   disease,
@@ -279,6 +305,7 @@ function PredictPage() {
           />
         </Section>
       )}
+
 
       {/* Step 4: Result */}
       {result && disease && patient && (
@@ -418,7 +445,7 @@ function PatientSelector({ value, onSelect }: { value: Patient | null; onSelect:
 }
 
 function FeatureForm({
-  fields, values, onChange, onSubmit, loading, disabled = false,
+  fields, values, onChange, onSubmit, loading, disabled = false, patientGender, disease,
 }: {
   fields: FieldSpec[];
   values: Record<string, string>;
@@ -426,6 +453,8 @@ function FeatureForm({
   onSubmit: () => void;
   loading: boolean;
   disabled?: boolean;
+  patientGender: GenderKey;
+  disease: DiseaseKey;
 }) {
   const setVal = (k: string, v: string) => onChange({ ...values, [k]: v });
   const isOutOfRange = (f: FieldSpec, v: string) => {
@@ -437,13 +466,36 @@ function FeatureForm({
     return false;
   };
 
+  const visibleFields = fields.filter((f) => !f.visibleFor || f.visibleFor.includes(patientGender));
+
+  const badgeNote =
+    disease === "diabetes"
+      ? patientGender === "Female"
+        ? "Pregnancy-related field enabled"
+        : patientGender === "Male"
+        ? "Pregnancy-related field hidden"
+        : "Pregnancy-related field not applicable"
+      : disease === "heart"
+      ? "Sex automatically applied from patient profile"
+      : disease === "liver"
+      ? "Gender automatically applied from patient profile"
+      : "Gender-specific reference ranges applied from patient profile";
+
   return (
     <TooltipProvider>
       <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-5">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs">
+          <Badge variant="outline" className="border-primary/40 text-primary">
+            Gender: {patientGender}
+          </Badge>
+          <span className="text-muted-foreground">{badgeNote}</span>
+        </div>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {fields.map((f) => {
+          {visibleFields.map((f) => {
             const v = values[f.name] ?? "";
             const bad = isOutOfRange(f, v);
+            const normalText = f.normalByGender?.[patientGender] ?? f.normal;
             return (
               <div key={f.name} className="space-y-1.5">
                 <Label htmlFor={f.name} className="flex items-center gap-1.5">
@@ -480,7 +532,7 @@ function FeatureForm({
                   />
                 )}
                 <p className={`text-[11px] ${bad ? "text-destructive" : "text-muted-foreground"}`}>
-                  {bad ? `Out of expected range (${f.min ?? "—"}–${f.max ?? "—"})` : f.normal ? `Normal: ${f.normal}` : "\u00A0"}
+                  {bad ? `Out of expected range (${f.min ?? "—"}–${f.max ?? "—"})` : normalText ? `Normal: ${normalText}` : "\u00A0"}
                 </p>
               </div>
             );
@@ -572,7 +624,11 @@ function ResultPanel({
           </div>
           <div className="flex-1">
             <p className={`font-display text-2xl font-bold ${tone.text}`}>{tone.label}</p>
-            <p className="text-sm text-muted-foreground">{diseases[disease].label} · {patient.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {diseases[disease].label} · {patient.name}
+              {patient.age != null ? ` · ${patient.age} yrs` : ""}
+              {` · ${normalizeGender(patient.gender)}`}
+            </p>
           </div>
           <div className="text-right">
             <p className={`font-display text-4xl font-bold ${tone.text}`}>{pct}%</p>
