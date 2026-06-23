@@ -1,7 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-export type AppRole = "admin" | "doctor" | "analyst" | "patient";
+export type AppRole = "admin" | "doctor" | "patient";
 
 type AuthSuccess = {
   unauthorized: null;
