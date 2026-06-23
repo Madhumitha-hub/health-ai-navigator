@@ -1,4 +1,5 @@
 const DEFAULT_ML_API_URL = "https://health-ai-navigator.onrender.com";
+const ML_UPSTREAM_TIMEOUT_MS = 8_000;
 
 export function getMlApiBaseUrl() {
   return (process.env.VITE_ML_API_URL || DEFAULT_ML_API_URL).replace(/\/$/, "");
@@ -6,7 +7,11 @@ export function getMlApiBaseUrl() {
 
 export async function proxyMlRequest(path: string, init?: RequestInit) {
   const upstream = `${getMlApiBaseUrl()}${path}`;
-  const upstreamResponse = await fetch(upstream, init);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ML_UPSTREAM_TIMEOUT_MS);
+  const upstreamResponse = await fetch(upstream, { ...init, signal: init?.signal ?? controller.signal }).finally(() => {
+    clearTimeout(timeout);
+  });
   const body = await upstreamResponse.text();
   const headers = new Headers();
   headers.set("Content-Type", upstreamResponse.headers.get("Content-Type") || "application/json");
