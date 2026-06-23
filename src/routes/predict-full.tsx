@@ -210,23 +210,21 @@ function DiseaseCard({ item, patient }: { item: FullAssessmentReport["items"][nu
   }
   const r = item.result;
   const pct = Math.round(r.probability * 100);
-  const tone = r.risk === "high" ? "border-destructive/50 bg-destructive/5 text-destructive"
-    : r.risk === "medium" ? "border-amber-500/50 bg-amber-500/5 text-amber-600"
-    : "border-success/50 bg-success/5 text-success";
+  const cat = categorizeRisk(r.probability);
 
   const bundle = generateRecommendations({ disease: item.disease, result: r, patient: { age: patient.age, gender: patient.gender } });
 
   return (
-    <Card className={`border-2 ${tone.split(" ")[0]}`}>
+    <Card className={`border-2 ${cat.borderClass}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm capitalize">{diseaseDisplayName(item.disease)}</CardTitle>
-          <Badge variant="outline" className={tone}>{r.riskLabel}</Badge>
+          <Badge variant="outline" className={cat.badgeClass}>{cat.category}</Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-baseline justify-between">
-          <span className={`font-display text-3xl font-bold ${tone.split(" ").pop()}`}>{pct}%</span>
+          <span className={`font-display text-3xl font-bold ${cat.textClass}`}>{pct}%</span>
           <span className="text-xs text-muted-foreground">Confidence {Math.round(r.confidence * 100)}%</span>
         </div>
         <Progress value={pct} className="h-2" />
