@@ -24,7 +24,10 @@ import { DoctorNotesSection } from "@/components/doctor-notes-section";
 export const Route = createFileRoute("/patients/$id")({
   head: () => ({ meta: [{ title: "Patient Profile — HealthPredict" }] }),
   notFoundComponent: () => <div className="p-8">Patient not found.</div>,
-  errorComponent: ({ error }) => <div className="p-8 text-destructive">{error.message}</div>,
+  errorComponent: ({ error }) => {
+    console.error(error);
+    return <div className="p-8 text-destructive">{userMessage(error)}</div>;
+  },
   component: PatientProfile,
 });
 
