@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef } from "react";
 import { PREDICT_API_BASE } from "@/lib/predict-api";
+import { authedFetch } from "@/lib/authed-fetch";
 
 export type MlErrorCategory =
   | "timeout"

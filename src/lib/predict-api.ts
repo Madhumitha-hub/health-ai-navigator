@@ -2,6 +2,8 @@
  * Client for the FastAPI ML backend.
  * Configurable via VITE_ML_API_URL (no demo fallback — see /backend/README.md).
  */
+import { authedFetch } from "./authed-fetch";
+
 export const PREDICT_API_BASE =
   "/api/ml";
 
