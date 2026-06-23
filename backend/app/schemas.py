@@ -37,6 +37,12 @@ class MetricsRow(BaseModel):
     cv_score: float | None = None
     confusion_matrix: dict[str, int] | None = None
     feature_importance: dict[str, float] | None = None
+    tuning_method: str | None = None
+    n_iter: int | None = None
+    cv_folds: int | None = None
+    best_params: dict[str, Any] | None = None
+    search_space: dict[str, Any] | None = None
+    cv_results_summary: list[dict[str, Any]] | None = None
 
 
 class MetricsResponse(BaseModel):
