@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/page-header";
+import { FeatureImportanceGrid } from "@/components/feature-importance-chart";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/models")({
@@ -136,6 +137,13 @@ function ModelsPage() {
           <StatCard label="Total Models" value={String(stats.total)} />
         </div>
       ) : null}
+
+      <div>
+        <h2 className="mb-3 font-display text-lg font-semibold">Feature Importance by Disease</h2>
+        <FeatureImportanceGrid />
+      </div>
+
+
 
       {bestByDisease.length > 0 && (
         <Card>
