@@ -53,6 +53,7 @@ type EdaPayload = {
 };
 
 export const Route = createFileRoute("/eda")({
+  ssr: false,
   validateSearch: (s: Record<string, unknown>) => ({
     disease: (s.disease as Disease) ?? "diabetes",
   }),
