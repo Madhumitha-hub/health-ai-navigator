@@ -23,7 +23,7 @@ export type AppointmentRecommendation = {
 };
 
 export const CLINICAL_DISCLAIMER =
-  "This decision support is for educational and research purposes only and does not replace professional medical advice.";
+  "This system provides AI-based risk estimates for educational and research purposes only. It is not a medical diagnosis and should not replace professional consultation.";
 
 const SPECIALIST: Record<DiseaseKey, string> = {
   diabetes: "Endocrinologist",
