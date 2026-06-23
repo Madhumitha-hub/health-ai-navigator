@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { useAssistantContext } from "@/components/ai-assistant";
+
 
 export const Route = createFileRoute("/patients/$id")({
   head: () => ({ meta: [{ title: "Patient Profile — HealthPredict" }] }),
@@ -71,16 +71,6 @@ function PatientProfile() {
     toast.success("Patient deleted");
     navigate({ to: "/patients" });
   }
-
-  useAssistantContext(
-    patient
-      ? `Viewing patient profile: ${patient.name}, age ${patient.age ?? "?"}, gender ${patient.gender ?? "?"}.` +
-        ` Total predictions on file: ${preds.length}.` +
-        (preds.length
-          ? ` Recent results: ${preds.slice(-3).map((p: any) => `${p.disease_type} ${(Number(p.risk_score) * 100).toFixed(0)}% (${p.risk_level})`).join("; ")}.`
-          : "")
-      : null,
-  );
 
   if (isLoading) return <div className="mx-auto max-w-7xl p-6"><Skeleton className="h-96" /></div>;
   if (!patient) return <div className="p-8">Patient not found.</div>;

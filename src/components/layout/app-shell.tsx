@@ -37,7 +37,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/components/theme-provider";
 import { useAuth } from "@/lib/auth-context";
 import { HelpButton } from "@/components/help-button";
-import { AiAssistant } from "@/components/ai-assistant";
+
 
 type NavItem = {
   title: string;
@@ -236,7 +236,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Footer />
         </div>
         <HelpButton />
-        <AiAssistant />
       </div>
     </SidebarProvider>
   );
