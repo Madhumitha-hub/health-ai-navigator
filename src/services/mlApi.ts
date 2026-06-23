@@ -7,4 +7,5 @@
  */
 
 export const ML_API_URL =
-  (import.meta.env.VITE_ML_API_URL as string | undefined) ?? "http://localhost:8000";
+  ((import.meta.env.VITE_ML_API_URL as string | undefined) ?? "https://health-ai-navigator.onrender.com")
+    .replace(/\/$/, "");
