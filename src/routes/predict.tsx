@@ -30,6 +30,8 @@ export const Route = createFileRoute("/predict")({
 
 type DiseaseKey = "diabetes" | "heart" | "kidney" | "liver";
 
+type GenderKey = "Male" | "Female" | "Other";
+
 type FieldSpec = {
   name: string;
   label: string;
@@ -37,10 +39,19 @@ type FieldSpec = {
   min?: number;
   max?: number;
   normal?: string;
+  normalByGender?: Partial<Record<GenderKey, string>>;
   help?: string;
   type?: "number" | "select" | "toggle";
   options?: { label: string; value: string }[];
+  visibleFor?: GenderKey[];
 };
+
+function normalizeGender(g: string | null | undefined): GenderKey {
+  const s = (g ?? "").trim().toLowerCase();
+  if (s === "male" || s === "m") return "Male";
+  if (s === "female" || s === "f") return "Female";
+  return "Other";
+}
 
 const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emoji: string; tagline: string; fields: FieldSpec[] }> = {
   diabetes: {
