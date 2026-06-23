@@ -1,27 +1,21 @@
-## Problem
+## What's happening
 
-Clicking **EDA Reports** in the sidebar shows the root 404 page, even though:
+The hosted site at `ai-healthcare1.lovable.app` is showing the "Missing Supabase environment variable(s)" error, while the Lovable preview works fine.
 
-- `src/routes/eda.tsx` exists with `createFileRoute("/eda")`
-- `src/routeTree.gen.ts` registers `EdaRoute` at `/eda`
-- The sidebar entry in `src/components/layout/app-shell.tsx` (line 54) points to `/eda`
-- A direct SSR request (`curl /eda?disease=diabetes`) returns **200** with the real "Exploratory Data Analysis" content
-- The screenshot still shows the AppShell sidebar around the 404, which means it is the **root `notFoundComponent`** rendering inside `<Outlet />` — so the client router is failing to match the route at navigation time
+The error is thrown from `src/integrations/supabase/client.ts`. It reads the Supabase URL/key from two places:
+1. `import.meta.env.VITE_SUPABASE_*` — baked into the JS bundle **at build time**
+2. `process.env.SUPABASE_*` — read from the server runtime (Cloudflare Worker secrets) at request time
 
-This is a client-side route-match failure, not a missing file. The most likely cause is the `/eda` route's `validateSearch` requiring `disease` while the sidebar `<Link to="/eda">` navigates without it, plus the SSR-side 307 we observed (`/eda` → `/eda?disease=diabetes`) not being followed cleanly on client navigation.
+Both are currently present in this sandbox (`.env` has all six variables, and the Supabase secrets dashboard also lists `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`). The preview works because it builds and runs against the current environment.
 
-## Fix
+The hosted bundle at `ai-healthcare1.lovable.app` was published **before** those values were wired into the project (or before a successful Supabase reconnection). That old bundle has neither the build-time values nor a working server-side fallback, so as soon as the Supabase client is first accessed it throws and the root error boundary renders "Something went wrong". A re-publish is required — frontend env values are baked into the bundle, so they only update when you publish again.
 
-1. **Reproduce in the browser via Playwright** against `localhost:8080`, signed in with the Lovable Supabase session, clicking the EDA Reports link. Capture the console + final URL to confirm the 404 path.
-2. **Make the `/eda` route navigation-safe**:
-   - Update the sidebar `Link` for EDA Reports to pass an explicit search default: `<Link to="/eda" search={{ disease: "diabetes" }}>`, OR
-   - Loosen `validateSearch` in `src/routes/eda.tsx` so it never throws and always returns a default (`disease: (s.disease as Disease) ?? "diabetes"` — already the case, so the real fix is the Link side).
-3. **Verify** the routeTree still lists `/eda` after dev rebuild and that `useSearch({ from: "/eda" })` returns the default. Re-run the Playwright click flow and confirm the EDA page renders (header "Exploratory Data Analysis", tabs for the four diseases).
-4. If reproduction shows a different cause (e.g. `RequireRole` denying because `profile.role` isn't `admin`/`analyst` in the DB), surface that with a clearer "Access restricted" state instead of falling through to 404, and report the role mismatch back to the user.
+## Plan
 
-## Files touched
+1. Re-publish the project so the current `.env` values (VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY) are baked into a fresh bundle and the Worker picks up the current server-side Supabase secrets.
+2. After publish, hard-refresh `ai-healthcare1.lovable.app` (Ctrl/Cmd-Shift-R) to bypass cached HTML/JS.
+3. If the error still appears after a fresh publish + hard refresh, the next step is to check the production environment secrets in Lovable Cloud (Settings → Secrets) and confirm `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are present for the **production** environment — secrets are scoped per environment, and a value set only for dev won't reach the published Worker.
 
-- `src/components/layout/app-shell.tsx` — add `search={{ disease: "diabetes" }}` to the EDA Reports `<Link>` (and use the typed Link form).
-- `src/routes/eda.tsx` — only if step 1 shows a notFound being thrown; otherwise no change.
+No code changes are needed; the client fallback chain is already correct.
 
-No backend / data changes.
+Approve this plan and I'll trigger the re-publish.
