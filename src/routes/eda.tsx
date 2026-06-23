@@ -95,7 +95,7 @@ function EdaPage() {
 }
 
 function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
-  const { data, isLoading, error } = useQuery<EdaPayload>({
+  const { data, isLoading, error } = useQuery<EdaPayload | { error: string; fallback: true }>({
     queryKey: ["eda", disease],
     queryFn: async () => {
       const r = await fetch(`/api/ml/eda/${disease}`);
@@ -106,18 +106,21 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
   });
 
   if (isLoading) return <Skeleton className="h-72" />;
-  if (error || !data) {
+  if (error || !data || (data as { fallback?: boolean }).fallback || !("shape" in (data as object))) {
     return (
       <Alert variant="destructive">
         <FileWarning className="h-4 w-4" />
-        <AlertTitle>No EDA artifact for {disease}</AlertTitle>
+        <AlertTitle>EDA service unavailable for {disease}</AlertTitle>
         <AlertDescription>
-          Run <code className="rounded bg-muted px-1">python -m training.eda</code> in the
-          backend after placing the CSV in <code className="rounded bg-muted px-1">backend/data/</code>.
+          The backend EDA service didn&apos;t return a report. It may be cold-starting on Render —
+          retry in ~30s. If this persists, run{" "}
+          <code className="rounded bg-muted px-1">python -m training.eda</code> in the backend after
+          placing the CSV in <code className="rounded bg-muted px-1">backend/data/</code>.
         </AlertDescription>
       </Alert>
     );
   }
+  const payload = data as EdaPayload;
 
   const classBalance = Object.entries(data.class_balance).map(([k, v]) => ({
     label: `Class ${k}`,
