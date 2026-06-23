@@ -16,6 +16,8 @@ import { runFullAssessment, healthScoreBand, type FullAssessmentReport } from "@
 import { generateRecommendations, flattenRecommendations } from "@/lib/recommendations";
 import { diseaseDisplayName, type DiseaseKey } from "@/lib/predict-api";
 import { downloadReport } from "@/lib/report-pdf";
+import { categorizeRisk } from "@/lib/risk-category";
+import { maybeRaiseAlert } from "@/lib/alerts";
 
 export const Route = createFileRoute("/predict-full")({
   head: () => ({ meta: [{ title: "Full Health Assessment — HealthPredict" }] }),
