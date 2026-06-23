@@ -1,4 +1,5 @@
 const DEFAULT_ML_API_URL = "https://health-ai-navigator.onrender.com";
+const ML_UPSTREAM_TIMEOUT_MS = 8_000;
 
 export function getMlApiBaseUrl() {
   return (process.env.VITE_ML_API_URL || DEFAULT_ML_API_URL).replace(/\/$/, "");
@@ -6,7 +7,11 @@ export function getMlApiBaseUrl() {
 
 export async function proxyMlRequest(path: string, init?: RequestInit) {
   const upstream = `${getMlApiBaseUrl()}${path}`;
-  const upstreamResponse = await fetch(upstream, init);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ML_UPSTREAM_TIMEOUT_MS);
+  const upstreamResponse = await fetch(upstream, { ...init, signal: init?.signal ?? controller.signal }).finally(() => {
+    clearTimeout(timeout);
+  });
   const body = await upstreamResponse.text();
   const headers = new Headers();
   headers.set("Content-Type", upstreamResponse.headers.get("Content-Type") || "application/json");
@@ -107,13 +112,27 @@ function fallbackPrediction(disease: DiseaseKey, features: Record<string, unknow
 
 export async function proxyMlPredictionRequest(disease: string, request: Request) {
   const body = await request.text();
-  const response = await proxyMlRequest(`/predict/${disease}`, {
-    method: "POST",
-    headers: { "Content-Type": request.headers.get("Content-Type") || "application/json" },
-    body,
-  });
+  const canFallback = ["diabetes", "heart", "kidney", "liver"].includes(disease);
+  let response: Response;
+  try {
+    response = await proxyMlRequest(`/predict/${disease}`, {
+      method: "POST",
+      headers: { "Content-Type": request.headers.get("Content-Type") || "application/json" },
+      body,
+    });
+  } catch {
+    if (!canFallback) {
+      return Response.json({ detail: "ML service unavailable" }, { status: 503 });
+    }
+    try {
+      const payload = body ? (JSON.parse(body) as { features?: Record<string, unknown> }) : {};
+      return fallbackPrediction(disease as DiseaseKey, payload.features ?? {});
+    } catch {
+      return fallbackPrediction(disease as DiseaseKey, {});
+    }
+  }
   const upstreamFailed = response.status >= 500;
-  if (!upstreamFailed || !["diabetes", "heart", "kidney", "liver"].includes(disease)) {
+  if (!upstreamFailed || !canFallback) {
     return response;
   }
   try {
