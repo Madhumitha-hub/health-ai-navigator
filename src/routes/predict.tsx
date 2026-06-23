@@ -27,6 +27,7 @@ import { categorizeRisk } from "@/lib/risk-category";
 import { maybeRaiseAlert } from "@/lib/alerts";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@tanstack/react-router";
+import { useAssistantContext } from "@/components/ai-assistant";
 
 export const Route = createFileRoute("/predict")({
   head: () => ({ meta: [{ title: "Disease Prediction — HealthPredict" }] }),
@@ -169,7 +170,7 @@ function PredictPage() {
       ? `Current patient: ${patient.name}, age ${patient.age ?? "?"}, gender ${patient.gender ?? "?"}.` +
         (disease ? ` Disease being assessed: ${disease}.` : "") +
         (result
-          ? ` Latest prediction: risk score ${(result.risk_score * 100).toFixed(1)}% (${result.risk_level}). Top factors: ${(result.top_factors ?? []).map((f: any) => f.name).join(", ") || "n/a"}.`
+          ? ` Latest prediction: risk score ${(((result as any).risk_score ?? (result as any).probability ?? 0) * 100).toFixed(1)}% (${(result as any).risk_level ?? (result as any).riskLevel ?? "n/a"}). Top factors: ${(((result as any).top_factors ?? (result as any).topFactors ?? []) as any[]).map((f) => f.name ?? f).join(", ") || "n/a"}.`
           : "") +
         ` Input values: ${Object.entries(values).map(([k, v]) => `${k}=${v}`).join(", ") || "none"}.`
       : null,
