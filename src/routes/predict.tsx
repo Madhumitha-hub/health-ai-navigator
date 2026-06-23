@@ -695,10 +695,47 @@ function ResultPanel({
         </CardContent>
       </Card>
 
-      <div className={`rounded-xl border-l-4 ${tone.border} ${tone.bg} p-4`}>
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Clinical Recommendation</p>
-        <p className={`mt-1 text-sm font-medium ${tone.text}`}>{recommendation}</p>
-      </div>
+      <Card className={`border-l-4 ${tone.border}`}>
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm">AI Health Recommendations</CardTitle>
+            <Badge variant="outline" className={`${tone.text} ${tone.border}`}>
+              Priority: {bundle.consultation_priority}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <p className="text-muted-foreground">{bundle.explanation}</p>
+
+          <div>
+            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recommended actions</p>
+            <ul className="space-y-1.5">
+              {bundle.recommendations.map((r, i) => (
+                <li key={i} className="flex gap-2"><span className="text-primary">•</span><span>{r}</span></li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Lifestyle tips</p>
+              <ul className="space-y-1 text-xs text-muted-foreground">
+                {bundle.lifestyle_tips.map((r, i) => (
+                  <li key={i} className="flex gap-2"><span>•</span><span>{r}</span></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Suggested tests</p>
+              <ul className="space-y-1 text-xs text-muted-foreground">
+                {bundle.suggested_tests.map((r, i) => (
+                  <li key={i} className="flex gap-2"><span>•</span><span>{r}</span></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-xs leading-relaxed text-muted-foreground">
         <strong className="text-foreground">Disclaimer.</strong> This system provides risk estimates for
@@ -706,7 +743,7 @@ function ResultPanel({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button onClick={savePrediction} disabled={saving || saved}>
+        <Button onClick={() => savePrediction(false)} disabled={saving || saved}>
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
           {saved ? "Saved" : "Save to Patient Record"}
         </Button>
