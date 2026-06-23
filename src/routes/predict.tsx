@@ -27,7 +27,7 @@ import { categorizeRisk } from "@/lib/risk-category";
 import { maybeRaiseAlert } from "@/lib/alerts";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@tanstack/react-router";
-import { useAssistantContext } from "@/components/ai-assistant";
+
 
 export const Route = createFileRoute("/predict")({
   head: () => ({ meta: [{ title: "Disease Prediction — HealthPredict" }] }),
