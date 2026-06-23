@@ -25,6 +25,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientsIdRouteImport } from './routes/patients.$id'
+import { Route as ApiChatRouteImport } from './routes/api.chat'
 import { Route as ApiMlIndexRouteImport } from './routes/api.ml.index'
 import { Route as ApiMlRecommendationsRouteImport } from './routes/api.ml.recommendations'
 import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
@@ -115,6 +116,11 @@ const PatientsIdRoute = PatientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PatientsRoute,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMlIndexRoute = ApiMlIndexRouteImport.update({
   id: '/api/ml/',
   path: '/api/ml/',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/api/chat': typeof ApiChatRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/health': typeof ApiMlHealthRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/api/chat': typeof ApiChatRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/health': typeof ApiMlHealthRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/api/chat': typeof ApiChatRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/health': typeof ApiMlHealthRoute
@@ -262,6 +271,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/reset-password'
     | '/settings'
+    | '/api/chat'
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/health'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/reset-password'
     | '/settings'
+    | '/api/chat'
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/health'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/reset-password'
     | '/settings'
+    | '/api/chat'
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/health'
@@ -344,6 +356,7 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
+  ApiChatRoute: typeof ApiChatRoute
   ApiMlAnalyticsRoute: typeof ApiMlAnalyticsRoute
   ApiMlHealthRoute: typeof ApiMlHealthRoute
   ApiMlHealthScoreRoute: typeof ApiMlHealthScoreRoute
@@ -469,6 +482,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientsIdRouteImport
       parentRoute: typeof PatientsRoute
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ml/': {
       id: '/api/ml/'
       path: '/api/ml'
@@ -563,6 +583,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
+  ApiChatRoute: ApiChatRoute,
   ApiMlAnalyticsRoute: ApiMlAnalyticsRoute,
   ApiMlHealthRoute: ApiMlHealthRoute,
   ApiMlHealthScoreRoute: ApiMlHealthScoreRoute,
