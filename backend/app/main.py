@@ -25,6 +25,7 @@ app.add_middleware(
 app.include_router(health.router, tags=["health"])
 app.include_router(models.router, tags=["models"])
 app.include_router(predict.router, tags=["predict"])
+app.include_router(recommendations.router, tags=["recommendations"])
 app.include_router(analytics.router, tags=["analytics"])
 
 
