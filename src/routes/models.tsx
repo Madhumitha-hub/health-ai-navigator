@@ -104,6 +104,19 @@ function ModelsPage() {
     return { best, avgF1, bestAuc, total: models.length };
   }, [models]);
 
+  const bestByDisease = useMemo(() => {
+    const groups: Record<string, Model[]> = {};
+    for (const m of models) {
+      const k = m.disease_type ?? "—";
+      (groups[k] ??= []).push(m);
+    }
+    return Object.entries(groups).map(([disease, list]) => ({
+      disease,
+      best: list.reduce((a, b) => ((b.accuracy ?? 0) > (a.accuracy ?? 0) ? b : a)),
+      count: list.length,
+    }));
+  }, [models]);
+
   function toggleSort(k: keyof Model) {
     if (sortKey === k) setSortDir(sortDir === "asc" ? "desc" : "asc");
     else { setSortKey(k); setSortDir("desc"); }
@@ -123,6 +136,34 @@ function ModelsPage() {
           <StatCard label="Total Models" value={String(stats.total)} />
         </div>
       ) : null}
+
+      {bestByDisease.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Crown className="h-4 w-4 text-amber-500" /> Best Model per Disease
+            </CardTitle>
+            <CardDescription>Top-performing algorithm by accuracy for each disease task.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            {bestByDisease.map(({ disease, best, count }) => (
+              <div key={disease} className="rounded-lg border p-3">
+                <div className="flex items-center justify-between">
+                  <Badge className={DISEASE_BADGE[disease] ?? ""}>{disease}</Badge>
+                  <span className="text-[10px] text-muted-foreground">{count} model(s)</span>
+                </div>
+                <div className="mt-2 text-sm font-semibold">{best.model_name}</div>
+                <div className="mt-1 grid grid-cols-2 gap-1 text-xs text-muted-foreground">
+                  <div>Acc: <span className="font-medium text-foreground">{((best.accuracy ?? 0) * 100).toFixed(1)}%</span></div>
+                  <div>F1: <span className="font-medium text-foreground">{((best.f1_score ?? 0) * 100).toFixed(1)}%</span></div>
+                  <div>AUC: <span className="font-medium text-foreground">{((best.auc_roc ?? 0) * 100).toFixed(1)}%</span></div>
+                  <div>Rec: <span className="font-medium text-foreground">{((best.recall ?? 0) * 100).toFixed(1)}%</span></div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader><CardTitle>All Models</CardTitle></CardHeader>
