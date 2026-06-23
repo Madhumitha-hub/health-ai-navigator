@@ -265,6 +265,8 @@ function PredictPage() {
             onChange={setValues}
             loading={loading}
             disabled={!apiOnline}
+            patientGender={normalizeGender(patient.gender)}
+            disease={disease}
             onSubmit={async () => {
               if (!apiOnline) {
                 toast.error("ML service offline", { description: "Cannot run predictions until the API is back online." });
@@ -272,10 +274,22 @@ function PredictPage() {
               }
               setLoading(true);
               try {
+                const gender = normalizeGender(patient.gender);
                 const features: Record<string, number | string | boolean> = {};
                 for (const f of diseases[disease].fields) {
+                  if (f.visibleFor && !f.visibleFor.includes(gender)) continue;
                   const raw = values[f.name] ?? "";
                   features[f.name] = f.type === "select" || f.type === "toggle" ? raw : parseFloat(raw || "0");
+                }
+                // Inject gender-derived hidden defaults so the backend keeps working.
+                if (disease === "diabetes" && gender !== "Female") {
+                  features.pregnancies = 0;
+                }
+                if (disease === "heart") {
+                  features.sex = gender === "Male" ? "1" : "0";
+                }
+                if (disease === "liver") {
+                  features.gender = gender === "Male" ? "1" : "0";
                 }
                 const r = await predictDisease({
                   disease,
@@ -291,6 +305,7 @@ function PredictPage() {
           />
         </Section>
       )}
+
 
       {/* Step 4: Result */}
       {result && disease && patient && (
