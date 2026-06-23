@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Database, Plus, Search, Download, Trash2, Upload, FileText, ExternalLink } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Database, Plus, Search, Download, Trash2, Upload, FileText, ExternalLink, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -124,8 +125,15 @@ function DatasetsPage() {
                   <div><span className="text-muted-foreground">Rows:</span> {d.row_count ?? "—"}</div>
                   <div><span className="text-muted-foreground">Features:</span> {d.feature_count ?? "—"}</div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button size="sm" variant="outline" onClick={() => setDetail(d)}>View Details</Button>
+                  {d.disease_type && (
+                    <Button size="sm" variant="outline" asChild>
+                      <Link to="/eda" search={{ disease: d.disease_type as "diabetes" | "heart" | "kidney" | "liver" }}>
+                        <BarChart3 className="mr-1 h-3.5 w-3.5" />View EDA
+                      </Link>
+                    </Button>
+                  )}
                   <Button size="sm" variant="outline" disabled><Download className="mr-1 h-3.5 w-3.5" />Download</Button>
                   <Button size="sm" variant="ghost" onClick={() => handleDelete(d.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                 </div>

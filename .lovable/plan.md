@@ -1,104 +1,319 @@
-## Problem
+## Goal
 
-The Full Health Assessment page (`/predict-full`) currently calls `runFullAssessment` with `features: {}`. In `src/lib/multi-disease.ts`, `defaultFeaturesFor()` then fills in **hardcoded clinical values** for every disease (glucose=100, BMI=25, cholesterol=200, bilirubin=0.8, etc.).
+Bring the two partial modules to 100% with auditable artifacts (so they survive a strict rubric review) AND in-app pages so they're visible inside the dashboard.
 
-That means for patient SUREN (only name/age/gender were captured at creation), the predictions you see (Diabetes 62%, Liver 65%, Kidney 0%, Heart 8%) are produced almost entirely from those baked-in defaults — only `age` and `gender` come from the real patient. The results are effectively mock-driven, exactly as you suspected.
+---
 
-The patient creation form only collects identity fields (name, age, gender, contact, notes), which is correct — clinical labs shouldn't live on the patient record forever. The fix belongs on the Full Assessment page: it must collect the clinical inputs before running, or clearly tell the user it's a screening estimate.
+## Module 7 — Model Training & Hyperparameter Tuning
 
-## Plan
+Currently `backend/training/common.py` trains 5 algorithms with hardcoded hyperparameters and picks the best by ROC-AUC. That's model *selection*, not *tuning*. Plan:
 
-### 1. Add a "Clinical Inputs" step on `/predict-full`
+### 1. Add real hyperparameter search to `backend/training/common.py`
 
-Before the **Run Full Health Assessment** button becomes active, render a compact, grouped form that captures the minimum real values each model needs. Defaults stay as placeholders only (greyed), never as silently-submitted values.
+- Replace each entry in `algos()` with `(estimator, param_grid)` pairs.
+- Use `RandomizedSearchCV` (faster, good coverage) with `cv=5`, `scoring="roc_auc"`, `n_iter=20`, `random_state=42`.
+- Grids per algorithm (kept small/sane so training stays under a few minutes):
+  - **LogisticRegression**: `C ∈ {0.01, 0.1, 1, 10}`, `penalty ∈ {l2}`, `solver ∈ {lbfgs, liblinear}`
+  - **RandomForest**: `n_estimators ∈ {200, 400, 600}`, `max_depth ∈ {None, 4, 8, 16}`, `min_samples_split ∈ {2, 5, 10}`
+  - **SVM**: `C ∈ {0.1, 1, 10}`, `kernel ∈ {rbf, linear}`, `gamma ∈ {scale, auto}`
+  - **MLP**: `hidden_layer_sizes ∈ {(64,), (64,32), (128,64)}`, `alpha ∈ {1e-4, 1e-3}`, `learning_rate_init ∈ {1e-3, 1e-2}`
+  - **XGBoost**: `n_estimators ∈ {200, 400}`, `max_depth ∈ {3, 4, 6}`, `learning_rate ∈ {0.05, 0.1, 0.2}`, `subsample ∈ {0.8, 1.0}`
 
-Grouped accordions (collapsed by default, all required to expand-and-fill or explicitly skip):
+### 2. Persist tuning artifacts
 
-- **Shared vitals** (used across diseases): Blood Pressure, BMI, Fasting Glucose
-- **Diabetes extras**: Insulin, Skin Thickness, Pedigree, Pregnancies (only if gender = Female)
-- **Heart extras**: Cholesterol, Max HR, Chest Pain type, Resting ECG, Exercise Angina, ST Depression, Slope, CA, Thal, FBS
-- **Kidney extras**: Specific Gravity, Albumin, Sugar, Serum Creatinine, Sodium, Potassium, Hemoglobin, PCV, WBC, RBC, plus HTN/DM/CAD/Appetite/Pedal Edema/Anemia toggles
-- **Liver extras**: Total/Direct Bilirubin, ALT, AST, Alk Phos, Total Proteins, Albumin, A/G Ratio
+Each per-model metrics JSON (already saved at `backend/app/models/<disease>_<algo>_v1.json`) gains:
 
-Each field uses the existing `FIELD_RANGES` from `src/lib/validation.ts` for min/max/step and inline error messages.
+- `best_params`: the winning hyperparameter dict
+- `search_space`: the grid that was searched (for reproducibility)
+- `cv_results_summary`: mean & std of top 5 candidates
+- `tuning_method`: `"RandomizedSearchCV"` and `n_iter`
 
-### 2. "Skip this disease" toggle per group
+### 3. Expose tuning in the API
 
-If the user has no data for one disease (e.g. no liver panel yet), they can toggle that section off. Full assessment then **excludes** that disease instead of fabricating defaults — the report card shows "Not assessed — labs missing" rather than a misleading percentage.
+- Extend `MetricsRow` in `backend/app/schemas.py` with optional `best_params`, `tuning_method`, `search_space`.
+- `GET /metrics` (already in `backend/app/routers/models.py`) returns them automatically.
 
-### 3. Wire real values into `runFullAssessment`
+### 4. Surface in the Models page
 
-- Build the per-disease `features` overrides from the form state and pass them through `runFullAssessment({ ..., features })`.
-- Remove the silent fallback in `defaultFeaturesFor()` for clinical fields: keep `age`/`gender` derivation, but for unsupplied lab values require an explicit value (or return a `skipped` item for that disease).
-- Update `FullAssessmentItem` to support a `skipped` state and render a neutral card for it.
+- Update `src/routes/models.tsx` to render a "Hyperparameters" section per model: best params table + tuning method badge.
+- Add a small "Tuned with RandomizedSearchCV (5-fold CV, ROC-AUC)" caption.
 
-### 4. Add an explicit screening notice
+### 5. Re-train all 4 diseases
 
-Above the Run button, show the existing `MedicalDisclaimer` (inline variant) plus one line: *"Results reflect the values you enter. Missing labs are not guessed — diseases without inputs will be skipped."*
+Run `python -m training.train_diabetes/heart/kidney/liver`. Commit the regenerated `.pkl` + `.json` artifacts under `backend/app/models/`.
 
-### 5. Persist the entered values
+---
 
-When saving each prediction row to `predictions`, populate `input_features` with the actual values used (currently it stores `{}`). This makes the patient profile history and PDF reports auditable.
+## Module 4 — Exploratory Data Analysis (EDA)
 
-### 6. Patient profile: optional "Last known labs" prefill
+We need a real EDA deliverable per dataset, available both as a static artifact AND inside the app.
 
-When opening Full Assessment for a returning patient, pre-fill the form from the patient's most recent `predictions.input_features` (per disease). This keeps repeat assessments fast without storing labs on the patient record. Pure UX, no schema change.
+### 1. EDA generator script — `backend/training/eda.py`
+
+For each CSV in `backend/data/` (`diabetes.csv`, `heart.csv`, `kidney.csv`, `liver.csv`) compute:
+
+- **Shape & dtypes** (rows, cols, numeric vs categorical)
+- **Missing-value report** (count + %)
+- **Target class balance** (counts + %)
+- **Univariate stats** per feature: mean, std, min, max, q25, q50, q75, skew
+- **Correlation matrix** (Pearson, numeric features only)
+- **Top correlations with target** (sorted by |corr|)
+- **Outlier counts** using IQR rule per feature
+
+Write two outputs per disease:
+
+- `backend/app/eda/<disease>.json` — machine-readable, consumed by the frontend.
+- `backend/app/eda/<disease>.md` — human-readable summary for the report bundle.
+
+### 2. EDA API endpoint
+
+- New router `backend/app/routers/eda.py` with `GET /eda/{disease}` returning the JSON.
+- Wire it in `backend/app/main.py`.
+- Add proxy route `src/routes/api.ml.eda.$disease.ts` mirroring the existing ML proxy pattern.
+
+### 3. In-app EDA page — `src/routes/eda.tsx`
+
+Tabs per disease. Each tab renders:
+
+- **Dataset snapshot card**: rows, cols, missing %, class balance donut.
+- **Feature distribution grid**: small histograms (use existing chart components).
+- **Correlation heatmap**: matrix of |corr| values, color-scaled.
+- **Top correlations with target**: bar chart.
+- **Outlier summary**: table with IQR-flagged counts.
+- **Download buttons**: JSON + Markdown.
+
+Add a sidebar nav entry "EDA" in `src/components/layout/app-shell.tsx`.
+
+### 4. Cross-link from Datasets page
+
+In `src/routes/datasets.tsx`, add a "View EDA" link per dataset card pointing to `/eda?disease=<name>`.
+
+---
 
 ## Technical Details
 
-- Files to edit: `src/routes/predict-full.tsx` (new form UI + state), `src/lib/multi-disease.ts` (accept full overrides, support `skipped`, narrow `defaultFeaturesFor` to age/gender only), `src/lib/predict-audit.ts` if needed for input persistence.
-- No backend changes — the FastAPI predict endpoints already accept the full feature dicts.
-- No DB migration — `predictions.input_features` already exists as `jsonb`.
-- Validation reuses `FIELD_RANGES` and the existing zod-less inline checks already used in `/predict`.
-- Skipped diseases: omit from `health_scores.components` and from the overall mean so the AI Health Score isn't biased by absent data.
+- **Files created**:
+  - `backend/app/eda/{diabetes,heart,kidney,liver}.json`
+  - `backend/app/eda/{diabetes,heart,kidney,liver}.md`
+  - `backend/app/routers/eda.py`
+  - `src/routes/api.ml.eda.$disease.ts`
+  - `src/routes/eda.tsx`
+  - `backend/training/eda.py`
+- **Files edited**:
+  - `backend/training/common.py` (RandomizedSearchCV, save `best_params`)
+  - `backend/training/train_{diabetes,heart,kidney,liver}.py` (no signature change — re-run only)
+  - `backend/app/schemas.py` (extend `MetricsRow`)
+  - `backend/app/main.py` (register EDA router)
+  - `src/routes/models.tsx` (render `best_params`)
+  - `src/routes/datasets.tsx` ("View EDA" link)
+  - `src/components/layout/app-shell.tsx` (nav entry)
+- **No DB migration**, no Supabase schema change. EDA + tuning artifacts live as static JSON next to the models.
+- **No new env vars / secrets** needed.
 
 ## Out of Scope
 
-- Adding clinical fields to the Patient record itself (intentionally avoided — labs change over time).
-- Changing single-disease `/predict` flow (already collects real inputs).
-- Model retraining or backend feature changes.  
-  
-What should be changed
-  Your **Full Health Assessment** should not run immediately after selecting a patient unless clinical data exists.
-  It should work like this:
-  ```
+- Changing prediction logic, model architectures, or feature sets.
+- Replacing existing pages (Datasets, Analytics, Models) — only additive sections.
+- Notebook (.ipynb) deliverables — the Markdown + in-app EDA page replace them and are easier to demo.
 
-  ```
-  ```
-  Select patient
-  ↓
-  Check if full clinical profile exists
-  ↓
-  If missing values exist, show missing-input form
-  ↓
-  User fills required values
-  ↓
-  Run all 4 real predictions
-  ↓
-  Display full assessment result
-  ```
-  Fix the Full Health Assessment module.
-  Currently, full assessment appears to generate results after selecting only patient name, age, gender, and medical notes. This is incorrect because real full assessment requires disease-specific clinical parameters.
-  Requirements:
-  1. Do not use mock/default values for Full Health Assessment.
-  2. Before running full assessment, validate that the patient has all required clinical parameters for:
-  - Diabetes
-  - Heart Disease
-  - Kidney Disease
-  - Liver Disease
-  3. If any required field is missing, show a “Complete Clinical Profile” step.
-  4. Group missing fields by disease:
-  - Diabetes: glucose, bloodPressure, skinThickness, insulin, bmi, diabetesPedigreeFunction, age, pregnancies only if female
-  - Heart: chestPainType, restingBP, cholesterol, fastingBS, restingECG, maxHR, exerciseAngina, stDepression
-  - Kidney: bloodPressure, specificGravity, albumin, bloodGlucoseRandom, bloodUrea, serumCreatinine, hemoglobin, packedCellVolume
-  - Liver: totalBilirubin, directBilirubin, alkalinePhosphotase, sgpt, sgot, totalProteins, albumin, albuminAndGlobulinRatio
-  5. Age and gender should come from patient profile automatically.
-  6. Gender-specific rules:
-  - Diabetes: if male, hide pregnancies and send pregnancies = 0
-  - Heart: auto-map gender to sex
-  - Liver: use patient gender automatically
-  - Kidney: apply gender-specific normal ranges
-  7. Disable “Run Full Assessment” until all required clinical fields are completed.
-  8. Store completed clinical profile in Supabase so it can be reused later.
-  9. Display a warning if results are generated from demo values. But the final system should never use demo values.
-  10. Show only real API-based prediction results from the FastAPI backend.
+## Verification
+
+- `GET /api/ml/metrics` returns `best_params` for every model.
+- `GET /api/ml/eda/diabetes` returns full JSON.
+- `/models` page shows hyperparameter section.
+- `/eda` page renders all 4 disease tabs with charts.
+
+# After re-training, `backend/app/models/*.json` all contain `tuning_method: "RandomizedSearchCV"`.  
+  
+Module 7 Review  
+  
+One small improvement: for pipelines, parameter names must include the step name.
+
+Example for Logistic Regression:
+
+```
+
+```
+
+```
+clf__C
+clf__penalty
+clf__solver
+```
+
+For SVM:
+
+```
+
+```
+
+```
+clf__C
+clf__kernel
+clf__gamma
+```
+
+For MLP:
+
+```
+
+```
+
+```
+clf__hidden_layer_sizes
+clf__alpha
+clf__learning_rate_init
+```
+
+For Random Forest and XGBoost, direct names are fine:
+
+```
+
+```
+
+```
+n_estimators
+max_depth
+min_samples_split
+```
+
+Also, `n_iter=20` is okay, but if training becomes slow, reduce to:
+
+```
+
+```
+
+```
+n_iter=10
+```
+
+Your JSON artifact idea is excellent:
+
+```
+
+```
+
+```
+best_params
+search_space
+cv_results_summary
+tuning_method
+```
+
+That is exactly what proves hyperparameter tuning was done.  
+
+
+# **Module 4 Review**
+
+Your EDA plan is also excellent.
+
+The best part is this:
+
+```
+
+```
+
+```
+backend/app/eda/<disease>.json
+backend/app/eda/<disease>.md
+```
+
+That gives you both:
+
+-   
+app-readable artifact  
+
+-   
+report/viva-readable artifact  
+
+
+Add one more thing to EDA:
+
+```
+
+```
+
+```
+data_quality_score
+```
+
+Example:
+
+```
+
+```
+
+```
+Missing values: 0%
+Duplicates: 2
+Class balance: Good
+Outlier level: Moderate
+Overall quality score: 86/100
+```
+
+This makes the EDA page look more advanced.
+
+## Important Warning
+
+If your current datasets are **synthetic**, your EDA charts and model metrics will look valid technically, but you should mention:
+
+```
+
+```
+
+```
+Synthetic demo datasets were used for end-to-end system validation. The system can be retrained with real clinical datasets.
+```
+
+Do not present synthetic data as real clinical data.
+
+## Suggested Additions
+
+Add these small items to your verification list:
+
+```
+
+```
+
+```
+GET /health still returns models_loaded > 0
+GET /metrics includes tuning_method and best_params
+GET /eda/diabetes returns JSON
+/eda page has all 4 disease tabs
+/models page displays tuned parameters
+PDF/report can reference EDA and tuning artifacts
+```
+
+Make sure the final version includes:
+
+```
+
+```
+
+```
+Pipeline params:
+clf__C
+clf__kernel
+clf__hidden_layer_sizes
+```
+
+and EDA includes:
+
+```
+
+```
+
+```
+data_quality_score
+synthetic dataset disclaimer
+```
+
+Also add this to verification:
+
+```
+
+```
+
+```
+GET /health → models_loaded > 0
+```

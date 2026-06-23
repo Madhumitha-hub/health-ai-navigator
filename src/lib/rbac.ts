@@ -9,6 +9,7 @@ export type RoutePath =
   | "/dashboard"
   | "/predict"
   | "/analytics"
+  | "/eda"
   | "/datasets"
   | "/models"
   | "/patients"
@@ -20,6 +21,7 @@ const PERMISSIONS: Record<string, RoutePath[]> = {
     "/dashboard",
     "/predict",
     "/analytics",
+    "/eda",
     "/datasets",
     "/models",
     "/patients",
@@ -27,7 +29,7 @@ const PERMISSIONS: Record<string, RoutePath[]> = {
     "/settings",
   ],
   doctor: ["/dashboard", "/predict", "/patients", "/reports", "/settings"],
-  analyst: ["/dashboard", "/analytics", "/models", "/settings"],
+  analyst: ["/dashboard", "/analytics", "/eda", "/datasets", "/models", "/settings"],
   patient: ["/dashboard", "/reports", "/settings"],
 };
 

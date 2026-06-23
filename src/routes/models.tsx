@@ -149,6 +149,10 @@ function ModelsPage() {
         <FeatureImportanceGrid />
       </div>
 
+      <HyperparameterTuningSection />
+
+
+
 
 
       {bestByDisease.length > 0 && (
@@ -380,5 +384,100 @@ function Cell({ value, pct, kind, label }: { value: number; pct: number; kind: "
       <div className="text-2xl font-bold">{value}</div>
       <div className="text-xs">{pct.toFixed(1)}%</div>
     </div>
+  );
+}
+
+type MlMetricRow = {
+  disease: string;
+  algorithm: string;
+  is_best: boolean;
+  tuning_method?: string | null;
+  n_iter?: number | null;
+  cv_folds?: number | null;
+  best_params?: Record<string, unknown> | null;
+  cv_score?: number | null;
+  roc_auc?: number | null;
+};
+
+function HyperparameterTuningSection() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["ml", "metrics", "tuning"],
+    queryFn: async () => {
+      const r = await fetch("/api/ml/metrics");
+      if (!r.ok) throw new Error(`Metrics fetch failed (${r.status})`);
+      return (await r.json()) as { metrics: MlMetricRow[] };
+    },
+    retry: false,
+  });
+
+  if (isLoading) return <Skeleton className="h-32" />;
+  if (error || !data) return null;
+
+  const tuned = data.metrics.filter((m) => m.best_params && Object.keys(m.best_params).length > 0);
+  if (!tuned.length) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Hyperparameter Tuning</CardTitle>
+          <CardDescription>
+            No tuning metadata found. Re-train with the updated{" "}
+            <code className="rounded bg-muted px-1">backend/training/common.py</code> to populate
+            <code className="rounded bg-muted px-1">best_params</code>.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Hyperparameter Tuning</CardTitle>
+        <CardDescription>
+          Tuned with RandomizedSearchCV (5-fold CV, ROC-AUC). Best parameters per model.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Disease</TableHead>
+              <TableHead>Algorithm</TableHead>
+              <TableHead>Method</TableHead>
+              <TableHead>CV Score</TableHead>
+              <TableHead>Best Parameters</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tuned.map((m, i) => (
+              <TableRow key={`${m.disease}-${m.algorithm}-${i}`}>
+                <TableCell>
+                  <Badge className={DISEASE_BADGE[m.disease] ?? ""}>{m.disease}</Badge>
+                </TableCell>
+                <TableCell className="font-medium">
+                  {m.algorithm.replace(/_/g, " ")}
+                  {m.is_best && <Crown className="ml-1 inline h-3.5 w-3.5 text-amber-500" />}
+                </TableCell>
+                <TableCell className="text-xs">
+                  {m.tuning_method ?? "—"}
+                  {m.n_iter ? ` · n_iter=${m.n_iter}` : ""}
+                  {m.cv_folds ? ` · cv=${m.cv_folds}` : ""}
+                </TableCell>
+                <TableCell>{m.cv_score?.toFixed(3) ?? "—"}</TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(m.best_params ?? {}).map(([k, v]) => (
+                      <Badge key={k} variant="outline" className="font-mono text-[10px]">
+                        {k}={JSON.stringify(v)}
+                      </Badge>
+                    ))}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

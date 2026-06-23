@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import ALLOWED_ORIGINS
-from app.routers import analytics, clinical, health, health_score, models, predict, recommendations
+from app.routers import analytics, clinical, eda, health, health_score, models, predict, recommendations
 
 app = FastAPI(
     title="HealthPredict ML API",
@@ -29,6 +29,7 @@ app.include_router(recommendations.router, tags=["recommendations"])
 app.include_router(health_score.router, tags=["health-score"])
 app.include_router(analytics.router, tags=["analytics"])
 app.include_router(clinical.router, tags=["clinical"])
+app.include_router(eda.router, tags=["eda"])
 
 
 @app.get("/")

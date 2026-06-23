@@ -32,6 +32,12 @@ def metrics() -> MetricsResponse:
                 cv_score=md.get("cv_score"),
                 confusion_matrix=md.get("confusion_matrix"),
                 feature_importance=md.get("feature_importance"),
+                tuning_method=md.get("tuning_method"),
+                n_iter=md.get("n_iter"),
+                cv_folds=md.get("cv_folds"),
+                best_params=md.get("best_params"),
+                search_space=md.get("search_space"),
+                cv_results_summary=md.get("cv_results_summary"),
             )
         )
     return MetricsResponse(metrics=rows)

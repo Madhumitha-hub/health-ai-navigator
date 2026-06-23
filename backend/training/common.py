@@ -1,9 +1,10 @@
-"""Shared training utilities."""
+"""Shared training utilities with hyperparameter tuning (RandomizedSearchCV)."""
 from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import joblib
 import numpy as np
@@ -18,7 +19,7 @@ from sklearn.metrics import (
     recall_score,
     roc_auc_score,
 )
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -34,28 +35,65 @@ DATA_DIR = ROOT / "data"
 MODELS_DIR = ROOT / "app" / "models"
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
+N_ITER = 20  # Lower (e.g. 10) for faster runs on slow machines.
+CV_FOLDS = 5
+TUNING_METHOD = "RandomizedSearchCV"
 
-def algos():
-    out = {
-        "logistic_regression": Pipeline(
-            [("sc", StandardScaler()), ("clf", LogisticRegression(max_iter=1000))]
+
+def algos() -> dict[str, tuple[Any, dict[str, list[Any]]]]:
+    """Return (estimator, param_grid) tuples.
+
+    Pipeline-wrapped estimators expose the inner classifier as `clf`, so
+    their hyperparameter keys MUST be prefixed `clf__` (e.g. `clf__C`).
+    """
+    out: dict[str, tuple[Any, dict[str, list[Any]]]] = {
+        "logistic_regression": (
+            Pipeline([("sc", StandardScaler()), ("clf", LogisticRegression(max_iter=1000))]),
+            {
+                "clf__C": [0.01, 0.1, 1.0, 10.0],
+                "clf__penalty": ["l2"],
+                "clf__solver": ["lbfgs", "liblinear"],
+            },
         ),
-        "random_forest": RandomForestClassifier(n_estimators=300, random_state=42),
-        "svm": Pipeline([("sc", StandardScaler()), ("clf", SVC(probability=True))]),
-        "mlp": Pipeline(
-            [
-                ("sc", StandardScaler()),
-                ("clf", MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=400, random_state=42)),
-            ]
+        "random_forest": (
+            RandomForestClassifier(random_state=42),
+            {
+                "n_estimators": [200, 400, 600],
+                "max_depth": [None, 4, 8, 16],
+                "min_samples_split": [2, 5, 10],
+            },
+        ),
+        "svm": (
+            Pipeline([("sc", StandardScaler()), ("clf", SVC(probability=True))]),
+            {
+                "clf__C": [0.1, 1.0, 10.0],
+                "clf__kernel": ["rbf", "linear"],
+                "clf__gamma": ["scale", "auto"],
+            },
+        ),
+        "mlp": (
+            Pipeline(
+                [
+                    ("sc", StandardScaler()),
+                    ("clf", MLPClassifier(max_iter=400, random_state=42)),
+                ]
+            ),
+            {
+                "clf__hidden_layer_sizes": [(64,), (64, 32), (128, 64)],
+                "clf__alpha": [1e-4, 1e-3],
+                "clf__learning_rate_init": [1e-3, 1e-2],
+            },
         ),
     }
     if XGBClassifier is not None:
-        out["xgboost"] = XGBClassifier(
-            n_estimators=300,
-            learning_rate=0.1,
-            max_depth=4,
-            eval_metric="logloss",
-            random_state=42,
+        out["xgboost"] = (
+            XGBClassifier(eval_metric="logloss", random_state=42),
+            {
+                "n_estimators": [200, 400],
+                "max_depth": [3, 4, 6],
+                "learning_rate": [0.05, 0.1, 0.2],
+                "subsample": [0.8, 1.0],
+            },
         )
     return out
 
@@ -83,6 +121,21 @@ def load_csv(name: str, target_col: str = "Outcome") -> tuple[pd.DataFrame, pd.S
     return X, y
 
 
+def _serializable(value: Any) -> Any:
+    """Make hyperparameter values JSON-serializable (tuples, numpy types)."""
+    if isinstance(value, tuple):
+        return list(value)
+    if isinstance(value, (np.integer,)):
+        return int(value)
+    if isinstance(value, (np.floating,)):
+        return float(value)
+    if isinstance(value, dict):
+        return {k: _serializable(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_serializable(v) for v in value]
+    return value
+
+
 def train_disease(disease: str, X: pd.DataFrame, y: pd.Series, version: str = "v1") -> dict:
     print(f"\n=== Training {disease} ({len(X)} rows, {X.shape[1]} features) ===")
     X_train, X_test, y_train, y_test = train_test_split(
@@ -91,8 +144,30 @@ def train_disease(disease: str, X: pd.DataFrame, y: pd.Series, version: str = "v
 
     results = {}
     best_name, best_auc = None, -1.0
-    for name, est in algos().items():
-        est.fit(X_train, y_train)
+    for name, (estimator, grid) in algos().items():
+        # n_iter must not exceed the number of unique combos.
+        try:
+            from sklearn.model_selection import ParameterGrid
+
+            max_iter = max(1, len(list(ParameterGrid(grid))))
+        except Exception:  # noqa: BLE001
+            max_iter = N_ITER
+        n_iter = min(N_ITER, max_iter)
+
+        search = RandomizedSearchCV(
+            estimator,
+            param_distributions=grid,
+            n_iter=n_iter,
+            scoring="roc_auc",
+            cv=CV_FOLDS,
+            random_state=42,
+            n_jobs=-1,
+            refit=True,
+            return_train_score=False,
+        )
+        search.fit(X_train, y_train)
+        est = search.best_estimator_
+
         if hasattr(est, "predict_proba"):
             proba = est.predict_proba(X_test)[:, 1]
         else:
@@ -105,10 +180,7 @@ def train_disease(disease: str, X: pd.DataFrame, y: pd.Series, version: str = "v
             auc = float(roc_auc_score(y_test, proba))
         except Exception:  # noqa: BLE001
             auc = float("nan")
-        try:
-            cv = float(np.mean(cross_val_score(est, X, y, cv=5, scoring="roc_auc")))
-        except Exception:  # noqa: BLE001
-            cv = float("nan")
+        cv = float(search.best_score_)
 
         importance: dict[str, float] = {}
         target = est.named_steps["clf"] if hasattr(est, "named_steps") else est
@@ -120,17 +192,36 @@ def train_disease(disease: str, X: pd.DataFrame, y: pd.Series, version: str = "v
             coef = np.ravel(target.coef_)
             importance = {c: float(abs(v)) for c, v in zip(X.columns, coef)}
 
+        # Top-5 candidate summary from CV results.
+        cvr = search.cv_results_
+        order = np.argsort(cvr["mean_test_score"])[::-1][:5]
+        cv_summary = [
+            {
+                "rank": int(i + 1),
+                "mean_test_score": round(float(cvr["mean_test_score"][idx]), 4),
+                "std_test_score": round(float(cvr["std_test_score"][idx]), 4),
+                "params": _serializable(cvr["params"][idx]),
+            }
+            for i, idx in enumerate(order)
+        ]
+
         metrics = {
             "accuracy": round(float(accuracy_score(y_test, preds)), 4),
             "precision": round(float(precision_score(y_test, preds, zero_division=0)), 4),
             "recall": round(float(recall_score(y_test, preds, zero_division=0)), 4),
             "f1": round(float(f1_score(y_test, preds, zero_division=0)), 4),
             "roc_auc": round(auc, 4) if auc == auc else None,
-            "cv_score": round(cv, 4) if cv == cv else None,
+            "cv_score": round(cv, 4),
             "confusion_matrix": {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)},
             "feature_importance": importance,
             "trained_at": datetime.now(timezone.utc).isoformat(),
             "is_best": False,
+            "tuning_method": TUNING_METHOD,
+            "n_iter": int(n_iter),
+            "cv_folds": int(CV_FOLDS),
+            "best_params": _serializable(search.best_params_),
+            "search_space": _serializable(grid),
+            "cv_results_summary": cv_summary,
         }
         results[name] = (est, metrics)
         if metrics["roc_auc"] is not None and metrics["roc_auc"] > best_auc:
@@ -145,16 +236,9 @@ def train_disease(disease: str, X: pd.DataFrame, y: pd.Series, version: str = "v
         flag = " *BEST*" if metrics["is_best"] else ""
         print(
             f"  {name:>20}  acc={metrics['accuracy']:.3f}  "
-            f"auc={metrics['roc_auc']}  cv={metrics['cv_score']}{flag}"
+            f"auc={metrics['roc_auc']}  cv={metrics['cv_score']}  "
+            f"best={metrics['best_params']}{flag}"
         )
 
     print(f"\nBest model for {disease}: {best_name} (ROC-AUC={best_auc:.3f})")
-    print("\n-- Optional Supabase UPSERT SQL --")
-    for name, (_, m) in results.items():
-        print(
-            f"UPDATE public.models SET accuracy={m['accuracy']}, precision_score={m['precision']}, "
-            f"recall={m['recall']}, f1_score={m['f1']}, roc_auc={m['roc_auc']}, "
-            f"cv_score={m['cv_score']}, is_best={'true' if m['is_best'] else 'false'}, "
-            f"trained_at=now() WHERE disease_type='{disease}' AND algorithm='{name}' AND version='{version}';"
-        )
     return results

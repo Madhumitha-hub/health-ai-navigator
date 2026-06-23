@@ -50,7 +50,8 @@ type NavItem = {
 const navItems: NavItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Disease Prediction", url: "/predict", icon: Stethoscope, badge: "Core" },
-  { title: "EDA & Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "EDA Reports", url: "/eda", icon: BarChart3, badge: "New" },
   { title: "Dataset Manager", url: "/datasets", icon: Database },
   { title: "Model Performance", url: "/models", icon: BrainCircuit },
   { title: "Patient Records", url: "/patients", icon: UserRound },
