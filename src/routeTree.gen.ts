@@ -19,6 +19,7 @@ import { Route as PatientsRouteImport } from './routes/patients'
 import { Route as ModelsRouteImport } from './routes/models'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as EdaRouteImport } from './routes/eda'
 import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
 import { Route as DatasetsRouteImport } from './routes/datasets'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -87,6 +88,11 @@ const LoginRoute = LoginRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdaRoute = EdaRouteImport.update({
+  id: '/eda',
+  path: '/eda',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiagnosticsRoute = DiagnosticsRouteImport.update({
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/datasets': typeof DatasetsRoute
   '/diagnostics': typeof DiagnosticsRoute
+  '/eda': typeof EdaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/models': typeof ModelsRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/datasets': typeof DatasetsRoute
   '/diagnostics': typeof DiagnosticsRoute
+  '/eda': typeof EdaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/models': typeof ModelsRoute
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/datasets': typeof DatasetsRoute
   '/diagnostics': typeof DiagnosticsRoute
+  '/eda': typeof EdaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/models': typeof ModelsRoute
@@ -289,6 +298,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/datasets'
     | '/diagnostics'
+    | '/eda'
     | '/forgot-password'
     | '/login'
     | '/models'
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/datasets'
     | '/diagnostics'
+    | '/eda'
     | '/forgot-password'
     | '/login'
     | '/models'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/datasets'
     | '/diagnostics'
+    | '/eda'
     | '/forgot-password'
     | '/login'
     | '/models'
@@ -383,6 +395,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DatasetsRoute: typeof DatasetsRoute
   DiagnosticsRoute: typeof DiagnosticsRoute
+  EdaRoute: typeof EdaRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   ModelsRoute: typeof ModelsRoute
@@ -478,6 +491,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eda': {
+      id: '/eda'
+      path: '/eda'
+      fullPath: '/eda'
+      preLoaderRoute: typeof EdaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diagnostics': {
@@ -634,6 +654,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DatasetsRoute: DatasetsRoute,
   DiagnosticsRoute: DiagnosticsRoute,
+  EdaRoute: EdaRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   ModelsRoute: ModelsRoute,
