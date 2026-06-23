@@ -403,7 +403,7 @@ function HyperparameterTuningSection() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["ml", "metrics", "tuning"],
     queryFn: async () => {
-      const r = await fetch("/api/ml/metrics");
+      const r = await authedFetch("/api/ml/metrics");
       if (!r.ok) throw new Error(`Metrics fetch failed (${r.status})`);
       return (await r.json()) as { metrics: MlMetricRow[] };
     },

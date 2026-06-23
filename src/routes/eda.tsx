@@ -98,7 +98,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
   const { data, isLoading, error } = useQuery<EdaPayload | { error: string; fallback: true }>({
     queryKey: ["eda", disease],
     queryFn: async () => {
-      const r = await fetch(`/api/ml/eda/${disease}`);
+      const r = await authedFetch(`/api/ml/eda/${disease}`);
       if (!r.ok) throw new Error((await r.text()) || `Failed (${r.status})`);
       return r.json();
     },

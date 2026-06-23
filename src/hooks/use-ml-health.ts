@@ -32,7 +32,7 @@ async function fetchHealth(): Promise<MlHealth> {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch(`${PREDICT_API_BASE}/health`, { signal: ctrl.signal });
+    const res = await authedFetch(`${PREDICT_API_BASE}/health`, { signal: ctrl.signal });
     clearTimeout(t);
     const latencyMs = Math.round(performance.now() - start);
     if (!res.ok) {

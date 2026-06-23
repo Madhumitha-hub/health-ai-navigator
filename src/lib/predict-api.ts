@@ -49,7 +49,7 @@ export async function predictDisease(input: PredictionInput): Promise<Prediction
   const start = performance.now();
   let res: Response | undefined;
   try {
-    res = await fetch(`${PREDICT_API_BASE}/predict/${input.disease}`, {
+    res = await authedFetch(`${PREDICT_API_BASE}/predict/${input.disease}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
