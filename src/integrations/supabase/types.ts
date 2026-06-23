@@ -593,6 +593,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      record_prediction_audit: {
+        Args: {
+          _api_base_url: string
+          _api_error: string
+          _api_latency_ms: number
+          _api_status_code: number
+          _disease: string
+          _model_version: string
+          _request_payload: Json
+          _request_payload_hash: string
+          _risk_level: string
+          _risk_score: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "doctor" | "patient" | "admin"

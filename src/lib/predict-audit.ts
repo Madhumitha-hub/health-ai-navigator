@@ -41,21 +41,19 @@ export async function auditPrediction(input: AuditInput, outcome: AuditOutcome) 
 
     const hash = await hashPayload(input.features);
 
-    const row = {
-      user_id: userId,
-      disease: input.disease,
-      request_payload_hash: hash,
-      request_payload: input.features,
-      risk_score: outcome.ok ? outcome.result.probability : null,
-      risk_level: outcome.ok ? outcome.result.riskLabel : null,
-      model_version: outcome.ok ? outcome.result.modelVersion : null,
-      api_base_url: PREDICT_API_BASE,
-      api_status_code: outcome.ok ? 200 : outcome.statusCode ?? null,
-      api_latency_ms: outcome.latencyMs,
-      api_error: outcome.ok ? null : outcome.error,
-    };
-
-    await supabase.from("prediction_audit").insert(row);
+    await supabase.rpc("record_prediction_audit", {
+      _disease: input.disease,
+      _request_payload_hash: hash,
+      _request_payload: input.features as never,
+      _risk_score: outcome.ok ? outcome.result.probability : null,
+      _risk_level: outcome.ok ? outcome.result.riskLabel : null,
+      _model_version: outcome.ok ? outcome.result.modelVersion : null,
+      _api_base_url: PREDICT_API_BASE,
+      _api_status_code: outcome.ok ? 200 : outcome.statusCode ?? null,
+      _api_latency_ms: outcome.latencyMs,
+      _api_error: outcome.ok ? null : outcome.error,
+    });
+    void userId;
   } catch (e) {
     // Never let audit failure break the user flow
     console.warn("[audit] failed to record prediction", e);
