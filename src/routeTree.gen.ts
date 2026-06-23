@@ -31,6 +31,7 @@ import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
 import { Route as ApiMlMetricsRouteImport } from './routes/api.ml.metrics'
 import { Route as ApiMlHealthRouteImport } from './routes/api.ml.health'
 import { Route as ApiMlAnalyticsRouteImport } from './routes/api.ml.analytics'
+import { Route as ApiMlPredictFullAssessmentRouteImport } from './routes/api.ml.predict.full-assessment'
 import { Route as ApiMlPredictDiseaseRouteImport } from './routes/api.ml.predict.$disease'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -143,6 +144,12 @@ const ApiMlAnalyticsRoute = ApiMlAnalyticsRouteImport.update({
   path: '/api/ml/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMlPredictFullAssessmentRoute =
+  ApiMlPredictFullAssessmentRouteImport.update({
+    id: '/api/ml/predict/full-assessment',
+    path: '/api/ml/predict/full-assessment',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiMlPredictDiseaseRoute = ApiMlPredictDiseaseRouteImport.update({
   id: '/api/ml/predict/$disease',
   path: '/api/ml/predict/$disease',
@@ -173,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
+  '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -198,6 +206,7 @@ export interface FileRoutesByTo {
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml': typeof ApiMlIndexRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
+  '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -224,6 +233,7 @@ export interface FileRoutesById {
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
   '/api/ml/': typeof ApiMlIndexRoute
   '/api/ml/predict/$disease': typeof ApiMlPredictDiseaseRoute
+  '/api/ml/predict/full-assessment': typeof ApiMlPredictFullAssessmentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/api/ml/recommendations'
     | '/api/ml/'
     | '/api/ml/predict/$disease'
+    | '/api/ml/predict/full-assessment'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/api/ml/recommendations'
     | '/api/ml'
     | '/api/ml/predict/$disease'
+    | '/api/ml/predict/full-assessment'
   id:
     | '__root__'
     | '/'
@@ -301,6 +313,7 @@ export interface FileRouteTypes {
     | '/api/ml/recommendations'
     | '/api/ml/'
     | '/api/ml/predict/$disease'
+    | '/api/ml/predict/full-assessment'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -326,6 +339,7 @@ export interface RootRouteChildren {
   ApiMlRecommendationsRoute: typeof ApiMlRecommendationsRoute
   ApiMlIndexRoute: typeof ApiMlIndexRoute
   ApiMlPredictDiseaseRoute: typeof ApiMlPredictDiseaseRoute
+  ApiMlPredictFullAssessmentRoute: typeof ApiMlPredictFullAssessmentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -484,6 +498,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMlAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ml/predict/full-assessment': {
+      id: '/api/ml/predict/full-assessment'
+      path: '/api/ml/predict/full-assessment'
+      fullPath: '/api/ml/predict/full-assessment'
+      preLoaderRoute: typeof ApiMlPredictFullAssessmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ml/predict/$disease': {
       id: '/api/ml/predict/$disease'
       path: '/api/ml/predict/$disease'
@@ -529,6 +550,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMlRecommendationsRoute: ApiMlRecommendationsRoute,
   ApiMlIndexRoute: ApiMlIndexRoute,
   ApiMlPredictDiseaseRoute: ApiMlPredictDiseaseRoute,
+  ApiMlPredictFullAssessmentRoute: ApiMlPredictFullAssessmentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
