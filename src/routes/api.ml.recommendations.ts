@@ -1,12 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { mlOptionsResponse, proxyMlRequest } from "@/lib/ml-proxy";
 import { generateRecommendations } from "@/lib/recommendations";
+import { requireAuthInRoute } from "@/lib/route-auth";
 
 export const Route = createFileRoute("/api/ml/recommendations")({
   server: {
     handlers: {
       OPTIONS: async () => mlOptionsResponse(),
       POST: async ({ request }) => {
+        const unauthorized = await requireAuthInRoute(request);
+        if (unauthorized) return unauthorized;
         const body = await request.text();
         const upstream = await proxyMlRequest("/recommendations", {
           method: "POST",
@@ -14,7 +17,6 @@ export const Route = createFileRoute("/api/ml/recommendations")({
           body,
         });
         if (upstream.status !== 404 && upstream.status !== 503) return upstream;
-        // Fallback when backend doesn't expose /recommendations yet.
         try {
           const payload = JSON.parse(body) as {
             disease?: "diabetes" | "heart" | "kidney" | "liver";

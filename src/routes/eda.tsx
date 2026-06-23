@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart3, Download, FileWarning, Info } from "lucide-react";
+import { authedFetch } from "@/lib/authed-fetch";
 import {
   Bar,
   BarChart,
@@ -98,7 +99,7 @@ function EdaTab({ disease, tone }: { disease: Disease; tone: string }) {
   const { data, isLoading, error } = useQuery<EdaPayload | { error: string; fallback: true }>({
     queryKey: ["eda", disease],
     queryFn: async () => {
-      const r = await fetch(`/api/ml/eda/${disease}`);
+      const r = await authedFetch(`/api/ml/eda/${disease}`);
       if (!r.ok) throw new Error((await r.text()) || `Failed (${r.status})`);
       return r.json();
     },

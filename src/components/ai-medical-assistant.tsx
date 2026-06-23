@@ -16,6 +16,7 @@ import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MedicalDisclaimer } from "@/components/medical-disclaimer";
+import { authedFetch } from "@/lib/authed-fetch";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -60,7 +61,7 @@ export function AiMedicalAssistant() {
     setInput("");
     setLoading(true);
     try {
-      const res = await fetch("/api/ai-assistant", {
+      const res = await authedFetch("/api/ai-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

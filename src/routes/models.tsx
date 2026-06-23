@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { authedFetch } from "@/lib/authed-fetch";
 import { BrainCircuit, Crown, ArrowUpDown } from "lucide-react";
 import {
   Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ReferenceLine,
@@ -403,7 +404,7 @@ function HyperparameterTuningSection() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["ml", "metrics", "tuning"],
     queryFn: async () => {
-      const r = await fetch("/api/ml/metrics");
+      const r = await authedFetch("/api/ml/metrics");
       if (!r.ok) throw new Error(`Metrics fetch failed (${r.status})`);
       return (await r.json()) as { metrics: MlMetricRow[] };
     },
