@@ -6,6 +6,7 @@
  * safety rules (no diagnosis, always recommend a clinician).
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { requireAuthInRoute } from "@/lib/route-auth";
 
 type ClientMessage = { role: "user" | "assistant"; content: string };
 type RequestBody = { messages?: ClientMessage[]; context?: Record<string, unknown> };
@@ -25,6 +26,8 @@ export const Route = createFileRoute("/api/ai-assistant")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const unauthorized = await requireAuthInRoute(request);
+        if (unauthorized) return unauthorized;
         const apiKey = process.env.LOVABLE_API_KEY;
         if (!apiKey) {
           return new Response(JSON.stringify({ error: "AI assistant is not configured." }), {

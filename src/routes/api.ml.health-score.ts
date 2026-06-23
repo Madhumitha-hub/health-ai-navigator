@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { mlOptionsResponse, proxyMlRequest } from "@/lib/ml-proxy";
+import { requireAuthInRoute } from "@/lib/route-auth";
 
 export const Route = createFileRoute("/api/ml/health-score")({
   server: {
     handlers: {
       OPTIONS: async () => mlOptionsResponse(),
       POST: async ({ request }) => {
+        const unauthorized = await requireAuthInRoute(request);
+        if (unauthorized) return unauthorized;
         const body = await request.text();
         const upstream = await proxyMlRequest("/health-score", {
           method: "POST",
@@ -13,7 +16,6 @@ export const Route = createFileRoute("/api/ml/health-score")({
           body,
         });
         if (upstream.status !== 404) return upstream;
-        // Frontend fallback: same math as backend service
         try {
           const { probabilities } = JSON.parse(body) as { probabilities: Record<string, number> };
           const values = Object.values(probabilities ?? {});
