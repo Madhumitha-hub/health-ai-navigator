@@ -24,6 +24,9 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientsIdRouteImport } from './routes/patients.$id'
+import { Route as ApiMlIndexRouteImport } from './routes/api.ml.index'
+import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
+import { Route as ApiMlHealthRouteImport } from './routes/api.ml.health'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -100,6 +103,21 @@ const PatientsIdRoute = PatientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PatientsRoute,
 } as any)
+const ApiMlIndexRoute = ApiMlIndexRouteImport.update({
+  id: '/api/ml/',
+  path: '/api/ml/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlModelsRoute = ApiMlModelsRouteImport.update({
+  id: '/api/ml/models',
+  path: '/api/ml/models',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlHealthRoute = ApiMlHealthRouteImport.update({
+  id: '/api/ml/health',
+  path: '/api/ml/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +135,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/patients/$id': typeof PatientsIdRoute
+  '/api/ml/health': typeof ApiMlHealthRoute
+  '/api/ml/models': typeof ApiMlModelsRoute
+  '/api/ml/': typeof ApiMlIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -134,6 +155,9 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/patients/$id': typeof PatientsIdRoute
+  '/api/ml/health': typeof ApiMlHealthRoute
+  '/api/ml/models': typeof ApiMlModelsRoute
+  '/api/ml': typeof ApiMlIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -152,6 +176,9 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/patients/$id': typeof PatientsIdRoute
+  '/api/ml/health': typeof ApiMlHealthRoute
+  '/api/ml/models': typeof ApiMlModelsRoute
+  '/api/ml/': typeof ApiMlIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +198,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/settings'
     | '/patients/$id'
+    | '/api/ml/health'
+    | '/api/ml/models'
+    | '/api/ml/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +218,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/settings'
     | '/patients/$id'
+    | '/api/ml/health'
+    | '/api/ml/models'
+    | '/api/ml'
   id:
     | '__root__'
     | '/'
@@ -205,6 +238,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/settings'
     | '/patients/$id'
+    | '/api/ml/health'
+    | '/api/ml/models'
+    | '/api/ml/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -222,6 +258,9 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
+  ApiMlHealthRoute: typeof ApiMlHealthRoute
+  ApiMlModelsRoute: typeof ApiMlModelsRoute
+  ApiMlIndexRoute: typeof ApiMlIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -331,6 +370,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientsIdRouteImport
       parentRoute: typeof PatientsRoute
     }
+    '/api/ml/': {
+      id: '/api/ml/'
+      path: '/api/ml'
+      fullPath: '/api/ml/'
+      preLoaderRoute: typeof ApiMlIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/models': {
+      id: '/api/ml/models'
+      path: '/api/ml/models'
+      fullPath: '/api/ml/models'
+      preLoaderRoute: typeof ApiMlModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/health': {
+      id: '/api/ml/health'
+      path: '/api/ml/health'
+      fullPath: '/api/ml/health'
+      preLoaderRoute: typeof ApiMlHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -361,6 +421,9 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
+  ApiMlHealthRoute: ApiMlHealthRoute,
+  ApiMlModelsRoute: ApiMlModelsRoute,
+  ApiMlIndexRoute: ApiMlIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
