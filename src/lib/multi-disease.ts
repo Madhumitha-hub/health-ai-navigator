@@ -1,31 +1,32 @@
 /**
  * Multi-disease full-body screening orchestrator.
  *
- * Runs all four disease predictors in parallel using the same predict-api
- * client and produces a combined report. Each disease gets a baseline
- * feature payload derived from the shared patient data plus any
- * disease-specific values the caller provides.
+ * Runs the requested disease predictors in parallel using real clinical
+ * inputs provided by the caller. Diseases without inputs are returned as
+ * `skipped` rather than guessed — no hardcoded clinical defaults are used.
+ *
+ * Only `age` and `gender` are auto-derived from the patient record; every
+ * other feature must come from the caller's form.
  */
 import { predictDisease, type DiseaseKey, type PredictionResult } from "./predict-api";
 
 export type FullAssessmentInput = {
   patient_id?: string;
   patient: { age?: number | null; gender?: string | null };
-  /** Per-disease feature overrides keyed by disease and then by field name. */
+  /** Per-disease feature payloads. Omit a disease (or pass undefined) to skip it. */
   features: Partial<Record<DiseaseKey, Record<string, number | string | boolean>>>;
 };
 
-export type FullAssessmentItem = {
-  disease: DiseaseKey;
-  ok: boolean;
-  result?: PredictionResult;
-  error?: string;
-};
+export type FullAssessmentItem =
+  | { disease: DiseaseKey; status: "ok"; result: PredictionResult; features: Record<string, number | string | boolean> }
+  | { disease: DiseaseKey; status: "error"; error: string }
+  | { disease: DiseaseKey; status: "skipped"; reason: string };
 
 export type FullAssessmentReport = {
   items: FullAssessmentItem[];
-  overallScore: number; // 0..100; higher is better
-  highestRisk: FullAssessmentItem | null;
+  overallScore: number; // 0..100; higher is better. Computed from assessed diseases only.
+  highestRisk: Extract<FullAssessmentItem, { status: "ok" }> | null;
+  assessedCount: number;
 };
 
 const ALL_DISEASES: DiseaseKey[] = ["diabetes", "heart", "kidney", "liver"];
@@ -37,47 +38,57 @@ function normalizeGender(g?: string | null) {
   return "Other";
 }
 
-function defaultFeaturesFor(disease: DiseaseKey, age: number, gender: string): Record<string, number | string> {
+/**
+ * Auto-derived identity fields per disease (gender-aware), merged BEFORE
+ * the caller's overrides. We never fabricate lab values here.
+ */
+function identityFor(disease: DiseaseKey, age: number, gender: string): Record<string, number | string> {
   const sexBin = gender === "Male" ? "1" : "0";
   switch (disease) {
     case "diabetes":
-      return { age, pregnancies: 0, glucose: 100, bloodPressure: 80, skinThickness: 20, insulin: 80, bmi: 25, pedigree: 0.4 };
+      // Pregnancies: auto-zero for non-female (UI also hides the field).
+      return gender === "Female" ? { age } : { age, pregnancies: 0 };
     case "heart":
-      return { age, sex: sexBin, cp: "0", trestbps: 120, chol: 200, fbs: "0", restecg: "0", thalach: 150, exang: "0", oldpeak: 1, slope: "1", ca: 0, thal: "1" };
+      return { age, sex: sexBin };
     case "kidney":
-      return { age, bp: 80, sg: 1.02, al: 0, su: 0, rbc: "1", pc: "1", sc: 1, sod: 140, pot: 4, hemo: gender === "Female" ? 13 : 15, pcv: 42, wc: 7500, rc: 5, htn: "0", dm: "0", cad: "0", appet: "1", pe: "0", ane: "0" };
+      return { age };
     case "liver":
-      return { age, gender: sexBin, totalBilirubin: 0.8, directBilirubin: 0.2, alkPhos: 100, alt: 30, ast: 30, totalProteins: 7, albumin: 4, agRatio: 1.2 };
+      return { age, gender: sexBin };
   }
 }
 
 export async function runFullAssessment(input: FullAssessmentInput): Promise<FullAssessmentReport> {
   const gender = normalizeGender(input.patient.gender);
-  const age = Number(input.patient.age ?? 35) || 35;
+  const age = Number(input.patient.age ?? NaN);
 
   const promises = ALL_DISEASES.map(async (d): Promise<FullAssessmentItem> => {
+    const overrides = input.features[d];
+    if (!overrides || Object.keys(overrides).length === 0) {
+      return { disease: d, status: "skipped", reason: "No clinical inputs provided." };
+    }
+    if (!Number.isFinite(age)) {
+      return { disease: d, status: "error", error: "Patient age missing — cannot run prediction." };
+    }
     try {
-      const defaults = defaultFeaturesFor(d, age, gender);
-      const overrides = input.features[d] ?? {};
-      const features = { ...defaults, ...overrides };
+      const features = { ...identityFor(d, age, gender), ...overrides };
       const result = await predictDisease({ disease: d, patient_id: input.patient_id, features });
-      return { disease: d, ok: true, result };
+      return { disease: d, status: "ok", result, features };
     } catch (e) {
-      return { disease: d, ok: false, error: (e as Error).message };
+      return { disease: d, status: "error", error: (e as Error).message };
     }
   });
 
   const items = await Promise.all(promises);
-  const successes = items.filter((i) => i.ok && i.result);
+  const successes = items.filter((i): i is Extract<FullAssessmentItem, { status: "ok" }> => i.status === "ok");
   const meanRisk = successes.length
-    ? successes.reduce((s, i) => s + (i.result!.probability), 0) / successes.length
+    ? successes.reduce((s, i) => s + i.result.probability, 0) / successes.length
     : 0;
-  const overallScore = Math.round((1 - meanRisk) * 100);
+  const overallScore = successes.length ? Math.round((1 - meanRisk) * 100) : 0;
   const highestRisk = successes.length
-    ? successes.reduce((top, i) => (top.result!.probability >= i.result!.probability ? top : i))
+    ? successes.reduce((top, i) => (top.result.probability >= i.result.probability ? top : i))
     : null;
 
-  return { items, overallScore, highestRisk };
+  return { items, overallScore, highestRisk, assessedCount: successes.length };
 }
 
 export function healthScoreBand(score: number): { label: string; tone: "success" | "warning" | "destructive" } {
