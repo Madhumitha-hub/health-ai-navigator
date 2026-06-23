@@ -16,9 +16,15 @@ import { PageHeader } from "@/components/page-header";
 import { FeatureImportanceGrid } from "@/components/feature-importance-chart";
 import { supabase } from "@/integrations/supabase/client";
 
+import { RequireRole } from "@/components/require-role";
+
 export const Route = createFileRoute("/analytics")({
   head: () => ({ meta: [{ title: "EDA & Analytics — HealthPredict" }] }),
-  component: AnalyticsPage,
+  component: () => (
+    <RequireRole path="/analytics">
+      <AnalyticsPage />
+    </RequireRole>
+  ),
 });
 
 const DISEASE_COLORS: Record<string, string> = {

@@ -20,9 +20,12 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { PageHeader } from "@/components/page-header";
+import { MedicalDisclaimer } from "@/components/medical-disclaimer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { downloadReport, type ReportType, type ReportContext } from "@/lib/report-pdf";
+
+import { RequireRole } from "@/components/require-role";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({
@@ -31,7 +34,11 @@ export const Route = createFileRoute("/reports")({
       { name: "description", content: "Generate and download clinical and ML reports." },
     ],
   }),
-  component: ReportsPage,
+  component: () => (
+    <RequireRole path="/reports">
+      <ReportsPage />
+    </RequireRole>
+  ),
 });
 
 type ReportCardDef = {
@@ -104,6 +111,12 @@ function ReportsPage() {
         description="Generate clinical and ML reports as downloadable PDFs."
         icon={FileText}
       />
+
+      <div className="mb-6">
+        <MedicalDisclaimer />
+      </div>
+
+
 
       <section className="mb-8">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">

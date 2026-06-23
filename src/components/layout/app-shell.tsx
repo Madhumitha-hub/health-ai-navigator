@@ -37,11 +37,12 @@ import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/components/theme-provider";
 import { useAuth } from "@/lib/auth-context";
 import { HelpButton } from "@/components/help-button";
+import { canAccess, type RoutePath } from "@/lib/rbac";
 
 
 type NavItem = {
   title: string;
-  url: "/dashboard" | "/predict" | "/analytics" | "/datasets" | "/models" | "/patients" | "/reports" | "/settings";
+  url: RoutePath;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
 };
@@ -97,7 +98,9 @@ function AppSidebar() {
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => {
+              {navItems
+                .filter((item) => canAccess(profile?.role, item.url))
+                .map((item) => {
                 const isActive = pathname === item.url || pathname.startsWith(item.url + "/");
                 return (
                   <SidebarMenuItem key={item.url}>
