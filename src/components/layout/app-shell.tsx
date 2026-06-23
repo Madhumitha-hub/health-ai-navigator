@@ -36,7 +36,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/components/theme-provider";
 import { useAuth } from "@/lib/auth-context";
-import { HelpButton } from "@/components/help-button";
+import { AiMedicalAssistant } from "@/components/ai-medical-assistant";
 import { canAccess, type RoutePath } from "@/lib/rbac";
 
 
@@ -238,7 +238,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <main className="flex-1 px-4 py-6 md:px-8 md:py-8">{children}</main>
           <Footer />
         </div>
-        <HelpButton />
+        <AiMedicalAssistant />
       </div>
     </SidebarProvider>
   );

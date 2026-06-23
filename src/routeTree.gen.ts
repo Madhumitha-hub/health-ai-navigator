@@ -25,6 +25,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientsIdRouteImport } from './routes/patients.$id'
+import { Route as ApiAiAssistantRouteImport } from './routes/api.ai-assistant'
 import { Route as ApiMlIndexRouteImport } from './routes/api.ml.index'
 import { Route as ApiMlRecommendationsRouteImport } from './routes/api.ml.recommendations'
 import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
@@ -117,6 +118,11 @@ const PatientsIdRoute = PatientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PatientsRoute,
 } as any)
+const ApiAiAssistantRoute = ApiAiAssistantRouteImport.update({
+  id: '/api/ai-assistant',
+  path: '/api/ai-assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMlIndexRoute = ApiMlIndexRouteImport.update({
   id: '/api/ml/',
   path: '/api/ml/',
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/api/ai-assistant': typeof ApiAiAssistantRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/clinical-support': typeof ApiMlClinicalSupportRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/api/ai-assistant': typeof ApiAiAssistantRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/clinical-support': typeof ApiMlClinicalSupportRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/api/ai-assistant': typeof ApiAiAssistantRoute
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/clinical-support': typeof ApiMlClinicalSupportRoute
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/reset-password'
     | '/settings'
+    | '/api/ai-assistant'
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/clinical-support'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/reset-password'
     | '/settings'
+    | '/api/ai-assistant'
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/clinical-support'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/reset-password'
     | '/settings'
+    | '/api/ai-assistant'
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/clinical-support'
@@ -369,6 +381,7 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
+  ApiAiAssistantRoute: typeof ApiAiAssistantRoute
   ApiMlAnalyticsRoute: typeof ApiMlAnalyticsRoute
   ApiMlClinicalSupportRoute: typeof ApiMlClinicalSupportRoute
   ApiMlHealthRoute: typeof ApiMlHealthRoute
@@ -496,6 +509,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientsIdRouteImport
       parentRoute: typeof PatientsRoute
     }
+    '/api/ai-assistant': {
+      id: '/api/ai-assistant'
+      path: '/api/ai-assistant'
+      fullPath: '/api/ai-assistant'
+      preLoaderRoute: typeof ApiAiAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ml/': {
       id: '/api/ml/'
       path: '/api/ml'
@@ -604,6 +624,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
+  ApiAiAssistantRoute: ApiAiAssistantRoute,
   ApiMlAnalyticsRoute: ApiMlAnalyticsRoute,
   ApiMlClinicalSupportRoute: ApiMlClinicalSupportRoute,
   ApiMlHealthRoute: ApiMlHealthRoute,
