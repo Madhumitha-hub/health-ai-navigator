@@ -8,6 +8,8 @@ export async function proxyMlRequest(path: string, init?: RequestInit) {
   const upstream = `${getMlApiBaseUrl()}${path}`;
   const upstreamResponse = await fetch(upstream, init);
   const headers = new Headers(upstreamResponse.headers);
+  headers.delete("content-length");
+  headers.delete("content-encoding");
   headers.set("Access-Control-Allow-Origin", "*");
   headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
