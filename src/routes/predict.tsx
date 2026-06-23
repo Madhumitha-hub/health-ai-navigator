@@ -25,6 +25,9 @@ import { downloadReport } from "@/lib/report-pdf";
 import { generateRecommendations, flattenRecommendations } from "@/lib/recommendations";
 import { categorizeRisk } from "@/lib/risk-category";
 import { maybeRaiseAlert } from "@/lib/alerts";
+import { validateFeatures } from "@/lib/validation";
+import { logAudit } from "@/lib/audit-log";
+import { ClinicalDecisionSupport } from "@/components/clinical-decision-support";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@tanstack/react-router";
 
@@ -292,6 +295,14 @@ function PredictPage() {
                   const raw = values[f.name] ?? "";
                   features[f.name] = f.type === "select" || f.type === "toggle" ? raw : parseFloat(raw || "0");
                 }
+                const check = validateFeatures(features);
+                if (!check.ok) {
+                  toast.error("Please fix invalid values", {
+                    description: check.issues.slice(0, 3).map((i) => i.message).join(" · "),
+                  });
+                  setLoading(false);
+                  return;
+                }
                 // Inject gender-derived hidden defaults so the backend keeps working.
                 if (disease === "diabetes" && gender !== "Female") {
                   features.pregnancies = 0;
@@ -308,6 +319,7 @@ function PredictPage() {
                   features,
                 });
                 setResult(r); setStep(4); setSaved(false);
+                void logAudit("prediction.run", "prediction", patient.id, { disease, risk: r.risk });
                 toast.success("Prediction generated");
               } catch (e) {
                 toast.error("Prediction failed", { description: (e as Error).message });
