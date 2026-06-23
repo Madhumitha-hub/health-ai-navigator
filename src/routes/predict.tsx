@@ -168,17 +168,22 @@ function PredictPage() {
         description="Run AI-powered risk assessment in 4 steps: pick a model, choose patient, enter data, review results."
         icon={Stethoscope}
         actions={
-          <Badge
-            variant="outline"
-            className={`gap-1.5 ${apiOnline ? "border-success/40 text-success" : "border-destructive/40 text-destructive"}`}
-          >
-            {apiOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
-            {healthQ.isLoading
-              ? "Checking…"
-              : apiOnline
-              ? `Online · ${healthQ.data?.latencyMs ?? 0}ms`
-              : "Offline"}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button asChild size="sm" variant="outline">
+              <Link to="/predict-full"><Activity className="mr-1.5 h-4 w-4" />Full Assessment</Link>
+            </Button>
+            <Badge
+              variant="outline"
+              className={`gap-1.5 ${apiOnline ? "border-success/40 text-success" : "border-destructive/40 text-destructive"}`}
+            >
+              {apiOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+              {healthQ.isLoading
+                ? "Checking…"
+                : apiOnline
+                ? `Online · ${healthQ.data?.latencyMs ?? 0}ms`
+                : "Offline"}
+            </Badge>
+          </div>
         }
       />
 
