@@ -445,7 +445,7 @@ function PatientSelector({ value, onSelect }: { value: Patient | null; onSelect:
 }
 
 function FeatureForm({
-  fields, values, onChange, onSubmit, loading, disabled = false,
+  fields, values, onChange, onSubmit, loading, disabled = false, patientGender, disease,
 }: {
   fields: FieldSpec[];
   values: Record<string, string>;
@@ -453,6 +453,8 @@ function FeatureForm({
   onSubmit: () => void;
   loading: boolean;
   disabled?: boolean;
+  patientGender: GenderKey;
+  disease: DiseaseKey;
 }) {
   const setVal = (k: string, v: string) => onChange({ ...values, [k]: v });
   const isOutOfRange = (f: FieldSpec, v: string) => {
@@ -464,13 +466,36 @@ function FeatureForm({
     return false;
   };
 
+  const visibleFields = fields.filter((f) => !f.visibleFor || f.visibleFor.includes(patientGender));
+
+  const badgeNote =
+    disease === "diabetes"
+      ? patientGender === "Female"
+        ? "Pregnancy-related field enabled"
+        : patientGender === "Male"
+        ? "Pregnancy-related field hidden"
+        : "Pregnancy-related field not applicable"
+      : disease === "heart"
+      ? "Sex automatically applied from patient profile"
+      : disease === "liver"
+      ? "Gender automatically applied from patient profile"
+      : "Gender-specific reference ranges applied from patient profile";
+
   return (
     <TooltipProvider>
       <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-5">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs">
+          <Badge variant="outline" className="border-primary/40 text-primary">
+            Gender: {patientGender}
+          </Badge>
+          <span className="text-muted-foreground">{badgeNote}</span>
+        </div>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {fields.map((f) => {
+          {visibleFields.map((f) => {
             const v = values[f.name] ?? "";
             const bad = isOutOfRange(f, v);
+            const normalText = f.normalByGender?.[patientGender] ?? f.normal;
             return (
               <div key={f.name} className="space-y-1.5">
                 <Label htmlFor={f.name} className="flex items-center gap-1.5">
@@ -507,7 +532,7 @@ function FeatureForm({
                   />
                 )}
                 <p className={`text-[11px] ${bad ? "text-destructive" : "text-muted-foreground"}`}>
-                  {bad ? `Out of expected range (${f.min ?? "—"}–${f.max ?? "—"})` : f.normal ? `Normal: ${f.normal}` : "\u00A0"}
+                  {bad ? `Out of expected range (${f.min ?? "—"}–${f.max ?? "—"})` : normalText ? `Normal: ${normalText}` : "\u00A0"}
                 </p>
               </div>
             );
