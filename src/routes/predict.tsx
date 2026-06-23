@@ -718,11 +718,11 @@ function ResultPanel({
         </CardContent>
       </Card>
 
-      <Card className={`border-l-4 ${tone.border}`}>
+      <Card className={`border-l-4 ${band.borderClass}`}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">AI Health Recommendations</CardTitle>
-            <Badge variant="outline" className={`${tone.text} ${tone.border}`}>
+            <Badge variant="outline" className={`${band.textClass} ${band.borderClass}`}>
               Priority: {bundle.consultation_priority}
             </Badge>
           </div>
