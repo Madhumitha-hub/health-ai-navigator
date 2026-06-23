@@ -17,6 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
+import { DoctorNotesSection } from "@/components/doctor-notes-section";
 
 
 export const Route = createFileRoute("/patients/$id")({
@@ -194,8 +195,11 @@ function PatientProfile() {
               </ResponsiveContainer>
             </CardContent>
           </Card>
+
+          <DoctorNotesSection patientId={id} />
         </div>
       </div>
+
 
       <Dialog open={!!detailPred} onOpenChange={(o) => !o && setDetailPred(null)}>
         <DialogContent className="max-w-2xl">
