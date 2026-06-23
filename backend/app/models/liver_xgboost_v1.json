@@ -1,0 +1,28 @@
+{
+  "accuracy": 0.52,
+  "precision": 0.5333,
+  "recall": 0.4706,
+  "f1": 0.5,
+  "roc_auc": 0.5454,
+  "cv_score": 0.5354,
+  "confusion_matrix": {
+    "tn": 28,
+    "fp": 21,
+    "fn": 27,
+    "tp": 24
+  },
+  "feature_importance": {
+    "Age": 0.11202599853277206,
+    "Gender": 0.08357249200344086,
+    "TotalBilirubin": 0.09685678035020828,
+    "DirectBilirubin": 0.09034176170825958,
+    "AlkalinePhosphotase": 0.09969392418861389,
+    "SGPT": 0.11403273791074753,
+    "SGOT": 0.10084997117519379,
+    "TotalProteins": 0.09464304894208908,
+    "Albumin": 0.10131876915693283,
+    "AlbuminAndGlobulinRatio": 0.10666453093290329
+  },
+  "trained_at": "2026-06-23T07:12:46.013050+00:00",
+  "is_best": false
+}

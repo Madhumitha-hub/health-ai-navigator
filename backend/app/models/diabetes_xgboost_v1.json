@@ -1,0 +1,26 @@
+{
+  "accuracy": 0.51,
+  "precision": 0.5111,
+  "recall": 0.46,
+  "f1": 0.4842,
+  "roc_auc": 0.462,
+  "cv_score": 0.5044,
+  "confusion_matrix": {
+    "tn": 28,
+    "fp": 22,
+    "fn": 27,
+    "tp": 23
+  },
+  "feature_importance": {
+    "Age": 0.12516836822032928,
+    "Gender": 0.08745432645082474,
+    "BMI": 0.1058247983455658,
+    "Glucose": 0.14676745235919952,
+    "Insulin": 0.13055720925331116,
+    "BloodPressure": 0.13650061190128326,
+    "SkinThickness": 0.1370856761932373,
+    "DiabetesPedigreeFunction": 0.13064157962799072
+  },
+  "trained_at": "2026-06-23T07:12:00.291194+00:00",
+  "is_best": false
+}

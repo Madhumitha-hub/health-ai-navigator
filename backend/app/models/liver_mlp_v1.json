@@ -1,0 +1,17 @@
+{
+  "accuracy": 0.56,
+  "precision": 0.5714,
+  "recall": 0.549,
+  "f1": 0.56,
+  "roc_auc": 0.5566,
+  "cv_score": 0.5242,
+  "confusion_matrix": {
+    "tn": 28,
+    "fp": 21,
+    "fn": 23,
+    "tp": 28
+  },
+  "feature_importance": {},
+  "trained_at": "2026-06-23T07:12:44.878209+00:00",
+  "is_best": false
+}

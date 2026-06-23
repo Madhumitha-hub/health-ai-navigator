@@ -1,0 +1,27 @@
+{
+  "accuracy": 0.53,
+  "precision": 0.5238,
+  "recall": 0.449,
+  "f1": 0.4835,
+  "roc_auc": 0.5154,
+  "cv_score": 0.4884,
+  "confusion_matrix": {
+    "tn": 31,
+    "fp": 20,
+    "fn": 27,
+    "tp": 22
+  },
+  "feature_importance": {
+    "Age": 0.11075232923030853,
+    "BloodPressure": 0.11374656111001968,
+    "SpecificGravity": 0.1124802753329277,
+    "Albumin": 0.12196855992078781,
+    "BloodGlucoseRandom": 0.12072757631540298,
+    "BloodUrea": 0.11803919821977615,
+    "SerumCreatinine": 0.09171299636363983,
+    "Hemoglobin": 0.1142873615026474,
+    "PackedCellVolume": 0.0962851271033287
+  },
+  "trained_at": "2026-06-23T07:12:30.776970+00:00",
+  "is_best": false
+}

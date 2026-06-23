@@ -1,0 +1,28 @@
+{
+  "accuracy": 0.6,
+  "precision": 0.6,
+  "recall": 0.5,
+  "f1": 0.5455,
+  "roc_auc": 0.6579,
+  "cv_score": 0.5625,
+  "confusion_matrix": {
+    "tn": 36,
+    "fp": 16,
+    "fn": 24,
+    "tp": 24
+  },
+  "feature_importance": {
+    "Age": 0.1421971573921758,
+    "Gender": 0.0270664612903224,
+    "ChestPainType": 0.05785448586681759,
+    "RestingBP": 0.1570618354310385,
+    "Cholesterol": 0.18733376476994332,
+    "FastingBS": 0.027594994277294435,
+    "RestingECG": 0.04207467579769289,
+    "MaxHR": 0.16048776020608804,
+    "ExerciseAngina": 0.030818931816298623,
+    "STDepression": 0.16750993315232854
+  },
+  "trained_at": "2026-06-23T07:12:11.025252+00:00",
+  "is_best": false
+}
