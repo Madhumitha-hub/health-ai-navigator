@@ -29,6 +29,7 @@ import { Route as ApiMlIndexRouteImport } from './routes/api.ml.index'
 import { Route as ApiMlRecommendationsRouteImport } from './routes/api.ml.recommendations'
 import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
 import { Route as ApiMlMetricsRouteImport } from './routes/api.ml.metrics'
+import { Route as ApiMlHealthScoreRouteImport } from './routes/api.ml.health-score'
 import { Route as ApiMlHealthRouteImport } from './routes/api.ml.health'
 import { Route as ApiMlAnalyticsRouteImport } from './routes/api.ml.analytics'
 import { Route as ApiMlPredictFullAssessmentRouteImport } from './routes/api.ml.predict.full-assessment'
@@ -134,6 +135,11 @@ const ApiMlMetricsRoute = ApiMlMetricsRouteImport.update({
   path: '/api/ml/metrics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMlHealthScoreRoute = ApiMlHealthScoreRouteImport.update({
+  id: '/api/ml/health-score',
+  path: '/api/ml/health-score',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMlHealthRoute = ApiMlHealthRouteImport.update({
   id: '/api/ml/health',
   path: '/api/ml/health',
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/health': typeof ApiMlHealthRoute
+  '/api/ml/health-score': typeof ApiMlHealthScoreRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
@@ -201,6 +208,7 @@ export interface FileRoutesByTo {
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/health': typeof ApiMlHealthRoute
+  '/api/ml/health-score': typeof ApiMlHealthScoreRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/patients/$id': typeof PatientsIdRoute
   '/api/ml/analytics': typeof ApiMlAnalyticsRoute
   '/api/ml/health': typeof ApiMlHealthRoute
+  '/api/ml/health-score': typeof ApiMlHealthScoreRoute
   '/api/ml/metrics': typeof ApiMlMetricsRoute
   '/api/ml/models': typeof ApiMlModelsRoute
   '/api/ml/recommendations': typeof ApiMlRecommendationsRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/health'
+    | '/api/ml/health-score'
     | '/api/ml/metrics'
     | '/api/ml/models'
     | '/api/ml/recommendations'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/health'
+    | '/api/ml/health-score'
     | '/api/ml/metrics'
     | '/api/ml/models'
     | '/api/ml/recommendations'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/patients/$id'
     | '/api/ml/analytics'
     | '/api/ml/health'
+    | '/api/ml/health-score'
     | '/api/ml/metrics'
     | '/api/ml/models'
     | '/api/ml/recommendations'
@@ -334,6 +346,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ApiMlAnalyticsRoute: typeof ApiMlAnalyticsRoute
   ApiMlHealthRoute: typeof ApiMlHealthRoute
+  ApiMlHealthScoreRoute: typeof ApiMlHealthScoreRoute
   ApiMlMetricsRoute: typeof ApiMlMetricsRoute
   ApiMlModelsRoute: typeof ApiMlModelsRoute
   ApiMlRecommendationsRoute: typeof ApiMlRecommendationsRoute
@@ -484,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMlMetricsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ml/health-score': {
+      id: '/api/ml/health-score'
+      path: '/api/ml/health-score'
+      fullPath: '/api/ml/health-score'
+      preLoaderRoute: typeof ApiMlHealthScoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ml/health': {
       id: '/api/ml/health'
       path: '/api/ml/health'
@@ -545,6 +565,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ApiMlAnalyticsRoute: ApiMlAnalyticsRoute,
   ApiMlHealthRoute: ApiMlHealthRoute,
+  ApiMlHealthScoreRoute: ApiMlHealthScoreRoute,
   ApiMlMetricsRoute: ApiMlMetricsRoute,
   ApiMlModelsRoute: ApiMlModelsRoute,
   ApiMlRecommendationsRoute: ApiMlRecommendationsRoute,
