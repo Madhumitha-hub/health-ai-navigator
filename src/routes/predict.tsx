@@ -58,7 +58,7 @@ const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emo
     label: "Diabetes Prediction", emoji: "🩺", icon: Droplet,
     tagline: "Based on glucose, BMI, insulin levels",
     fields: [
-      { name: "pregnancies", label: "Pregnancies", min: 0, max: 20 },
+      { name: "pregnancies", label: "Pregnancies", min: 0, max: 20, visibleFor: ["Female"], help: "Number of times pregnant." },
       { name: "glucose", label: "Glucose", unit: "mg/dL", min: 0, max: 300, normal: "70–140", help: "Plasma glucose concentration." },
       { name: "bloodPressure", label: "Blood Pressure", unit: "mm Hg", min: 0, max: 200, normal: "60–120" },
       { name: "skinThickness", label: "Skin Thickness", unit: "mm", min: 0, max: 100 },
@@ -69,6 +69,10 @@ const diseases: Record<DiseaseKey, { label: string; icon: typeof HeartPulse; emo
     ],
   },
   heart: {
+    label: "Heart Disease Prediction", emoji: "❤️", icon: HeartPulse,
+    tagline: "Based on cholesterol, ECG, blood pressure",
+    fields: [
+      { name: "age", label: "Age", unit: "years" },
     label: "Heart Disease Prediction", emoji: "❤️", icon: HeartPulse,
     tagline: "Based on cholesterol, ECG, blood pressure",
     fields: [
