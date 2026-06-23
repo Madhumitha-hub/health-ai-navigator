@@ -153,11 +153,18 @@ function DatasetsPage() {
                 <CardTitle className="mt-2 text-base">{p.name}</CardTitle>
                 <CardDescription className="text-xs">{p.rows} rows · {p.features} features · {p.source}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <p className="mb-3 text-sm text-muted-foreground">{p.description}</p>
-                <a href={p.url} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm text-primary hover:underline">
-                  Download from Source <ExternalLink className="ml-1 h-3.5 w-3.5" />
-                </a>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">{p.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" asChild>
+                    <Link to="/eda" search={{ disease: p.disease as "diabetes" | "heart" | "kidney" | "liver" }}>
+                      <BarChart3 className="mr-1 h-3.5 w-3.5" />View EDA
+                    </Link>
+                  </Button>
+                  <a href={p.url} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm text-primary hover:underline">
+                    Source <ExternalLink className="ml-1 h-3.5 w-3.5" />
+                  </a>
+                </div>
               </CardContent>
             </Card>
           ))}
