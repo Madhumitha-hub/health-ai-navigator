@@ -3,7 +3,8 @@
  * Configurable via VITE_ML_API_URL (no demo fallback — see /backend/README.md).
  */
 export const PREDICT_API_BASE =
-  (import.meta.env.VITE_ML_API_URL as string | undefined) ?? "http://localhost:8000";
+  ((import.meta.env.VITE_ML_API_URL as string | undefined) ?? "https://health-ai-navigator.onrender.com")
+    .replace(/\/$/, "");
 
 export type DiseaseKey = "diabetes" | "heart" | "kidney" | "liver";
 
