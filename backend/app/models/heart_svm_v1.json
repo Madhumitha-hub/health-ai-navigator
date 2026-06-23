@@ -1,17 +1,92 @@
 {
-  "accuracy": 0.5,
-  "precision": 0.4444,
-  "recall": 0.1667,
-  "f1": 0.2424,
-  "roc_auc": 0.5813,
-  "cv_score": 0.5594,
+  "accuracy": 0.52,
+  "precision": 0.5167,
+  "recall": 0.62,
+  "f1": 0.5636,
+  "roc_auc": 0.5516,
+  "cv_score": 0.5566,
   "confusion_matrix": {
-    "tn": 42,
-    "fp": 10,
-    "fn": 40,
-    "tp": 8
+    "tn": 21,
+    "fp": 29,
+    "fn": 19,
+    "tp": 31
   },
   "feature_importance": {},
-  "trained_at": "2026-06-23T07:12:11.317484+00:00",
-  "is_best": false
+  "trained_at": "2026-06-23T12:11:23.503971+00:00",
+  "is_best": false,
+  "tuning_method": "RandomizedSearchCV",
+  "n_iter": 12,
+  "cv_folds": 5,
+  "best_params": {
+    "clf__kernel": "rbf",
+    "clf__gamma": "scale",
+    "clf__C": 10.0
+  },
+  "search_space": {
+    "clf__C": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "clf__kernel": [
+      "rbf",
+      "linear"
+    ],
+    "clf__gamma": [
+      "scale",
+      "auto"
+    ]
+  },
+  "cv_results_summary": [
+    {
+      "rank": 1,
+      "mean_test_score": 0.5566,
+      "std_test_score": 0.044,
+      "params": {
+        "clf__kernel": "rbf",
+        "clf__gamma": "auto",
+        "clf__C": 10.0
+      }
+    },
+    {
+      "rank": 2,
+      "mean_test_score": 0.5566,
+      "std_test_score": 0.044,
+      "params": {
+        "clf__kernel": "rbf",
+        "clf__gamma": "scale",
+        "clf__C": 10.0
+      }
+    },
+    {
+      "rank": 3,
+      "mean_test_score": 0.5547,
+      "std_test_score": 0.051,
+      "params": {
+        "clf__kernel": "rbf",
+        "clf__gamma": "scale",
+        "clf__C": 1.0
+      }
+    },
+    {
+      "rank": 4,
+      "mean_test_score": 0.5547,
+      "std_test_score": 0.051,
+      "params": {
+        "clf__kernel": "rbf",
+        "clf__gamma": "auto",
+        "clf__C": 1.0
+      }
+    },
+    {
+      "rank": 5,
+      "mean_test_score": 0.5201,
+      "std_test_score": 0.0356,
+      "params": {
+        "clf__kernel": "rbf",
+        "clf__gamma": "scale",
+        "clf__C": 0.1
+      }
+    }
+  ]
 }

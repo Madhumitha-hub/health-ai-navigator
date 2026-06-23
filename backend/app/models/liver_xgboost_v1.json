@@ -1,28 +1,114 @@
 {
-  "accuracy": 0.52,
-  "precision": 0.5333,
-  "recall": 0.4706,
+  "accuracy": 0.48,
+  "precision": 0.4483,
+  "recall": 0.5652,
   "f1": 0.5,
-  "roc_auc": 0.5454,
-  "cv_score": 0.5354,
+  "roc_auc": 0.4706,
+  "cv_score": 0.5686,
   "confusion_matrix": {
-    "tn": 28,
-    "fp": 21,
-    "fn": 27,
-    "tp": 24
+    "tn": 22,
+    "fp": 32,
+    "fn": 20,
+    "tp": 26
   },
   "feature_importance": {
-    "Age": 0.11202599853277206,
-    "Gender": 0.08357249200344086,
-    "TotalBilirubin": 0.09685678035020828,
-    "DirectBilirubin": 0.09034176170825958,
-    "AlkalinePhosphotase": 0.09969392418861389,
-    "SGPT": 0.11403273791074753,
-    "SGOT": 0.10084997117519379,
-    "TotalProteins": 0.09464304894208908,
-    "Albumin": 0.10131876915693283,
-    "AlbuminAndGlobulinRatio": 0.10666453093290329
+    "Age": 0.09026313573122025,
+    "Gender": 0.12153353542089462,
+    "TotalBilirubin": 0.09134102612733841,
+    "DirectBilirubin": 0.10098075866699219,
+    "AlkalinePhosphotase": 0.09574931114912033,
+    "SGPT": 0.10322344303131104,
+    "SGOT": 0.10457391291856766,
+    "TotalProteins": 0.09930810332298279,
+    "Albumin": 0.08330658823251724,
+    "AlbuminAndGlobulinRatio": 0.10972017049789429
   },
-  "trained_at": "2026-06-23T07:12:46.013050+00:00",
-  "is_best": false
+  "trained_at": "2026-06-23T12:13:13.469834+00:00",
+  "is_best": false,
+  "tuning_method": "RandomizedSearchCV",
+  "n_iter": 20,
+  "cv_folds": 5,
+  "best_params": {
+    "subsample": 0.8,
+    "n_estimators": 200,
+    "max_depth": 3,
+    "learning_rate": 0.05
+  },
+  "search_space": {
+    "n_estimators": [
+      200,
+      400
+    ],
+    "max_depth": [
+      3,
+      4,
+      6
+    ],
+    "learning_rate": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "subsample": [
+      0.8,
+      1.0
+    ]
+  },
+  "cv_results_summary": [
+    {
+      "rank": 1,
+      "mean_test_score": 0.5686,
+      "std_test_score": 0.0245,
+      "params": {
+        "subsample": 0.8,
+        "n_estimators": 200,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      }
+    },
+    {
+      "rank": 2,
+      "mean_test_score": 0.5666,
+      "std_test_score": 0.0284,
+      "params": {
+        "subsample": 0.8,
+        "n_estimators": 200,
+        "max_depth": 4,
+        "learning_rate": 0.05
+      }
+    },
+    {
+      "rank": 3,
+      "mean_test_score": 0.5574,
+      "std_test_score": 0.0313,
+      "params": {
+        "subsample": 1.0,
+        "n_estimators": 200,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      }
+    },
+    {
+      "rank": 4,
+      "mean_test_score": 0.5571,
+      "std_test_score": 0.0234,
+      "params": {
+        "subsample": 0.8,
+        "n_estimators": 200,
+        "max_depth": 3,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "rank": 5,
+      "mean_test_score": 0.5503,
+      "std_test_score": 0.0252,
+      "params": {
+        "subsample": 1.0,
+        "n_estimators": 200,
+        "max_depth": 3,
+        "learning_rate": 0.1
+      }
+    }
+  ]
 }

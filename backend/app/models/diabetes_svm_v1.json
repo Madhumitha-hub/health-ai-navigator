@@ -1,17 +1,101 @@
 {
-  "accuracy": 0.5,
-  "precision": 0.5,
-  "recall": 0.64,
-  "f1": 0.5614,
-  "roc_auc": 0.4588,
-  "cv_score": 0.5059,
+  "accuracy": 0.53,
+  "precision": 0.53,
+  "recall": 1.0,
+  "f1": 0.6928,
+  "roc_auc": 0.4657,
+  "cv_score": 0.5349,
   "confusion_matrix": {
-    "tn": 18,
-    "fp": 32,
-    "fn": 18,
-    "tp": 32
+    "tn": 0,
+    "fp": 47,
+    "fn": 0,
+    "tp": 53
   },
-  "feature_importance": {},
-  "trained_at": "2026-06-23T07:11:56.017261+00:00",
-  "is_best": false
+  "feature_importance": {
+    "Age": 0.2900706161658716,
+    "Gender": 0.5162020424191209,
+    "BMI": 0.10684990605278905,
+    "Glucose": 0.05193218992980228,
+    "Insulin": 0.041603711066118904,
+    "BloodPressure": 0.03685836611205178,
+    "SkinThickness": 0.09794013493176268,
+    "DiabetesPedigreeFunction": 0.07852765898541963
+  },
+  "trained_at": "2026-06-23T12:10:39.676039+00:00",
+  "is_best": false,
+  "tuning_method": "RandomizedSearchCV",
+  "n_iter": 12,
+  "cv_folds": 5,
+  "best_params": {
+    "clf__kernel": "linear",
+    "clf__gamma": "scale",
+    "clf__C": 0.1
+  },
+  "search_space": {
+    "clf__C": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "clf__kernel": [
+      "rbf",
+      "linear"
+    ],
+    "clf__gamma": [
+      "scale",
+      "auto"
+    ]
+  },
+  "cv_results_summary": [
+    {
+      "rank": 1,
+      "mean_test_score": 0.5349,
+      "std_test_score": 0.0305,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "auto",
+        "clf__C": 0.1
+      }
+    },
+    {
+      "rank": 2,
+      "mean_test_score": 0.5349,
+      "std_test_score": 0.0305,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "scale",
+        "clf__C": 0.1
+      }
+    },
+    {
+      "rank": 3,
+      "mean_test_score": 0.5326,
+      "std_test_score": 0.0402,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "auto",
+        "clf__C": 10.0
+      }
+    },
+    {
+      "rank": 4,
+      "mean_test_score": 0.5326,
+      "std_test_score": 0.0402,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "scale",
+        "clf__C": 10.0
+      }
+    },
+    {
+      "rank": 5,
+      "mean_test_score": 0.5273,
+      "std_test_score": 0.0397,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "auto",
+        "clf__C": 1.0
+      }
+    }
+  ]
 }

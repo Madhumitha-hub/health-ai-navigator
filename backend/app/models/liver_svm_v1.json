@@ -1,17 +1,103 @@
 {
-  "accuracy": 0.49,
-  "precision": 0.5,
-  "recall": 0.9608,
-  "f1": 0.6577,
-  "roc_auc": 0.3946,
-  "cv_score": 0.5578,
+  "accuracy": 0.56,
+  "precision": 0.5625,
+  "recall": 0.1957,
+  "f1": 0.2903,
+  "roc_auc": 0.506,
+  "cv_score": 0.5785,
   "confusion_matrix": {
-    "tn": 0,
-    "fp": 49,
-    "fn": 2,
-    "tp": 49
+    "tn": 47,
+    "fp": 7,
+    "fn": 37,
+    "tp": 9
   },
-  "feature_importance": {},
-  "trained_at": "2026-06-23T07:12:41.348199+00:00",
-  "is_best": false
+  "feature_importance": {
+    "Age": 0.16220377243972273,
+    "Gender": 0.3853319710868668,
+    "TotalBilirubin": 0.09904443852019984,
+    "DirectBilirubin": 0.2719109110271276,
+    "AlkalinePhosphotase": 0.008631527886407753,
+    "SGPT": 0.08956050770988,
+    "SGOT": 0.19736529563290794,
+    "TotalProteins": 0.3067312133009513,
+    "Albumin": 0.12100397859050105,
+    "AlbuminAndGlobulinRatio": 0.3608984115882876
+  },
+  "trained_at": "2026-06-23T12:13:02.556565+00:00",
+  "is_best": false,
+  "tuning_method": "RandomizedSearchCV",
+  "n_iter": 12,
+  "cv_folds": 5,
+  "best_params": {
+    "clf__kernel": "linear",
+    "clf__gamma": "scale",
+    "clf__C": 10.0
+  },
+  "search_space": {
+    "clf__C": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "clf__kernel": [
+      "rbf",
+      "linear"
+    ],
+    "clf__gamma": [
+      "scale",
+      "auto"
+    ]
+  },
+  "cv_results_summary": [
+    {
+      "rank": 1,
+      "mean_test_score": 0.5785,
+      "std_test_score": 0.0662,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "auto",
+        "clf__C": 10.0
+      }
+    },
+    {
+      "rank": 2,
+      "mean_test_score": 0.5785,
+      "std_test_score": 0.0662,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "scale",
+        "clf__C": 10.0
+      }
+    },
+    {
+      "rank": 3,
+      "mean_test_score": 0.5781,
+      "std_test_score": 0.066,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "scale",
+        "clf__C": 1.0
+      }
+    },
+    {
+      "rank": 4,
+      "mean_test_score": 0.5781,
+      "std_test_score": 0.066,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "auto",
+        "clf__C": 1.0
+      }
+    },
+    {
+      "rank": 5,
+      "mean_test_score": 0.5757,
+      "std_test_score": 0.0655,
+      "params": {
+        "clf__kernel": "linear",
+        "clf__gamma": "scale",
+        "clf__C": 0.1
+      }
+    }
+  ]
 }

@@ -1,17 +1,113 @@
 {
-  "accuracy": 0.44,
-  "precision": 0.4348,
-  "recall": 0.4,
-  "f1": 0.4167,
-  "roc_auc": 0.4168,
-  "cv_score": 0.4966,
+  "accuracy": 0.47,
+  "precision": 0.5,
+  "recall": 0.6038,
+  "f1": 0.547,
+  "roc_auc": 0.4721,
+  "cv_score": 0.4912,
   "confusion_matrix": {
-    "tn": 24,
-    "fp": 26,
-    "fn": 30,
-    "tp": 20
+    "tn": 15,
+    "fp": 32,
+    "fn": 21,
+    "tp": 32
   },
   "feature_importance": {},
-  "trained_at": "2026-06-23T07:11:59.417361+00:00",
-  "is_best": false
+  "trained_at": "2026-06-23T12:10:47.356271+00:00",
+  "is_best": false,
+  "tuning_method": "RandomizedSearchCV",
+  "n_iter": 12,
+  "cv_folds": 5,
+  "best_params": {
+    "clf__learning_rate_init": 0.001,
+    "clf__hidden_layer_sizes": [
+      64
+    ],
+    "clf__alpha": 0.0001
+  },
+  "search_space": {
+    "clf__hidden_layer_sizes": [
+      [
+        64
+      ],
+      [
+        64,
+        32
+      ],
+      [
+        128,
+        64
+      ]
+    ],
+    "clf__alpha": [
+      0.0001,
+      0.001
+    ],
+    "clf__learning_rate_init": [
+      0.001,
+      0.01
+    ]
+  },
+  "cv_results_summary": [
+    {
+      "rank": 1,
+      "mean_test_score": 0.4912,
+      "std_test_score": 0.0332,
+      "params": {
+        "clf__learning_rate_init": 0.001,
+        "clf__hidden_layer_sizes": [
+          64
+        ],
+        "clf__alpha": 0.0001
+      }
+    },
+    {
+      "rank": 2,
+      "mean_test_score": 0.4896,
+      "std_test_score": 0.0351,
+      "params": {
+        "clf__learning_rate_init": 0.001,
+        "clf__hidden_layer_sizes": [
+          64
+        ],
+        "clf__alpha": 0.001
+      }
+    },
+    {
+      "rank": 3,
+      "mean_test_score": 0.4824,
+      "std_test_score": 0.0659,
+      "params": {
+        "clf__learning_rate_init": 0.01,
+        "clf__hidden_layer_sizes": [
+          64
+        ],
+        "clf__alpha": 0.001
+      }
+    },
+    {
+      "rank": 4,
+      "mean_test_score": 0.4759,
+      "std_test_score": 0.0783,
+      "params": {
+        "clf__learning_rate_init": 0.01,
+        "clf__hidden_layer_sizes": [
+          64
+        ],
+        "clf__alpha": 0.0001
+      }
+    },
+    {
+      "rank": 5,
+      "mean_test_score": 0.4645,
+      "std_test_score": 0.0499,
+      "params": {
+        "clf__learning_rate_init": 0.001,
+        "clf__hidden_layer_sizes": [
+          128,
+          64
+        ],
+        "clf__alpha": 0.0001
+      }
+    }
+  ]
 }

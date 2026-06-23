@@ -1,28 +1,103 @@
 {
-  "accuracy": 0.5,
-  "precision": 0.475,
-  "recall": 0.3958,
-  "f1": 0.4318,
-  "roc_auc": 0.5573,
-  "cv_score": 0.5216,
+  "accuracy": 0.51,
+  "precision": 0.5091,
+  "recall": 0.56,
+  "f1": 0.5333,
+  "roc_auc": 0.5152,
+  "cv_score": 0.48,
   "confusion_matrix": {
-    "tn": 31,
-    "fp": 21,
-    "fn": 29,
-    "tp": 19
+    "tn": 23,
+    "fp": 27,
+    "fn": 22,
+    "tp": 28
   },
   "feature_importance": {
-    "Age": 0.010118423859734256,
-    "Gender": 0.04781678834152283,
-    "ChestPainType": 0.03329419404356542,
-    "RestingBP": 0.06401032392528395,
-    "Cholesterol": 0.12368821859106136,
-    "FastingBS": 0.057491142756172044,
-    "RestingECG": 0.08658922805570868,
-    "MaxHR": 0.06016454853142256,
-    "ExerciseAngina": 0.21892874615011435,
-    "STDepression": 0.15667107214838522
+    "Age": 0.1412312074454208,
+    "Gender": 0.019551811767604454,
+    "ChestPainType": 0.04968927572624517,
+    "RestingBP": 0.08272852640000979,
+    "Cholesterol": 0.011085184740491657,
+    "FastingBS": 0.001674317510163836,
+    "RestingECG": 0.07723464334213202,
+    "MaxHR": 0.16602788914859287,
+    "ExerciseAngina": 0.06345935630155207,
+    "STDepression": 0.010236610801467245
   },
-  "trained_at": "2026-06-23T07:12:06.966471+00:00",
-  "is_best": false
+  "trained_at": "2026-06-23T12:11:04.354950+00:00",
+  "is_best": false,
+  "tuning_method": "RandomizedSearchCV",
+  "n_iter": 8,
+  "cv_folds": 5,
+  "best_params": {
+    "clf__solver": "lbfgs",
+    "clf__penalty": "l2",
+    "clf__C": 1.0
+  },
+  "search_space": {
+    "clf__C": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "clf__penalty": [
+      "l2"
+    ],
+    "clf__solver": [
+      "lbfgs",
+      "liblinear"
+    ]
+  },
+  "cv_results_summary": [
+    {
+      "rank": 1,
+      "mean_test_score": 0.48,
+      "std_test_score": 0.0334,
+      "params": {
+        "clf__solver": "lbfgs",
+        "clf__penalty": "l2",
+        "clf__C": 1.0
+      }
+    },
+    {
+      "rank": 2,
+      "mean_test_score": 0.4799,
+      "std_test_score": 0.0331,
+      "params": {
+        "clf__solver": "lbfgs",
+        "clf__penalty": "l2",
+        "clf__C": 10.0
+      }
+    },
+    {
+      "rank": 3,
+      "mean_test_score": 0.4799,
+      "std_test_score": 0.033,
+      "params": {
+        "clf__solver": "lbfgs",
+        "clf__penalty": "l2",
+        "clf__C": 0.1
+      }
+    },
+    {
+      "rank": 4,
+      "mean_test_score": 0.4799,
+      "std_test_score": 0.0331,
+      "params": {
+        "clf__solver": "liblinear",
+        "clf__penalty": "l2",
+        "clf__C": 0.1
+      }
+    },
+    {
+      "rank": 5,
+      "mean_test_score": 0.4797,
+      "std_test_score": 0.0335,
+      "params": {
+        "clf__solver": "liblinear",
+        "clf__penalty": "l2",
+        "clf__C": 1.0
+      }
+    }
+  ]
 }
