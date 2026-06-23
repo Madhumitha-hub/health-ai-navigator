@@ -23,6 +23,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { downloadReport } from "@/lib/report-pdf";
 import { generateRecommendations, flattenRecommendations } from "@/lib/recommendations";
+import { categorizeRisk } from "@/lib/risk-category";
+import { maybeRaiseAlert } from "@/lib/alerts";
+import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/predict")({
