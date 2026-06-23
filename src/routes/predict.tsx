@@ -624,7 +624,11 @@ function ResultPanel({
           </div>
           <div className="flex-1">
             <p className={`font-display text-2xl font-bold ${tone.text}`}>{tone.label}</p>
-            <p className="text-sm text-muted-foreground">{diseases[disease].label} · {patient.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {diseases[disease].label} · {patient.name}
+              {patient.age != null ? ` · ${patient.age} yrs` : ""}
+              {` · ${normalizeGender(patient.gender)}`}
+            </p>
           </div>
           <div className="text-right">
             <p className={`font-display text-4xl font-bold ${tone.text}`}>{pct}%</p>
