@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { HeartPulse, Loader2 } from "lucide-react";
@@ -36,7 +37,7 @@ function RegisterPage() {
       },
     });
     setSubmitting(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Account created. Check your email to confirm if required.");
     navigate({ to: "/dashboard" });
   };

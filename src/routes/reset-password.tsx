@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { HeartPulse, Loader2 } from "lucide-react";
@@ -20,7 +21,7 @@ function ResetPasswordPage() {
     setSubmitting(true);
     const { error } = await supabase.auth.updateUser({ password });
     setSubmitting(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Password updated");
     navigate({ to: "/dashboard" });
   };

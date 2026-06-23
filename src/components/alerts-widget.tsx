@@ -2,6 +2,7 @@
  * Active Alerts widget — shown on the dashboard. Lets the doctor review or
  * dismiss early-warning alerts created when a prediction exceeds 60% risk.
  */
+import { userMessage } from "@/lib/user-errors";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Bell, CheckCircle2, Trash2, Loader2 } from "lucide-react";
@@ -47,7 +48,7 @@ export function AlertsWidget() {
     setBusy(id);
     const { error } = await supabase.from("alerts").update({ status: "reviewed" }).eq("id", id);
     setBusy(null);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Alert marked as reviewed");
     qc.invalidateQueries({ queryKey: ["alerts"] });
   };
@@ -56,7 +57,7 @@ export function AlertsWidget() {
     setBusy(id);
     const { error } = await supabase.from("alerts").delete().eq("id", id);
     setBusy(null);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Alert dismissed");
     qc.invalidateQueries({ queryKey: ["alerts"] });
   };

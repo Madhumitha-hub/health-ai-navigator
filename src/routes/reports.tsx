@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -99,7 +100,7 @@ function ReportsPage() {
 
   const deleteReport = async (id: string) => {
     const { error } = await supabase.from("reports").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Report deleted");
     qc.invalidateQueries({ queryKey: ["reports"] });
   };

@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { HeartPulse, Loader2 } from "lucide-react";
@@ -28,7 +29,7 @@ function LoginPage() {
     setSubmitting(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setSubmitting(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Welcome back!");
     navigate({ to: "/dashboard" });
   };

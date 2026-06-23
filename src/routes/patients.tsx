@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -188,7 +189,7 @@ function AddPatientDialog({ open, onOpenChange, userId, onCreated }: { open: boo
       name, age: age ? Number(age) : null, gender, contact, medical_history: history, created_by: userId,
     });
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Patient added");
     setName(""); setAge(""); setGender(""); setContact(""); setHistory("");
     onOpenChange(false); onCreated();

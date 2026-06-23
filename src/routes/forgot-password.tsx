@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { HeartPulse, Loader2 } from "lucide-react";
@@ -21,7 +22,7 @@ function ForgotPasswordPage() {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setSubmitting(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     setSent(true);
     toast.success("Reset email sent");
   };

@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Trash2, Plus, Loader2, FileText } from "lucide-react";
@@ -70,7 +71,7 @@ export function DoctorNotesSection({ patientId, predictionId = null }: Props) {
       .maybeSingle();
     setSaving(false);
     if (error) {
-      toast.error(error.message);
+      toast.error(userMessage(error));
       return;
     }
     void logAudit("note.create", "doctor_note", data?.id ?? null, { patientId, predictionId });
@@ -86,7 +87,7 @@ export function DoctorNotesSection({ patientId, predictionId = null }: Props) {
       .update({ note: editDraft.trim() })
       .eq("id", id);
     if (error) {
-      toast.error(error.message);
+      toast.error(userMessage(error));
       return;
     }
     void logAudit("note.update", "doctor_note", id, { patientId });
@@ -98,7 +99,7 @@ export function DoctorNotesSection({ patientId, predictionId = null }: Props) {
   const deleteNote = async (id: string) => {
     const { error } = await supabase.from("doctor_notes").delete().eq("id", id);
     if (error) {
-      toast.error(error.message);
+      toast.error(userMessage(error));
       return;
     }
     void logAudit("note.delete", "doctor_note", id, { patientId });

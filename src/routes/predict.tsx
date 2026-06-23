@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -405,7 +406,7 @@ function PatientSelector({ value, onSelect }: { value: Patient | null; onSelect:
       .select("id, name, age, gender, contact")
       .single();
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Patient added");
     qc.invalidateQueries({ queryKey: ["patients"] });
     onSelect(data as Patient);
@@ -624,7 +625,7 @@ function ResultPanel({
     }).select("id").maybeSingle();
     setSaving(false);
     if (error) {
-      if (!silent) toast.error(error.message);
+      if (!silent) toast.error(userMessage(error));
       return;
     }
 

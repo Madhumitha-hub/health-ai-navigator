@@ -1,3 +1,4 @@
+import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,7 +24,10 @@ import { DoctorNotesSection } from "@/components/doctor-notes-section";
 export const Route = createFileRoute("/patients/$id")({
   head: () => ({ meta: [{ title: "Patient Profile — HealthPredict" }] }),
   notFoundComponent: () => <div className="p-8">Patient not found.</div>,
-  errorComponent: ({ error }) => <div className="p-8 text-destructive">{error.message}</div>,
+  errorComponent: ({ error }) => {
+    console.error(error);
+    return <div className="p-8 text-destructive">{userMessage(error)}</div>;
+  },
   component: PatientProfile,
 });
 
@@ -68,7 +72,7 @@ function PatientProfile() {
 
   async function handleDelete() {
     const { error } = await supabase.from("patients").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(userMessage(error));
     toast.success("Patient deleted");
     navigate({ to: "/patients" });
   }
