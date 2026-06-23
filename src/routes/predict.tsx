@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Stethoscope, Loader2, Sparkles, AlertTriangle, CheckCircle2, Activity,
@@ -22,6 +22,8 @@ import { useMlHealth } from "@/hooks/use-ml-health";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { downloadReport } from "@/lib/report-pdf";
+import { generateRecommendations, flattenRecommendations } from "@/lib/recommendations";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/predict")({
   head: () => ({ meta: [{ title: "Disease Prediction — HealthPredict" }] }),
@@ -166,17 +168,22 @@ function PredictPage() {
         description="Run AI-powered risk assessment in 4 steps: pick a model, choose patient, enter data, review results."
         icon={Stethoscope}
         actions={
-          <Badge
-            variant="outline"
-            className={`gap-1.5 ${apiOnline ? "border-success/40 text-success" : "border-destructive/40 text-destructive"}`}
-          >
-            {apiOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
-            {healthQ.isLoading
-              ? "Checking…"
-              : apiOnline
-              ? `Online · ${healthQ.data?.latencyMs ?? 0}ms`
-              : "Offline"}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button asChild size="sm" variant="outline">
+              <Link to="/predict-full"><Activity className="mr-1.5 h-4 w-4" />Full Assessment</Link>
+            </Button>
+            <Badge
+              variant="outline"
+              className={`gap-1.5 ${apiOnline ? "border-success/40 text-success" : "border-destructive/40 text-destructive"}`}
+            >
+              {apiOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+              {healthQ.isLoading
+                ? "Checking…"
+                : apiOnline
+                ? `Online · ${healthQ.data?.latencyMs ?? 0}ms`
+                : "Offline"}
+            </Badge>
+          </div>
         }
       />
 
@@ -561,18 +568,22 @@ function ResultPanel({
     result.risk === "medium" ? { bg: "bg-amber-500/10", text: "text-amber-600", border: "border-amber-500/40", Icon: AlertTriangle, label: "MEDIUM RISK", pulse: "" } :
     { bg: "bg-success/10", text: "text-success", border: "border-success/40", Icon: CheckCircle2, label: "LOW RISK", pulse: "" };
 
-  const recommendation =
-    result.risk === "high" ? "High risk detected. Immediate medical consultation recommended." :
-    result.risk === "medium" ? "Moderate risk detected. Recommend further diagnostic tests." :
-    "No immediate concern. Recommend routine checkup in 6 months.";
+  const bundle = generateRecommendations({
+    disease,
+    result,
+    patient: { age: patient.age, gender: patient.gender },
+  });
 
   const dbDiseaseType =
     disease === "heart" ? "heart_disease" : disease === "kidney" ? "kidney_disease" : disease === "liver" ? "liver_disease" : "diabetes";
 
   const phrasing = `Estimated ${diseaseDisplayName(disease)} risk: ${pct}% (${result.riskLabel} Risk)`;
 
-  const savePrediction = async () => {
-    if (!user) return toast.error("Not authenticated");
+  const savePrediction = async (silent = false) => {
+    if (!user) {
+      if (!silent) toast.error("Not authenticated");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase.from("predictions").insert({
       patient_id: patient.id,
@@ -586,10 +597,19 @@ function ResultPanel({
       confidence: result.confidence,
     });
     setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Saved to patient record");
+    if (error) {
+      if (!silent) toast.error(error.message);
+      return;
+    }
+    if (!silent) toast.success("Saved to patient record");
     onSaved();
   };
+
+  // Auto-save the very first time we see a fresh result for the timeline feature.
+  useEffect(() => {
+    if (!saved && user) void savePrediction(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result.timestamp]);
 
   const downloadReportPdf = () => {
     downloadReport({
@@ -606,11 +626,7 @@ function ResultPanel({
           model_used: result.modelVersion,
         }],
         featureImportance: Object.fromEntries(result.topFactors.map((f) => [f.name, f.impact])),
-        recommendations: [
-          phrasing,
-          recommendation,
-          "This system provides risk estimates for educational and research purposes only and does not replace professional medical advice.",
-        ],
+        recommendations: flattenRecommendations(bundle, phrasing),
       },
     });
   };
@@ -679,10 +695,47 @@ function ResultPanel({
         </CardContent>
       </Card>
 
-      <div className={`rounded-xl border-l-4 ${tone.border} ${tone.bg} p-4`}>
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Clinical Recommendation</p>
-        <p className={`mt-1 text-sm font-medium ${tone.text}`}>{recommendation}</p>
-      </div>
+      <Card className={`border-l-4 ${tone.border}`}>
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm">AI Health Recommendations</CardTitle>
+            <Badge variant="outline" className={`${tone.text} ${tone.border}`}>
+              Priority: {bundle.consultation_priority}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <p className="text-muted-foreground">{bundle.explanation}</p>
+
+          <div>
+            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recommended actions</p>
+            <ul className="space-y-1.5">
+              {bundle.recommendations.map((r, i) => (
+                <li key={i} className="flex gap-2"><span className="text-primary">•</span><span>{r}</span></li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Lifestyle tips</p>
+              <ul className="space-y-1 text-xs text-muted-foreground">
+                {bundle.lifestyle_tips.map((r, i) => (
+                  <li key={i} className="flex gap-2"><span>•</span><span>{r}</span></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Suggested tests</p>
+              <ul className="space-y-1 text-xs text-muted-foreground">
+                {bundle.suggested_tests.map((r, i) => (
+                  <li key={i} className="flex gap-2"><span>•</span><span>{r}</span></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-xs leading-relaxed text-muted-foreground">
         <strong className="text-foreground">Disclaimer.</strong> This system provides risk estimates for
@@ -690,7 +743,7 @@ function ResultPanel({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button onClick={savePrediction} disabled={saving || saved}>
+        <Button onClick={() => savePrediction(false)} disabled={saving || saved}>
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
           {saved ? "Saved" : "Save to Patient Record"}
         </Button>
