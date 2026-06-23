@@ -31,7 +31,7 @@ export async function logAudit(
       action,
       entity_type,
       entity_id,
-      metadata,
+      metadata: metadata as never,
     });
   } catch {
     /* best effort */
