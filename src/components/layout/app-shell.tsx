@@ -106,7 +106,11 @@ function AppSidebar() {
                 return (
                   <SidebarMenuItem key={item.url}>
                     <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-                      <Link to={item.url} className="flex items-center gap-3">
+                      <Link
+                        to={item.url}
+                        search={item.url === "/eda" ? { disease: "diabetes" as const } : undefined}
+                        className="flex items-center gap-3"
+                      >
                         <item.icon className="h-4 w-4 shrink-0" />
                         {!collapsed && (
                           <>
