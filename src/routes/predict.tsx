@@ -760,6 +760,18 @@ function ResultPanel({
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm">Doctor Notes</CardTitle></CardHeader>
+        <CardContent>
+          <Textarea
+            value={doctorNotes}
+            onChange={(e) => setDoctorNotes(e.target.value)}
+            placeholder="Add clinical observations to include in the PDF report (optional)…"
+            rows={3}
+          />
+        </CardContent>
+      </Card>
+
       <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-xs leading-relaxed text-muted-foreground">
         <strong className="text-foreground">Disclaimer.</strong> This system provides risk estimates for
         educational and research purposes only and does not replace professional medical advice.
