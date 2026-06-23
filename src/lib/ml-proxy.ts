@@ -7,14 +7,14 @@ export function getMlApiBaseUrl() {
 export async function proxyMlRequest(path: string, init?: RequestInit) {
   const upstream = `${getMlApiBaseUrl()}${path}`;
   const upstreamResponse = await fetch(upstream, init);
-  const headers = new Headers(upstreamResponse.headers);
-  headers.delete("content-length");
-  headers.delete("content-encoding");
+  const body = await upstreamResponse.text();
+  const headers = new Headers();
+  headers.set("Content-Type", upstreamResponse.headers.get("Content-Type") || "application/json");
   headers.set("Access-Control-Allow-Origin", "*");
   headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  return new Response(upstreamResponse.body, {
+  return new Response(body, {
     status: upstreamResponse.status,
     statusText: upstreamResponse.statusText,
     headers,
