@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Activity, ArrowLeft, Loader2, Sparkles, Search, FileDown, Save } from "lucide-react";
+import { Activity, ArrowLeft, Loader2, Sparkles, Search, FileDown, Save, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -275,9 +275,16 @@ function PatientPicker({ value, onSelect }: { value: Patient | null; onSelect: (
 
   return (
     <div className="space-y-3">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search patients by name…" className="pl-9" />
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search patients by name…" className="pl-9" />
+        </div>
+        <Button asChild variant="outline" size="default" className="shrink-0">
+          <Link to="/patients">
+            <UserPlus className="mr-1.5 h-4 w-4" /> New Patient
+          </Link>
+        </Button>
       </div>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {patients.map((p) => (
