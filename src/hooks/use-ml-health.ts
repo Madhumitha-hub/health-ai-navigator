@@ -26,7 +26,7 @@ export type MlHealth = {
 // Exponential backoff schedule (ms) keyed by consecutive failure count
 const BACKOFF_MS = [30_000, 60_000, 120_000, 300_000, 600_000];
 const SUCCESS_INTERVAL_MS = 30_000;
-const TIMEOUT_MS = 4_000;
+const TIMEOUT_MS = 15_000;
 
 async function fetchHealth(): Promise<MlHealth> {
   const start = performance.now();

@@ -1,5 +1,5 @@
 const DEFAULT_ML_API_URL = "https://health-ai-navigator.onrender.com";
-const ML_UPSTREAM_TIMEOUT_MS = 8_000;
+const ML_UPSTREAM_TIMEOUT_MS = 20_000;
 
 export function getMlApiBaseUrl() {
   return (process.env.VITE_ML_API_URL || DEFAULT_ML_API_URL).replace(/\/$/, "");

@@ -1,30 +1,30 @@
-## What's happening
+# Fix `/api/ml/health` timeout
 
-The published bundle is missing the Supabase URL and publishable key. I confirmed by fetching `https://ai-healthcare23.lovable.app/assets/index-Bf95r4Rz.js` — the project ref `pdmsdzstekicqaljdpmj` does not appear anywhere in the production JS, only the string `"Missing Supabase"` does.
+## Diagnosis
 
-`src/integrations/supabase/client.ts` reads its config from `import.meta.env.VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Those values live in the local `.env` (which works for the in-sandbox preview/dev server), but the published Cloudflare Worker build does not pick them up — so at runtime on the hosted domain the values are `undefined`, the lazy `supabase` Proxy throws `Missing Supabase environment variable(s)` on first access during hydration, the React tree errors, and the root `errorComponent` renders the exact "Something went wrong / An unexpected error occurred. / Try again" card you're seeing.
+The fallback ML service already wired into `src/lib/ml-proxy.ts` (`https://health-ai-navigator.onrender.com`) **is live** — a direct probe returned `HTTP 200 {"status":"online","uptime_s":124,"models_loaded":20}`.
 
-SSR itself works (the initial HTML shows the loading spinner correctly) — the crash is on the client right after hydration, which is why the in-editor preview looks fine but the bare published URL doesn't.
+The "signal is aborted without reason" timeout you're seeing is client-side:
 
-## Fix
+- `src/hooks/use-ml-health.ts` aborts the request after **4 seconds** (`TIMEOUT_MS = 4_000`).
+- The upstream is hosted on Render's free tier, which **cold-starts in 10–30s** after idle. The Worker proxy in `src/lib/ml-proxy.ts` already allows 8s (`ML_UPSTREAM_TIMEOUT_MS`), but the browser gives up first.
+- Result: a perfectly healthy backend looks "offline" right after you open the app.
 
-Edit `src/integrations/supabase/client.ts` to inline the publishable Supabase URL and anon key as constants, with `import.meta.env.VITE_*` only as an override. These are publishable (anon) credentials — they're already committed in `.env` and are intended to ship to the browser; this is the standard Lovable pattern for the generated client.
+No backend deploy is needed. We just need the client to wait long enough for the first request.
 
-```ts
-// src/integrations/supabase/client.ts
-const SUPABASE_URL = "https://pdmsdzstekicqaljdpmj.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIs..."; // existing anon key from .env
-```
+## Changes
 
-Drop the `Missing Supabase environment variable(s)` throw — with constants it can't happen. Keep the Proxy + lazy init so SSR doesn't construct the client at module load.
+1. **`src/hooks/use-ml-health.ts`** — raise `TIMEOUT_MS` from `4_000` to `15_000` so the first health check survives a Render cold start. Subsequent polls stay fast because the service is warm.
 
-No other files need changes. The server-side fallback (`process.env.SUPABASE_URL` for SSR) is unaffected because the SSR path still has those values where it needs them, and middleware/server functions use their own clients.
+2. **`src/lib/ml-proxy.ts`** — raise `ML_UPSTREAM_TIMEOUT_MS` from `8_000` to `20_000` so the Worker doesn't cut off the cold-start response before the browser sees it. The existing rule-based fallback still kicks in for prediction calls if the upstream truly fails.
 
-## After the fix
+3. **No other changes.** The banner copy, retry logic, exponential backoff, diagnostics page, and fallback prediction path all stay as-is. Once the service is warm (typically within one retry), the banner disappears and predictions flow normally.
 
-Re-publish from the editor. The hosted root URL will then render the spinner → redirect to `/login` (or `/dashboard` if a session exists), matching the in-editor preview.
+## Why not change the URL or hide the banner
 
-## Out of scope
+- The URL is already correct and live — no env var needed.
+- Hiding the banner would mask real outages later. The right fix is letting the cold start complete.
 
-- No changes to auth flow, routes, RLS, or backend.
-- No changes to `VITE_ML_API_URL` — it's only read inside server-side code (`src/lib/ml-proxy.ts` uses `process.env` in the Worker), which works at runtime.
+## Verification
+
+After the change: open `/predict`, wait ~15s on first load, banner clears, `/api/ml/health` returns `{status:"online"}`, and predictions submit against the real models.
