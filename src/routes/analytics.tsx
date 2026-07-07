@@ -443,9 +443,9 @@ function AnalyticsPage() {
               <Tabs value={statsDisease} onValueChange={setStatsDisease}>
                 <TabsList>
                   <TabsTrigger value="diabetes">Diabetes</TabsTrigger>
-                  <TabsTrigger value="heart">Heart</TabsTrigger>
-                  <TabsTrigger value="kidney">Kidney</TabsTrigger>
-                  <TabsTrigger value="liver">Liver</TabsTrigger>
+                  <TabsTrigger value="heart_disease">Heart</TabsTrigger>
+                  <TabsTrigger value="kidney_disease">Kidney</TabsTrigger>
+                  <TabsTrigger value="liver_disease">Liver</TabsTrigger>
                 </TabsList>
                 <TabsContent value={statsDisease} className="mt-4">
                   <Table>
