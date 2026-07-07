@@ -12,7 +12,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportError } from "../lib/error-reporting";
 import { userMessage } from "../lib/user-errors";
 import { AppShell } from "../components/layout/app-shell";
 import { ThemeProvider } from "../components/theme-provider";
@@ -45,7 +45,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
@@ -77,8 +77,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "HealthPredict — AI Disease Prediction" },
       { property: "og:description", content: "AI-based Smart Healthcare Disease Prediction System." },
       { name: "twitter:description", content: "AI-based Smart Healthcare Disease Prediction System." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2a4625c1-738b-4f2b-9b86-8fe18db626b4/id-preview-d4d5e1f8--0e3105bb-a07b-46e7-8373-ab73c89362fc.lovable.app-1782221607828.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2a4625c1-738b-4f2b-9b86-8fe18db626b4/id-preview-d4d5e1f8--0e3105bb-a07b-46e7-8373-ab73c89362fc.lovable.app-1782221607828.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
