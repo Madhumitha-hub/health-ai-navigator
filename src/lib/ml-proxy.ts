@@ -134,7 +134,6 @@ function fallbackPrediction(disease: DiseaseKey, features: Record<string, unknow
 
 export async function proxyMlPredictionRequest(disease: string, request: Request) {
   const body = await request.text();
-  const canFallback = ["diabetes", "heart", "kidney", "liver"].includes(disease);
   let response: Response;
   try {
     response = await proxyMlRequest(`/predict/${disease}`, {
@@ -143,24 +142,16 @@ export async function proxyMlPredictionRequest(disease: string, request: Request
       body,
     });
   } catch {
-    if (!canFallback) {
-      return Response.json({ detail: "ML service unavailable" }, { status: 503 });
-    }
-    try {
-      const payload = body ? (JSON.parse(body) as { features?: Record<string, unknown> }) : {};
-      return fallbackPrediction(disease as DiseaseKey, payload.features ?? {});
-    } catch {
-      return fallbackPrediction(disease as DiseaseKey, {});
-    }
+    return Response.json(
+      { detail: "ML prediction service is unavailable. Please try again in a moment." },
+      { status: 503 },
+    );
   }
-  const upstreamFailed = response.status >= 500;
-  if (!upstreamFailed || !canFallback) {
-    return response;
+  if (response.status >= 500) {
+    return Response.json(
+      { detail: "ML prediction service returned an error. Please try again in a moment." },
+      { status: 503 },
+    );
   }
-  try {
-    const payload = body ? (JSON.parse(body) as { features?: Record<string, unknown> }) : {};
-    return fallbackPrediction(disease as DiseaseKey, payload.features ?? {});
-  } catch {
-    return fallbackPrediction(disease as DiseaseKey, {});
-  }
+  return response;
 }
