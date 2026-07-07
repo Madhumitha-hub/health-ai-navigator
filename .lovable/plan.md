@@ -1,43 +1,46 @@
-# Pre-Submission Audit
+## Goal
 
-I ran a full check across code, types, routes, and security. Here's the honest state.
+Strip user-visible "Lovable" and "AI-generated / AI-assisted" branding from the repo, replace the license with one crediting **Madhumitha**, and add the README you pasted.
 
-## Green (ready)
+## What I'll change
 
-- **TypeScript build**: passes clean (0 errors).
-- **Dev server**: no runtime errors, no warnings in the log.
-- **Route coverage**: all 15 page routes + 12 `/api/ml/*` server routes present (dashboard, predict, predict-full, analytics, eda, datasets, models, patients, patient detail, reports, settings, diagnostics, login, register, forgot/reset password).
-- **Auth**: Supabase Auth + JWT bearer + RLS + `user_roles` via `has_role()` all wired correctly.
-- **ML backend**: Render service is live (verified `/health` returns 200). Timeouts already raised to survive cold starts. Rule-based fallback wired for prediction failures.
-- **Login page**: new 3D Spline background + left-side form is in.
-- **Dependency scan**: 0 vulnerabilities.
-- **Critical security findings**: 0.
+### 1. README.md (create/overwrite at repo root)
+- Use the README content you pasted verbatim, with two edits:
+  - **License section**: replace "MIT License" with "Licensed by **Madhumitha**." (see LICENSE section below).
+  - Keep the **Author** section as-is (Harish Kanna) since you only asked to change the license, not the author. Tell me if you want that changed too.
 
-## Yellow (works, but worth fixing before submission)
+### 2. LICENSE (create/overwrite at repo root)
+Replace any MIT text with a short custom notice:
+```
+Copyright (c) 2026 Madhumitha
+All rights reserved.
+```
+Tell me if you want a different wording (e.g. "Proprietary — Madhumitha", or a full custom-terms block).
 
-Three RLS breadth warnings from the Supabase scanner — nothing is leaked to the public internet, but any signed-in *patient* can currently read internal ML metadata:
+### 3. Remove user-visible Lovable / AI-generator references
 
-| Table | Current | Should be |
-|---|---|---|
-| `datasets` | any authenticated user can SELECT | admin/doctor only |
-| `models` | any authenticated user can SELECT | admin/doctor only |
-| `model_metrics` | any authenticated user can SELECT | admin/doctor only |
+| File | Change |
+|---|---|
+| `src/routes/__root.tsx` | Replace `og:image` / `twitter:image` URLs (currently `...lovable.app...png`) with a neutral placeholder or drop the tags. Title/description already say "HealthPredict" — no Lovable in them. |
+| `src/integrations/supabase/client.server.ts` | Change error string `"Connect Supabase in Lovable Cloud."` → `"Configure Supabase environment variables."` |
+| `src/integrations/supabase/auth-middleware.ts` | Same string swap. |
+| `backend/README.md` | Rewrite to drop Lovable-specific setup instructions; keep FastAPI setup and CORS instructions in generic terms. |
+| `src/routes/api.ai-assistant.ts` | Rewrite the JSDoc header comment to say "Proxies chat completions to the configured AI gateway" (no "Lovable"). The env var `LOVABLE_API_KEY` and upstream URL `ai.gateway.lovable.dev` stay — they are the actual runtime infra, changing them breaks the chatbot. |
+| `src/lib/lovable-error-reporting.ts` | Rename file to `src/lib/error-reporting.ts`, rename types/functions to drop "Lovable" (`reportError`, `AppErrorOptions`, `window.__appEvents`). Update the one importer (`__root.tsx`). ⚠️ **Trade-off**: the Lovable preview's runtime-error overlay reads from `window.__lovableEvents`; after this rename, errors inside the React error boundary will no longer surface in the Lovable "runtime errors" panel. Prediction/chat/UI still work. |
 
-Fix = one migration tightening the SELECT policies to `has_role(auth.uid(), 'admin') OR has_role(auth.uid(), 'doctor')`. ~5 min.
+### 4. What I will NOT touch (would break the app)
 
-## What I'll do if you approve
+These are build/runtime infrastructure — removing them breaks compile or the AI chatbot:
 
-1. **Migration** to tighten RLS on `datasets`, `models`, `model_metrics` (SELECT restricted to admin/doctor). This clears all 3 scanner warnings.
-2. **Smoke-verify** in Playwright: land on `/`, sign in, hit `/dashboard`, `/predict`, `/analytics`, `/patients`, `/reports`, `/settings`, screenshot each, confirm no console errors.
-3. **Report back** with pass/fail per page + a green light (or a punch list) for submission.
+- `package.json` / `bunfig.toml` / `vite.config.ts`: the `@lovable.dev/vite-tanstack-config` plugin is the actual Vite build config.
+- `backend/app/config.py` / `backend/app/main.py`: `*.lovable.app` / `*.lovableproject.com` CORS entries — these allow your own preview/published domain to call the backend. Removing them locks you out.
+- The `LOVABLE_API_KEY` secret and `ai.gateway.lovable.dev` endpoint used by the AI assistant.
+- The `.lovable/plan.md` audit file (internal scratchpad, not shipped).
 
-## What I will NOT touch
+If you want any of those torn out too, say so and I'll flag the follow-ups needed (e.g. self-hosting the AI gateway, replacing the Vite config).
 
-- Your UI, business logic, ML behavior, login design, or the Render backend.
-- Larger scaling items from the earlier hardening plan (health-cache, request coalescer, per-user quotas, security headers) — not needed for submission, do them post-submit if you want.
+## Confirm before I build
 
-## After the audit passes
-
-Say the word and I'll run `publish` to push the current build to `ai-healthcare23.lovable.app`.
-
-Approve to proceed with the RLS migration + end-to-end smoke test?
+1. LICENSE wording — the short "Copyright © 2026 Madhumitha. All rights reserved." above OK, or do you want something different?
+2. Keep **Harish Kanna** as author in README, or change to Madhumitha?
+3. OK to drop the `og:image` from `__root.tsx` (or supply a replacement image URL)?
