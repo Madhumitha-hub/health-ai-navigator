@@ -1,8 +1,8 @@
 /**
  * AI Medical Chat Assistant — server route.
  *
- * Proxies chat completion requests to the Lovable AI Gateway using the
- * server-only LOVABLE_API_KEY. The system prompt enforces strict medical
+ * Proxies chat completion requests to the configured AI gateway using
+ * a server-only API key. The system prompt enforces strict medical
  * safety rules (no diagnosis, always recommend a clinician).
  */
 import { createFileRoute } from "@tanstack/react-router";
