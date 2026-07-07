@@ -26,7 +26,7 @@ export const Route = createFileRoute("/api/ai-assistant")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const denied = await requireRoleInRoute(request, ["admin", "doctor"]);
+        const denied = await requireRoleInRoute(request, ["admin", "doctor", "patient"]);
         if (denied) return denied;
         const apiKey = process.env.LOVABLE_API_KEY;
         if (!apiKey) {
