@@ -241,9 +241,9 @@ function AnalyticsPage() {
               <SelectContent>
                 <SelectItem value="all">All Diseases</SelectItem>
                 <SelectItem value="diabetes">Diabetes</SelectItem>
-                <SelectItem value="heart">Heart Disease</SelectItem>
-                <SelectItem value="kidney">Kidney Disease</SelectItem>
-                <SelectItem value="liver">Liver Disease</SelectItem>
+                <SelectItem value="heart_disease">Heart Disease</SelectItem>
+                <SelectItem value="kidney_disease">Kidney Disease</SelectItem>
+                <SelectItem value="liver_disease">Liver Disease</SelectItem>
               </SelectContent>
             </Select>
             <Select value={range} onValueChange={setRange}>
