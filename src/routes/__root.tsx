@@ -78,7 +78,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "AI-based Smart Healthcare Disease Prediction System." },
       { name: "twitter:description", content: "AI-based Smart Healthcare Disease Prediction System." },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
     links: [
