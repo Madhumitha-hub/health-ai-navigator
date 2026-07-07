@@ -32,8 +32,11 @@ export const Route = createFileRoute("/patients/$id")({
 });
 
 const DISEASE_COLORS: Record<string, string> = {
-  diabetes: "hsl(var(--chart-1))", heart: "hsl(var(--chart-2))",
-  kidney: "hsl(var(--chart-3))", liver: "hsl(var(--chart-4))",
+  diabetes: "hsl(var(--chart-1))", heart_disease: "hsl(var(--chart-2))",
+  kidney_disease: "hsl(var(--chart-3))", liver_disease: "hsl(var(--chart-4))",
+};
+const DISEASE_LABELS: Record<string, string> = {
+  diabetes: "Diabetes", heart_disease: "Heart", kidney_disease: "Kidney", liver_disease: "Liver",
 };
 const RISK_BADGE: Record<string, string> = {
   low: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
