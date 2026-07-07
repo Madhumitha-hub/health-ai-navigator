@@ -101,7 +101,7 @@ docker build -t healthpredict-ml .
 docker run -p 8000:8000 healthpredict-ml
 ```
 
-Set CORS origins via env var `ALLOWED_ORIGINS` (comma-separated). Default allows localhost + Lovable preview/published domains.
+Set CORS origins via env var `ALLOWED_ORIGINS` (comma-separated). Default allows localhost origins for development.
 
 ## API
 
