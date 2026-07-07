@@ -32,8 +32,11 @@ export const Route = createFileRoute("/patients/$id")({
 });
 
 const DISEASE_COLORS: Record<string, string> = {
-  diabetes: "hsl(var(--chart-1))", heart: "hsl(var(--chart-2))",
-  kidney: "hsl(var(--chart-3))", liver: "hsl(var(--chart-4))",
+  diabetes: "hsl(var(--chart-1))", heart_disease: "hsl(var(--chart-2))",
+  kidney_disease: "hsl(var(--chart-3))", liver_disease: "hsl(var(--chart-4))",
+};
+const DISEASE_LABELS: Record<string, string> = {
+  diabetes: "Diabetes", heart_disease: "Heart", kidney_disease: "Kidney", liver_disease: "Liver",
 };
 const RISK_BADGE: Record<string, string> = {
   low: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
@@ -135,12 +138,12 @@ function PatientProfile() {
         {/* Right column */}
         <div className="md:col-span-7 space-y-4">
           <div className="grid gap-3 md:grid-cols-4">
-            {(["diabetes", "heart", "kidney", "liver"] as const).map((d) => {
+            {(["diabetes", "heart_disease", "kidney_disease", "liver_disease"] as const).map((d) => {
               const last = latestByDisease[d];
               return (
                 <Card key={d}>
                   <CardContent className="pt-4">
-                    <div className="text-xs uppercase text-muted-foreground">{d}</div>
+                    <div className="text-xs uppercase text-muted-foreground">{DISEASE_LABELS[d]}</div>
                     {last ? (
                       <>
                         <div className="mt-1 text-xl font-bold">{((last.risk_score ?? 0) * 100).toFixed(0)}%</div>

@@ -241,9 +241,9 @@ function AnalyticsPage() {
               <SelectContent>
                 <SelectItem value="all">All Diseases</SelectItem>
                 <SelectItem value="diabetes">Diabetes</SelectItem>
-                <SelectItem value="heart">Heart Disease</SelectItem>
-                <SelectItem value="kidney">Kidney Disease</SelectItem>
-                <SelectItem value="liver">Liver Disease</SelectItem>
+                <SelectItem value="heart_disease">Heart Disease</SelectItem>
+                <SelectItem value="kidney_disease">Kidney Disease</SelectItem>
+                <SelectItem value="liver_disease">Liver Disease</SelectItem>
               </SelectContent>
             </Select>
             <Select value={range} onValueChange={setRange}>
@@ -443,9 +443,9 @@ function AnalyticsPage() {
               <Tabs value={statsDisease} onValueChange={setStatsDisease}>
                 <TabsList>
                   <TabsTrigger value="diabetes">Diabetes</TabsTrigger>
-                  <TabsTrigger value="heart">Heart</TabsTrigger>
-                  <TabsTrigger value="kidney">Kidney</TabsTrigger>
-                  <TabsTrigger value="liver">Liver</TabsTrigger>
+                  <TabsTrigger value="heart_disease">Heart</TabsTrigger>
+                  <TabsTrigger value="kidney_disease">Kidney</TabsTrigger>
+                  <TabsTrigger value="liver_disease">Liver</TabsTrigger>
                 </TabsList>
                 <TabsContent value={statsDisease} className="mt-4">
                   <Table>
