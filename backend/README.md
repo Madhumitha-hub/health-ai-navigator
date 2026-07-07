@@ -21,8 +21,6 @@ FastAPI service that powers the four disease-prediction modules. Runs as a stand
 
 Railway, Fly.io, and Cloud Run work identically — the included `Dockerfile` is host-agnostic.
 
-
-
 ## Stack
 
 - FastAPI + Uvicorn
@@ -50,7 +48,7 @@ backend/
 
 ## Setup
 
-```bash
+```
 cd backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -60,12 +58,12 @@ pip install -r requirements.txt
 
 Drop your CSVs into `backend/data/`:
 
-| Disease  | File              | Required columns                                                                                              |
-|----------|-------------------|----------------------------------------------------------------------------------------------------------------|
-| Diabetes | `diabetes.csv`    | Age, Gender, BMI, Glucose, Insulin, BloodPressure, SkinThickness, DiabetesPedigreeFunction, Outcome           |
-| Heart    | `heart.csv`       | Age, Gender, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG, MaxHR, ExerciseAngina, STDepression, Outcome |
-| Kidney   | `kidney.csv`      | Age, BloodPressure, SpecificGravity, Albumin, BloodGlucoseRandom, BloodUrea, SerumCreatinine, Hemoglobin, PackedCellVolume, Outcome |
-| Liver    | `liver.csv`       | Age, Gender, TotalBilirubin, DirectBilirubin, AlkalinePhosphotase, SGPT, SGOT, TotalProteins, Albumin, AlbuminAndGlobulinRatio, Outcome |
+| Disease  | File           | Required columns                                                                                                                        |
+| -------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Diabetes | `diabetes.csv` | Age, Gender, BMI, Glucose, Insulin, BloodPressure, SkinThickness, DiabetesPedigreeFunction, Outcome                                     |
+| Heart    | `heart.csv`    | Age, Gender, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG, MaxHR, ExerciseAngina, STDepression, Outcome                 |
+| Kidney   | `kidney.csv`   | Age, BloodPressure, SpecificGravity, Albumin, BloodGlucoseRandom, BloodUrea, SerumCreatinine, Hemoglobin, PackedCellVolume, Outcome     |
+| Liver    | `liver.csv`    | Age, Gender, TotalBilirubin, DirectBilirubin, AlkalinePhosphotase, SGPT, SGOT, TotalProteins, Albumin, AlbuminAndGlobulinRatio, Outcome |
 
 `Outcome` is the binary target (0/1). `Gender` accepted as `M/F` or `0/1`.
 
@@ -105,13 +103,13 @@ Set CORS origins via env var `ALLOWED_ORIGINS` (comma-separated). Default allows
 
 ## API
 
-| Method | Path                  | Purpose                                  |
-|--------|-----------------------|------------------------------------------|
-| GET    | `/health`             | Liveness + loaded model count            |
-| GET    | `/models`             | List loaded models                       |
-| GET    | `/metrics`            | Per-disease metrics for all algorithms   |
-| GET    | `/analytics`          | Aggregate stats over recent predictions  |
-| POST   | `/predict/{disease}`  | Prediction + SHAP top factors            |
+| Method | Path                 | Purpose                                 |
+| ------ | -------------------- | --------------------------------------- |
+| GET    | `/health`            | Liveness + loaded model count           |
+| GET    | `/models`            | List loaded models                      |
+| GET    | `/metrics`           | Per-disease metrics for all algorithms  |
+| GET    | `/analytics`         | Aggregate stats over recent predictions |
+| POST   | `/predict/{disease}` | Prediction + SHAP top factors           |
 
 `{disease}` ∈ `diabetes | heart | kidney | liver`.
 
