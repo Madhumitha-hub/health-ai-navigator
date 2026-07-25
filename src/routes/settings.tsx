@@ -316,11 +316,3 @@ function ToggleRow({
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-card p-3">
-      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 font-display text-base font-semibold">{value}</p>
-    </div>
-  );
-}
