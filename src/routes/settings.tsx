@@ -184,78 +184,70 @@ function SettingsPage() {
           </Card>
         </TabsContent>
 
-        {/* ============== System ============== */}
-        <TabsContent value="system" className="mt-6 space-y-6">
-          {!isAdmin && (
-            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
-              System settings are admin-only. You can view current values but cannot save changes.
-            </div>
-          )}
-          <Card className="card-elevated">
-            <CardHeader>
-              <CardTitle>ML Backend</CardTitle>
-              <CardDescription>FastAPI endpoint used for predictions.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
-              <Field label="API Endpoint URL">
-                <Input
-                  value={prefs.apiUrl}
-                  onChange={(e) => setPrefs({ ...prefs, apiUrl: e.target.value })}
-                  disabled={!isAdmin}
-                />
-              </Field>
-              <Field label="Default disease">
-                <Select
-                  value={prefs.defaultDisease}
-                  onValueChange={(v) => setPrefs({ ...prefs, defaultDisease: v })}
-                  disabled={!isAdmin}
-                >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="diabetes">Diabetes</SelectItem>
-                    <SelectItem value="heart">Heart Disease</SelectItem>
-                    <SelectItem value="kidney">Kidney Disease</SelectItem>
-                    <SelectItem value="liver">Liver Disease</SelectItem>
-                  </SelectContent>
-                </Select>
-              </Field>
+        {/* ============== System (admin only) ============== */}
+        {isAdmin && (
+          <TabsContent value="system" className="mt-6 space-y-6">
+            <Card className="card-elevated">
+              <CardHeader>
+                <CardTitle>ML Backend</CardTitle>
+                <CardDescription>FastAPI endpoint used for predictions.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 md:grid-cols-2">
+                <Field label="API Endpoint URL">
+                  <Input
+                    value={prefs.apiUrl}
+                    onChange={(e) => setPrefs({ ...prefs, apiUrl: e.target.value })}
+                  />
+                </Field>
+                <Field label="Default disease">
+                  <Select
+                    value={prefs.defaultDisease}
+                    onValueChange={(v) => setPrefs({ ...prefs, defaultDisease: v })}
+                  >
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="diabetes">Diabetes</SelectItem>
+                      <SelectItem value="heart">Heart Disease</SelectItem>
+                      <SelectItem value="kidney">Kidney Disease</SelectItem>
+                      <SelectItem value="liver">Liver Disease</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
 
-              <div className="md:col-span-2 space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>High Risk threshold</Label>
-                  <span className="font-mono text-sm">{prefs.highRiskThreshold}%</span>
+                <div className="md:col-span-2 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>High Risk threshold</Label>
+                    <span className="font-mono text-sm">{prefs.highRiskThreshold}%</span>
+                  </div>
+                  <Slider
+                    value={[prefs.highRiskThreshold]}
+                    min={50} max={95} step={1}
+                    onValueChange={([v]) => setPrefs({ ...prefs, highRiskThreshold: v })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Predictions with confidence ≥ this threshold trigger a high-risk alert.
+                  </p>
                 </div>
-                <Slider
-                  value={[prefs.highRiskThreshold]}
-                  min={50} max={95} step={1}
-                  onValueChange={([v]) => setPrefs({ ...prefs, highRiskThreshold: v })}
-                  disabled={!isAdmin}
+
+                <ToggleRow
+                  label="Email notifications"
+                  desc="Email the doctor when a high-risk prediction is created."
+                  checked={prefs.emailHighRisk}
+                  onChange={(v) => setPrefs({ ...prefs, emailHighRisk: v })}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Predictions with confidence ≥ this threshold trigger a high-risk alert.
-                </p>
-              </div>
 
-              <ToggleRow
-                label="Email notifications"
-                desc="Email the doctor when a high-risk prediction is created."
-                checked={prefs.emailHighRisk}
-                onChange={(v) => setPrefs({ ...prefs, emailHighRisk: v })}
-                disabled={!isAdmin}
-              />
-
-              <div className="md:col-span-2">
-                <Button
-                  onClick={() => toast.success("System settings saved")}
-                  disabled={!isAdmin}
-                  className="bg-gradient-primary shadow-glow"
-                >
-                  <Save className="mr-2 h-4 w-4" />Save
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                <div className="md:col-span-2">
+                  <Button
+                    onClick={() => toast.success("System settings saved")}
+                    className="bg-gradient-primary shadow-glow"
+                  >
+                    <Save className="mr-2 h-4 w-4" />Save
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {/* ============== Appearance ============== */}
         <TabsContent value="appearance" className="mt-6 space-y-6">
