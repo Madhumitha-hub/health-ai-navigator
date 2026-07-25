@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
-  Settings as Cog, Save, User, Cpu, Palette, Info, Moon, Sun, Loader2,
+  Settings as Cog, Save, User, Cpu, Palette, Moon, Sun, Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,8 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -59,7 +57,7 @@ function defaults(): AppPrefs {
     defaultDisease: "diabetes",
     highRiskThreshold: 70,
     emailHighRisk: true,
-    sidebarCollapsed: false,
+    sidebarCollapsed: true,
     density: "comfortable",
   };
 }
@@ -85,7 +83,7 @@ function SettingsPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem(APP_PREFS_KEY, JSON.stringify(prefs));
-    document.documentElement.dataset.density = prefs.density;
+    document.documentElement.dataset.density = "comfortable";
   }, [prefs]);
 
   const saveProfile = async () => {
@@ -114,20 +112,25 @@ function SettingsPage() {
 
   const isAdmin = profile?.role === "admin";
 
+  useEffect(() => {
+    if (!isAdmin && tab === "system") setTab("profile");
+  }, [isAdmin, tab]);
+
   return (
     <div className="mx-auto max-w-5xl">
       <PageHeader
         title="Settings"
-        description="Profile, system, appearance and about."
+        description="Profile, appearance and system preferences."
         icon={Cog}
       />
 
       <Tabs value={tab} onValueChange={setTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+        <TabsList className={`grid w-full ${isAdmin ? "grid-cols-3" : "grid-cols-2"}`}>
           <TabsTrigger value="profile"><User className="mr-1.5 h-4 w-4" />Profile</TabsTrigger>
-          <TabsTrigger value="system"><Cpu className="mr-1.5 h-4 w-4" />System</TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value="system"><Cpu className="mr-1.5 h-4 w-4" />System</TabsTrigger>
+          )}
           <TabsTrigger value="appearance"><Palette className="mr-1.5 h-4 w-4" />Appearance</TabsTrigger>
-          <TabsTrigger value="about"><Info className="mr-1.5 h-4 w-4" />About</TabsTrigger>
         </TabsList>
 
         {/* ============== Profile ============== */}
@@ -179,85 +182,77 @@ function SettingsPage() {
           </Card>
         </TabsContent>
 
-        {/* ============== System ============== */}
-        <TabsContent value="system" className="mt-6 space-y-6">
-          {!isAdmin && (
-            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
-              System settings are admin-only. You can view current values but cannot save changes.
-            </div>
-          )}
-          <Card className="card-elevated">
-            <CardHeader>
-              <CardTitle>ML Backend</CardTitle>
-              <CardDescription>FastAPI endpoint used for predictions.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
-              <Field label="API Endpoint URL">
-                <Input
-                  value={prefs.apiUrl}
-                  onChange={(e) => setPrefs({ ...prefs, apiUrl: e.target.value })}
-                  disabled={!isAdmin}
-                />
-              </Field>
-              <Field label="Default disease">
-                <Select
-                  value={prefs.defaultDisease}
-                  onValueChange={(v) => setPrefs({ ...prefs, defaultDisease: v })}
-                  disabled={!isAdmin}
-                >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="diabetes">Diabetes</SelectItem>
-                    <SelectItem value="heart">Heart Disease</SelectItem>
-                    <SelectItem value="kidney">Kidney Disease</SelectItem>
-                    <SelectItem value="liver">Liver Disease</SelectItem>
-                  </SelectContent>
-                </Select>
-              </Field>
+        {/* ============== System (admin only) ============== */}
+        {isAdmin && (
+          <TabsContent value="system" className="mt-6 space-y-6">
+            <Card className="card-elevated">
+              <CardHeader>
+                <CardTitle>ML Backend</CardTitle>
+                <CardDescription>FastAPI endpoint used for predictions.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 md:grid-cols-2">
+                <Field label="API Endpoint URL">
+                  <Input
+                    value={prefs.apiUrl}
+                    onChange={(e) => setPrefs({ ...prefs, apiUrl: e.target.value })}
+                  />
+                </Field>
+                <Field label="Default disease">
+                  <Select
+                    value={prefs.defaultDisease}
+                    onValueChange={(v) => setPrefs({ ...prefs, defaultDisease: v })}
+                  >
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="diabetes">Diabetes</SelectItem>
+                      <SelectItem value="heart">Heart Disease</SelectItem>
+                      <SelectItem value="kidney">Kidney Disease</SelectItem>
+                      <SelectItem value="liver">Liver Disease</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
 
-              <div className="md:col-span-2 space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>High Risk threshold</Label>
-                  <span className="font-mono text-sm">{prefs.highRiskThreshold}%</span>
+                <div className="md:col-span-2 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>High Risk threshold</Label>
+                    <span className="font-mono text-sm">{prefs.highRiskThreshold}%</span>
+                  </div>
+                  <Slider
+                    value={[prefs.highRiskThreshold]}
+                    min={50} max={95} step={1}
+                    onValueChange={([v]) => setPrefs({ ...prefs, highRiskThreshold: v })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Predictions with confidence ≥ this threshold trigger a high-risk alert.
+                  </p>
                 </div>
-                <Slider
-                  value={[prefs.highRiskThreshold]}
-                  min={50} max={95} step={1}
-                  onValueChange={([v]) => setPrefs({ ...prefs, highRiskThreshold: v })}
-                  disabled={!isAdmin}
+
+                <ToggleRow
+                  label="Email notifications"
+                  desc="Email the doctor when a high-risk prediction is created."
+                  checked={prefs.emailHighRisk}
+                  onChange={(v) => setPrefs({ ...prefs, emailHighRisk: v })}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Predictions with confidence ≥ this threshold trigger a high-risk alert.
-                </p>
-              </div>
 
-              <ToggleRow
-                label="Email notifications"
-                desc="Email the doctor when a high-risk prediction is created."
-                checked={prefs.emailHighRisk}
-                onChange={(v) => setPrefs({ ...prefs, emailHighRisk: v })}
-                disabled={!isAdmin}
-              />
-
-              <div className="md:col-span-2">
-                <Button
-                  onClick={() => toast.success("System settings saved")}
-                  disabled={!isAdmin}
-                  className="bg-gradient-primary shadow-glow"
-                >
-                  <Save className="mr-2 h-4 w-4" />Save
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                <div className="md:col-span-2">
+                  <Button
+                    onClick={() => toast.success("System settings saved")}
+                    className="bg-gradient-primary shadow-glow"
+                  >
+                    <Save className="mr-2 h-4 w-4" />Save
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {/* ============== Appearance ============== */}
         <TabsContent value="appearance" className="mt-6 space-y-6">
           <Card className="card-elevated">
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
-              <CardDescription>Theme, sidebar and density.</CardDescription>
+              <CardDescription>Theme and sidebar preferences.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <ToggleRow
@@ -275,59 +270,9 @@ function SettingsPage() {
               />
               <div className="md:col-span-2 space-y-1.5">
                 <Label>Density</Label>
-                <Select
-                  value={prefs.density}
-                  onValueChange={(v: "comfortable" | "compact") => setPrefs({ ...prefs, density: v })}
-                >
-                  <SelectTrigger className="md:w-64"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="comfortable">Comfortable</SelectItem>
-                    <SelectItem value="compact">Compact</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">Adjusts padding and spacing globally.</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ============== About ============== */}
-        <TabsContent value="about" className="mt-6 space-y-6">
-          <Card className="card-elevated">
-            <CardHeader>
-              <CardTitle>HealthPredict</CardTitle>
-              <CardDescription>AI-Based Smart Healthcare Disease Prediction System</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid gap-4 md:grid-cols-3">
-                <Stat label="Version" value="v1.0.0" />
-                <Stat label="Institution" value={profile?.institution || "[Your Institution]"} />
-                <Stat label="License" value="MIT" />
-              </div>
-              <Separator />
-              <div>
-                <p className="mb-2 text-sm font-semibold">Tech stack</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {["React 19", "TanStack Start", "Tailwind v4", "shadcn/ui", "Recharts", "Supabase", "jsPDF", "FastAPI"].map((t) => (
-                    <Badge key={t} variant="secondary">{t}</Badge>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="mb-2 text-sm font-semibold">AI Models integrated</p>
-                <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                  <li>Diabetes — XGBoost / Random Forest (PIMA features)</li>
-                  <li>Heart Disease — Logistic Regression / SVM (UCI Cleveland)</li>
-                  <li>Kidney Disease — Random Forest (UCI CKD)</li>
-                  <li>Liver Disease — Gradient Boosting (Indian Liver Patient Dataset)</li>
-                </ul>
-              </div>
-              <Separator />
-              <div>
-                <p className="mb-2 text-sm font-semibold">Credits</p>
-                <p className="text-sm text-muted-foreground">
-                  Built with ❤ using open-source healthcare datasets from the UCI Machine
-                  Learning Repository and Kaggle community.
+                <p className="text-sm text-foreground">Comfortable</p>
+                <p className="text-xs text-muted-foreground">
+                  Comfortable spacing is applied for all users to keep the interface readable.
                 </p>
               </div>
             </CardContent>
@@ -371,11 +316,3 @@ function ToggleRow({
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-card p-3">
-      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 font-display text-base font-semibold">{value}</p>
-    </div>
-  );
-}

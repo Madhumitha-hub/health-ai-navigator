@@ -229,8 +229,21 @@ function Footer() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const defaultOpen = (() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const raw = window.localStorage.getItem("hp-app-prefs");
+      if (!raw) return false;
+      const parsed = JSON.parse(raw) as { sidebarCollapsed?: boolean };
+      return parsed.sidebarCollapsed === false;
+    } catch {
+      return false;
+    }
+  })();
+
   return (
     <SidebarProvider
+      defaultOpen={defaultOpen}
       style={{
         "--sidebar-width": "280px",
         "--sidebar-width-icon": "64px",
