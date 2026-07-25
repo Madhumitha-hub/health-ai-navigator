@@ -1,19 +1,46 @@
-## Problem
+## Goal
 
-Both the preview tab and the Lovable editor freeze with "Page Unresponsive" on the login screen. Root cause: the Spline 3D scene added to `src/routes/login.tsx` loads `@splinetool/react-spline` + a WebGL scene from `prod.spline.design`, which spins a continuous render loop and pins CPU/GPU. Any unauthenticated visit (including `/` → auth gate → `/login`) mounts it, and the editor's preview iframe drags the whole tab down with it.
+Strip user-visible "Lovable" and "AI-generated / AI-assisted" branding from the repo, replace the license with one crediting **Madhumitha**, and add the README you pasted.
 
-## Fix
+## What I'll change
 
-Remove the Spline scene from the login page and replace the right-hand panel with a lightweight branded visual (CSS gradient + Spotlight + a few static SVG/lucide icons and product marketing text). No WebGL, no external scene fetch, no render loop.
+### 1. README.md (create/overwrite at repo root)
+- Use the README content you pasted verbatim, with two edits:
+  - **License section**: replace "MIT License" with "Licensed by **Madhumitha**." (see LICENSE section below).
+  - Keep the **Author** section as-is (Harish Kanna) since you only asked to change the license, not the author. Tell me if you want that changed too.
 
-### Edits
-1. `src/routes/login.tsx` — drop `SplineScene` import and usage. Replace the right column with a static hero panel (gradient background, Spotlight, headline like "Clinical intelligence, at a glance", feature bullets with lucide icons). Keep the left sign-in form unchanged.
-2. `src/components/ui/splite.tsx` — delete (unused after edit).
-3. `package.json` — remove `@splinetool/react-spline` (and `@splinetool/runtime` if present) so the heavy dependency stops shipping.
+### 2. LICENSE (create/overwrite at repo root)
+Replace any MIT text with a short custom notice:
+```
+Copyright (c) 2026 Madhumitha
+All rights reserved.
+```
+Tell me if you want a different wording (e.g. "Proprietary — Madhumitha", or a full custom-terms block).
 
-### Verification
-- Reload `/login` in preview — page becomes responsive immediately, no "Page Unresponsive" dialog.
-- Confirm bundle no longer requests `prod.spline.design/*.splinecode`.
-- Typecheck passes; login form still submits.
+### 3. Remove user-visible Lovable / AI-generator references
 
-No backend, DB, or auth logic changes.
+| File | Change |
+|---|---|
+| `src/routes/__root.tsx` | Replace `og:image` / `twitter:image` URLs (currently `...lovable.app...png`) with a neutral placeholder or drop the tags. Title/description already say "HealthPredict" — no Lovable in them. |
+| `src/integrations/supabase/client.server.ts` | Change error string `"Connect Supabase in Lovable Cloud."` → `"Configure Supabase environment variables."` |
+| `src/integrations/supabase/auth-middleware.ts` | Same string swap. |
+| `backend/README.md` | Rewrite to drop Lovable-specific setup instructions; keep FastAPI setup and CORS instructions in generic terms. |
+| `src/routes/api.ai-assistant.ts` | Rewrite the JSDoc header comment to say "Proxies chat completions to the configured AI gateway" (no "Lovable"). The env var `LOVABLE_API_KEY` and upstream URL `ai.gateway.lovable.dev` stay — they are the actual runtime infra, changing them breaks the chatbot. |
+| `src/lib/lovable-error-reporting.ts` | Rename file to `src/lib/error-reporting.ts`, rename types/functions to drop "Lovable" (`reportError`, `AppErrorOptions`, `window.__appEvents`). Update the one importer (`__root.tsx`). ⚠️ **Trade-off**: the Lovable preview's runtime-error overlay reads from `window.__lovableEvents`; after this rename, errors inside the React error boundary will no longer surface in the Lovable "runtime errors" panel. Prediction/chat/UI still work. |
+
+### 4. What I will NOT touch (would break the app)
+
+These are build/runtime infrastructure — removing them breaks compile or the AI chatbot:
+
+- `package.json` / `bunfig.toml` / `vite.config.ts`: the `@lovable.dev/vite-tanstack-config` plugin is the actual Vite build config.
+- `backend/app/config.py` / `backend/app/main.py`: `*.lovable.app` / `*.lovableproject.com` CORS entries — these allow your own preview/published domain to call the backend. Removing them locks you out.
+- The `LOVABLE_API_KEY` secret and `ai.gateway.lovable.dev` endpoint used by the AI assistant.
+- The `.lovable/plan.md` audit file (internal scratchpad, not shipped).
+
+If you want any of those torn out too, say so and I'll flag the follow-ups needed (e.g. self-hosting the AI gateway, replacing the Vite config).
+
+## Confirm before I build
+
+1. LICENSE wording — the short "Copyright © 2026 Madhumitha. All rights reserved." above OK, or do you want something different?
+2. Keep **Harish Kanna** as author in README, or change to Madhumitha?
+3. OK to drop the `og:image` from `__root.tsx` (or supply a replacement image URL)?
