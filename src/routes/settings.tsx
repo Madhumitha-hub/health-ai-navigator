@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
-  Settings as Cog, Save, User, Cpu, Palette, Info, Moon, Sun, Loader2,
+  Settings as Cog, Save, User, Cpu, Palette, Moon, Sun, Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
