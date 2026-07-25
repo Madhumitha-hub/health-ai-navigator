@@ -9,105 +9,40 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ReportsRouteImport } from './routes/reports'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as PredictFullRouteImport } from './routes/predict-full'
-import { Route as PredictRouteImport } from './routes/predict'
-import { Route as PatientsRouteImport } from './routes/patients'
-import { Route as ModelsRouteImport } from './routes/models'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as EdaRouteImport } from './routes/eda'
-import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
-import { Route as DatasetsRouteImport } from './routes/datasets'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PatientsIdRouteImport } from './routes/patients.$id'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DatasetsRouteImport } from './routes/datasets'
+import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
+import { Route as EdaRouteImport } from './routes/eda'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ModelsRouteImport } from './routes/models'
+import { Route as PatientsRouteImport } from './routes/patients'
+import { Route as PredictRouteImport } from './routes/predict'
+import { Route as PredictFullRouteImport } from './routes/predict-full'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApiAiAssistantRouteImport } from './routes/api.ai-assistant'
+import { Route as PatientsIdRouteImport } from './routes/patients.$id'
 import { Route as ApiMlIndexRouteImport } from './routes/api.ml.index'
-import { Route as ApiMlRecommendationsRouteImport } from './routes/api.ml.recommendations'
-import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
-import { Route as ApiMlMetricsRouteImport } from './routes/api.ml.metrics'
-import { Route as ApiMlHealthScoreRouteImport } from './routes/api.ml.health-score'
-import { Route as ApiMlHealthRouteImport } from './routes/api.ml.health'
-import { Route as ApiMlClinicalSupportRouteImport } from './routes/api.ml.clinical-support'
 import { Route as ApiMlAnalyticsRouteImport } from './routes/api.ml.analytics'
-import { Route as ApiMlPredictFullAssessmentRouteImport } from './routes/api.ml.predict.full-assessment'
-import { Route as ApiMlPredictDiseaseRouteImport } from './routes/api.ml.predict.$disease'
-import { Route as ApiMlFeatureImportanceDiseaseRouteImport } from './routes/api.ml.feature-importance.$disease'
+import { Route as ApiMlClinicalSupportRouteImport } from './routes/api.ml.clinical-support'
+import { Route as ApiMlHealthRouteImport } from './routes/api.ml.health'
+import { Route as ApiMlHealthScoreRouteImport } from './routes/api.ml.health-score'
+import { Route as ApiMlMetricsRouteImport } from './routes/api.ml.metrics'
+import { Route as ApiMlModelsRouteImport } from './routes/api.ml.models'
+import { Route as ApiMlRecommendationsRouteImport } from './routes/api.ml.recommendations'
 import { Route as ApiMlEdaDiseaseRouteImport } from './routes/api.ml.eda.$disease'
+import { Route as ApiMlFeatureImportanceDiseaseRouteImport } from './routes/api.ml.feature-importance.$disease'
+import { Route as ApiMlPredictDiseaseRouteImport } from './routes/api.ml.predict.$disease'
+import { Route as ApiMlPredictFullAssessmentRouteImport } from './routes/api.ml.predict.full-assessment'
 
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReportsRoute = ReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PredictFullRoute = PredictFullRouteImport.update({
-  id: '/predict-full',
-  path: '/predict-full',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PredictRoute = PredictRouteImport.update({
-  id: '/predict',
-  path: '/predict',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PatientsRoute = PatientsRouteImport.update({
-  id: '/patients',
-  path: '/patients',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ModelsRoute = ModelsRouteImport.update({
-  id: '/models',
-  path: '/models',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EdaRoute = EdaRouteImport.update({
-  id: '/eda',
-  path: '/eda',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiagnosticsRoute = DiagnosticsRouteImport.update({
-  id: '/diagnostics',
-  path: '/diagnostics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DatasetsRoute = DatasetsRouteImport.update({
-  id: '/datasets',
-  path: '/datasets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
@@ -115,9 +50,79 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatasetsRoute = DatasetsRouteImport.update({
+  id: '/datasets',
+  path: '/datasets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosticsRoute = DiagnosticsRouteImport.update({
+  id: '/diagnostics',
+  path: '/diagnostics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdaRoute = EdaRouteImport.update({
+  id: '/eda',
+  path: '/eda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModelsRoute = ModelsRouteImport.update({
+  id: '/models',
+  path: '/models',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatientsRoute = PatientsRouteImport.update({
+  id: '/patients',
+  path: '/patients',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictRoute = PredictRouteImport.update({
+  id: '/predict',
+  path: '/predict',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictFullRoute = PredictFullRouteImport.update({
+  id: '/predict-full',
+  path: '/predict-full',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiAssistantRoute = ApiAiAssistantRouteImport.update({
+  id: '/api/ai-assistant',
+  path: '/api/ai-assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatientsIdRoute = PatientsIdRouteImport.update({
@@ -125,44 +130,9 @@ const PatientsIdRoute = PatientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PatientsRoute,
 } as any)
-const ApiAiAssistantRoute = ApiAiAssistantRouteImport.update({
-  id: '/api/ai-assistant',
-  path: '/api/ai-assistant',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiMlIndexRoute = ApiMlIndexRouteImport.update({
   id: '/api/ml/',
   path: '/api/ml/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMlRecommendationsRoute = ApiMlRecommendationsRouteImport.update({
-  id: '/api/ml/recommendations',
-  path: '/api/ml/recommendations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMlModelsRoute = ApiMlModelsRouteImport.update({
-  id: '/api/ml/models',
-  path: '/api/ml/models',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMlMetricsRoute = ApiMlMetricsRouteImport.update({
-  id: '/api/ml/metrics',
-  path: '/api/ml/metrics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMlHealthScoreRoute = ApiMlHealthScoreRouteImport.update({
-  id: '/api/ml/health-score',
-  path: '/api/ml/health-score',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMlHealthRoute = ApiMlHealthRouteImport.update({
-  id: '/api/ml/health',
-  path: '/api/ml/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMlClinicalSupportRoute = ApiMlClinicalSupportRouteImport.update({
-  id: '/api/ml/clinical-support',
-  path: '/api/ml/clinical-support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiMlAnalyticsRoute = ApiMlAnalyticsRouteImport.update({
@@ -170,15 +140,39 @@ const ApiMlAnalyticsRoute = ApiMlAnalyticsRouteImport.update({
   path: '/api/ml/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiMlPredictFullAssessmentRoute =
-  ApiMlPredictFullAssessmentRouteImport.update({
-    id: '/api/ml/predict/full-assessment',
-    path: '/api/ml/predict/full-assessment',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiMlPredictDiseaseRoute = ApiMlPredictDiseaseRouteImport.update({
-  id: '/api/ml/predict/$disease',
-  path: '/api/ml/predict/$disease',
+const ApiMlClinicalSupportRoute = ApiMlClinicalSupportRouteImport.update({
+  id: '/api/ml/clinical-support',
+  path: '/api/ml/clinical-support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlHealthRoute = ApiMlHealthRouteImport.update({
+  id: '/api/ml/health',
+  path: '/api/ml/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlHealthScoreRoute = ApiMlHealthScoreRouteImport.update({
+  id: '/api/ml/health-score',
+  path: '/api/ml/health-score',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlMetricsRoute = ApiMlMetricsRouteImport.update({
+  id: '/api/ml/metrics',
+  path: '/api/ml/metrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlModelsRoute = ApiMlModelsRouteImport.update({
+  id: '/api/ml/models',
+  path: '/api/ml/models',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlRecommendationsRoute = ApiMlRecommendationsRouteImport.update({
+  id: '/api/ml/recommendations',
+  path: '/api/ml/recommendations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMlEdaDiseaseRoute = ApiMlEdaDiseaseRouteImport.update({
+  id: '/api/ml/eda/$disease',
+  path: '/api/ml/eda/$disease',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiMlFeatureImportanceDiseaseRoute =
@@ -187,11 +181,17 @@ const ApiMlFeatureImportanceDiseaseRoute =
     path: '/api/ml/feature-importance/$disease',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiMlEdaDiseaseRoute = ApiMlEdaDiseaseRouteImport.update({
-  id: '/api/ml/eda/$disease',
-  path: '/api/ml/eda/$disease',
+const ApiMlPredictDiseaseRoute = ApiMlPredictDiseaseRouteImport.update({
+  id: '/api/ml/predict/$disease',
+  path: '/api/ml/predict/$disease',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMlPredictFullAssessmentRoute =
+  ApiMlPredictFullAssessmentRouteImport.update({
+    id: '/api/ml/predict/full-assessment',
+    path: '/api/ml/predict/full-assessment',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -423,102 +423,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reports': {
-      id: '/reports'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof ReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/predict-full': {
-      id: '/predict-full'
-      path: '/predict-full'
-      fullPath: '/predict-full'
-      preLoaderRoute: typeof PredictFullRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/predict': {
-      id: '/predict'
-      path: '/predict'
-      fullPath: '/predict'
-      preLoaderRoute: typeof PredictRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/patients': {
-      id: '/patients'
-      path: '/patients'
-      fullPath: '/patients'
-      preLoaderRoute: typeof PatientsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/models': {
-      id: '/models'
-      path: '/models'
-      fullPath: '/models'
-      preLoaderRoute: typeof ModelsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/eda': {
-      id: '/eda'
-      path: '/eda'
-      fullPath: '/eda'
-      preLoaderRoute: typeof EdaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/diagnostics': {
-      id: '/diagnostics'
-      path: '/diagnostics'
-      fullPath: '/diagnostics'
-      preLoaderRoute: typeof DiagnosticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/datasets': {
-      id: '/datasets'
-      path: '/datasets'
-      fullPath: '/datasets'
-      preLoaderRoute: typeof DatasetsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analytics': {
@@ -528,11 +437,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/datasets': {
+      id: '/datasets'
+      path: '/datasets'
+      fullPath: '/datasets'
+      preLoaderRoute: typeof DatasetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostics': {
+      id: '/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/diagnostics'
+      preLoaderRoute: typeof DiagnosticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eda': {
+      id: '/eda'
+      path: '/eda'
+      fullPath: '/eda'
+      preLoaderRoute: typeof EdaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/models': {
+      id: '/models'
+      path: '/models'
+      fullPath: '/models'
+      preLoaderRoute: typeof ModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patients': {
+      id: '/patients'
+      path: '/patients'
+      fullPath: '/patients'
+      preLoaderRoute: typeof PatientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict': {
+      id: '/predict'
+      path: '/predict'
+      fullPath: '/predict'
+      preLoaderRoute: typeof PredictRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict-full': {
+      id: '/predict-full'
+      path: '/predict-full'
+      fullPath: '/predict-full'
+      preLoaderRoute: typeof PredictFullRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai-assistant': {
+      id: '/api/ai-assistant'
+      path: '/api/ai-assistant'
+      fullPath: '/api/ai-assistant'
+      preLoaderRoute: typeof ApiAiAssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/patients/$id': {
@@ -542,60 +549,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientsIdRouteImport
       parentRoute: typeof PatientsRoute
     }
-    '/api/ai-assistant': {
-      id: '/api/ai-assistant'
-      path: '/api/ai-assistant'
-      fullPath: '/api/ai-assistant'
-      preLoaderRoute: typeof ApiAiAssistantRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/ml/': {
       id: '/api/ml/'
       path: '/api/ml'
       fullPath: '/api/ml/'
       preLoaderRoute: typeof ApiMlIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ml/recommendations': {
-      id: '/api/ml/recommendations'
-      path: '/api/ml/recommendations'
-      fullPath: '/api/ml/recommendations'
-      preLoaderRoute: typeof ApiMlRecommendationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ml/models': {
-      id: '/api/ml/models'
-      path: '/api/ml/models'
-      fullPath: '/api/ml/models'
-      preLoaderRoute: typeof ApiMlModelsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ml/metrics': {
-      id: '/api/ml/metrics'
-      path: '/api/ml/metrics'
-      fullPath: '/api/ml/metrics'
-      preLoaderRoute: typeof ApiMlMetricsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ml/health-score': {
-      id: '/api/ml/health-score'
-      path: '/api/ml/health-score'
-      fullPath: '/api/ml/health-score'
-      preLoaderRoute: typeof ApiMlHealthScoreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ml/health': {
-      id: '/api/ml/health'
-      path: '/api/ml/health'
-      fullPath: '/api/ml/health'
-      preLoaderRoute: typeof ApiMlHealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ml/clinical-support': {
-      id: '/api/ml/clinical-support'
-      path: '/api/ml/clinical-support'
-      fullPath: '/api/ml/clinical-support'
-      preLoaderRoute: typeof ApiMlClinicalSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ml/analytics': {
@@ -605,18 +563,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMlAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/ml/predict/full-assessment': {
-      id: '/api/ml/predict/full-assessment'
-      path: '/api/ml/predict/full-assessment'
-      fullPath: '/api/ml/predict/full-assessment'
-      preLoaderRoute: typeof ApiMlPredictFullAssessmentRouteImport
+    '/api/ml/clinical-support': {
+      id: '/api/ml/clinical-support'
+      path: '/api/ml/clinical-support'
+      fullPath: '/api/ml/clinical-support'
+      preLoaderRoute: typeof ApiMlClinicalSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/ml/predict/$disease': {
-      id: '/api/ml/predict/$disease'
-      path: '/api/ml/predict/$disease'
-      fullPath: '/api/ml/predict/$disease'
-      preLoaderRoute: typeof ApiMlPredictDiseaseRouteImport
+    '/api/ml/health': {
+      id: '/api/ml/health'
+      path: '/api/ml/health'
+      fullPath: '/api/ml/health'
+      preLoaderRoute: typeof ApiMlHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/health-score': {
+      id: '/api/ml/health-score'
+      path: '/api/ml/health-score'
+      fullPath: '/api/ml/health-score'
+      preLoaderRoute: typeof ApiMlHealthScoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/metrics': {
+      id: '/api/ml/metrics'
+      path: '/api/ml/metrics'
+      fullPath: '/api/ml/metrics'
+      preLoaderRoute: typeof ApiMlMetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/models': {
+      id: '/api/ml/models'
+      path: '/api/ml/models'
+      fullPath: '/api/ml/models'
+      preLoaderRoute: typeof ApiMlModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/recommendations': {
+      id: '/api/ml/recommendations'
+      path: '/api/ml/recommendations'
+      fullPath: '/api/ml/recommendations'
+      preLoaderRoute: typeof ApiMlRecommendationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/eda/$disease': {
+      id: '/api/ml/eda/$disease'
+      path: '/api/ml/eda/$disease'
+      fullPath: '/api/ml/eda/$disease'
+      preLoaderRoute: typeof ApiMlEdaDiseaseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ml/feature-importance/$disease': {
@@ -626,11 +619,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMlFeatureImportanceDiseaseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/ml/eda/$disease': {
-      id: '/api/ml/eda/$disease'
-      path: '/api/ml/eda/$disease'
-      fullPath: '/api/ml/eda/$disease'
-      preLoaderRoute: typeof ApiMlEdaDiseaseRouteImport
+    '/api/ml/predict/$disease': {
+      id: '/api/ml/predict/$disease'
+      path: '/api/ml/predict/$disease'
+      fullPath: '/api/ml/predict/$disease'
+      preLoaderRoute: typeof ApiMlPredictDiseaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ml/predict/full-assessment': {
+      id: '/api/ml/predict/full-assessment'
+      path: '/api/ml/predict/full-assessment'
+      fullPath: '/api/ml/predict/full-assessment'
+      preLoaderRoute: typeof ApiMlPredictFullAssessmentRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -682,13 +682,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
