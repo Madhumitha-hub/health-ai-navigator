@@ -254,7 +254,7 @@ function SettingsPage() {
           <Card className="card-elevated">
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
-              <CardDescription>Theme, sidebar and density.</CardDescription>
+              <CardDescription>Theme and sidebar preferences.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <ToggleRow
@@ -272,59 +272,9 @@ function SettingsPage() {
               />
               <div className="md:col-span-2 space-y-1.5">
                 <Label>Density</Label>
-                <Select
-                  value={prefs.density}
-                  onValueChange={(v: "comfortable" | "compact") => setPrefs({ ...prefs, density: v })}
-                >
-                  <SelectTrigger className="md:w-64"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="comfortable">Comfortable</SelectItem>
-                    <SelectItem value="compact">Compact</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">Adjusts padding and spacing globally.</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ============== About ============== */}
-        <TabsContent value="about" className="mt-6 space-y-6">
-          <Card className="card-elevated">
-            <CardHeader>
-              <CardTitle>HealthPredict</CardTitle>
-              <CardDescription>AI-Based Smart Healthcare Disease Prediction System</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid gap-4 md:grid-cols-3">
-                <Stat label="Version" value="v1.0.0" />
-                <Stat label="Institution" value={profile?.institution || "[Your Institution]"} />
-                <Stat label="License" value="MIT" />
-              </div>
-              <Separator />
-              <div>
-                <p className="mb-2 text-sm font-semibold">Tech stack</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {["React 19", "TanStack Start", "Tailwind v4", "shadcn/ui", "Recharts", "Supabase", "jsPDF", "FastAPI"].map((t) => (
-                    <Badge key={t} variant="secondary">{t}</Badge>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="mb-2 text-sm font-semibold">AI Models integrated</p>
-                <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                  <li>Diabetes — XGBoost / Random Forest (PIMA features)</li>
-                  <li>Heart Disease — Logistic Regression / SVM (UCI Cleveland)</li>
-                  <li>Kidney Disease — Random Forest (UCI CKD)</li>
-                  <li>Liver Disease — Gradient Boosting (Indian Liver Patient Dataset)</li>
-                </ul>
-              </div>
-              <Separator />
-              <div>
-                <p className="mb-2 text-sm font-semibold">Credits</p>
-                <p className="text-sm text-muted-foreground">
-                  Built with ❤ using open-source healthcare datasets from the UCI Machine
-                  Learning Repository and Kaggle community.
+                <p className="text-sm text-foreground">Comfortable</p>
+                <p className="text-xs text-muted-foreground">
+                  Comfortable spacing is applied for all users to keep the interface readable.
                 </p>
               </div>
             </CardContent>
