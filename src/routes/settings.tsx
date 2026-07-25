@@ -85,7 +85,7 @@ function SettingsPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem(APP_PREFS_KEY, JSON.stringify(prefs));
-    document.documentElement.dataset.density = prefs.density;
+    document.documentElement.dataset.density = "comfortable";
   }, [prefs]);
 
   const saveProfile = async () => {
