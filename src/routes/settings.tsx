@@ -59,7 +59,7 @@ function defaults(): AppPrefs {
     defaultDisease: "diabetes",
     highRiskThreshold: 70,
     emailHighRisk: true,
-    sidebarCollapsed: false,
+    sidebarCollapsed: true,
     density: "comfortable",
   };
 }
