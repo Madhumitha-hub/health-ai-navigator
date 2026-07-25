@@ -1,7 +1,7 @@
 import { userMessage } from "@/lib/user-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { HeartPulse, Loader2 } from "lucide-react";
+import { Activity, Brain, HeartPulse, Loader2, ShieldCheck, Stethoscope } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
-import { SplineScene } from "@/components/ui/splite";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
@@ -116,12 +115,34 @@ function LoginPage() {
             </div>
           </div>
 
-          {/* Right: 3D Spline scene */}
-          <div className="relative hidden flex-1 md:block">
-            <SplineScene
-              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-              className="h-full w-full"
-            />
+          {/* Right: Static hero panel */}
+          <div className="relative hidden flex-1 overflow-hidden md:block">
+            <div className="absolute inset-0 bg-gradient-to-br from-sky-500/20 via-emerald-500/10 to-transparent" />
+            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-sky-500/20 blur-3xl" />
+            <div className="absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl" />
+            <div className="relative z-10 flex h-full flex-col justify-center p-12">
+              <h2 className="bg-gradient-to-b from-white to-neutral-400 bg-clip-text font-display text-4xl font-bold leading-tight text-transparent">
+                Clinical intelligence,<br />at a glance.
+              </h2>
+              <p className="mt-4 max-w-md text-sm text-neutral-400">
+                Predict, explain, and act on disease risk with an integrated ML workspace built for clinicians and researchers.
+              </p>
+              <ul className="mt-8 space-y-4">
+                {[
+                  { icon: Brain, label: "Multi-disease risk prediction across 5 models" },
+                  { icon: Activity, label: "Real-time analytics & feature importance" },
+                  { icon: Stethoscope, label: "Clinical decision support with test suggestions" },
+                  { icon: ShieldCheck, label: "Role-based access & full audit trail" },
+                ].map(({ icon: Icon, label }) => (
+                  <li key={label} className="flex items-center gap-3 text-sm text-neutral-200">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+                      <Icon className="h-4 w-4 text-sky-400" />
+                    </span>
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </Card>
