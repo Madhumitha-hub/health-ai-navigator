@@ -1,209 +1,120 @@
-🏥 AI Health Predictor
-AI-Based Smart Healthcare Disease Prediction System
+# HealthPredict ML Backend
 
-AI Health Predictor is an intelligent healthcare application that leverages Machine Learning and Data Analytics to predict the likelihood of diseases based on patient health information. The system analyzes medical parameters, identifies potential health risks, and provides predictive insights to support early diagnosis and informed healthcare decisions.
+FastAPI service that powers the four disease-prediction modules. Runs as a standalone Python service.
 
-The project integrates data preprocessing, feature engineering, machine learning, and an interactive dashboard to deliver accurate, real-time disease risk assessments while promoting preventive healthcare.
+## Quick deploy checklist (Render, ~5 min)
 
-📌 Features
-🩺 Disease prediction using Machine Learning models
-📊 Patient risk assessment based on medical parameters
-📈 Interactive dashboard with health insights
-🧹 Automated data cleaning and preprocessing
-🔍 Exploratory Data Analysis (EDA)
-🎯 Feature engineering and feature selection
-🤖 Multiple Machine Learning model support
-📉 Model performance comparison and evaluation
-⚡ Fast and responsive prediction engine
-📱 Modern, user-friendly interface
-🌐 Cross-platform web application
-🔒 Secure handling of healthcare data
-🏗️ System Architecture
-Patient Health Data
-│
-▼
-Data Validation & Cleaning
-│
-▼
-Feature Engineering
-│
-▼
-Machine Learning Model
-│
-▼
-Disease Prediction
-│
-▼
-Risk Assessment
-│
-▼
-Dashboard & Health Report
-🛠️ Technologies Used
-Frontend
-React
-TypeScript
-Tailwind CSS
-Vite
-Backend
-Python
-FastAPI / Flask
-REST API
-Machine Learning
-Python
-Scikit-learn
-Pandas
-NumPy
-Matplotlib
-Machine Learning Algorithms
-Feature Engineering
-Hyperparameter Tuning
-Database (Optional)
-Supabase
-MySQL
+1. **Train models locally** so `app/models/*.pkl` exist:
+   ```bash
+   cd backend && pip install -r requirements.txt
+   python -m training.train_diabetes
+   python -m training.train_heart
+   python -m training.train_kidney
+   python -m training.train_liver
+   ```
+2. **Push the repo to GitHub** (Render pulls from a Git remote).
+3. **Render → New → Web Service → Docker**, point at the `backend/` directory.
+4. On Render, set env var `ALLOWED_ORIGINS` to a comma-separated list of the frontend origins that should be allowed to call this service (e.g. `https://your-frontend-domain.example.com`).
+5. After the build finishes, open `https://<service>.onrender.com/health` — must return `{"status":"online", ...}`.
+6. In the frontend project settings, set `VITE_ML_API_URL=https://<service>.onrender.com` (no trailing slash) and reload.
+7. Open `/diagnostics` in the app to verify reachability, CORS preflight, and a live `POST /predict/diabetes` round-trip.
 
-Clone the repository
+Railway, Fly.io, and Cloud Run work identically — the included `Dockerfile` is host-agnostic.
 
-git clone https://github.com/yourusername/AI-Health-Predictor.git
 
-Navigate to the project directory
 
-cd AI-Health-Predictor
+## Stack
 
-Install frontend dependencies
+- FastAPI + Uvicorn
+- scikit-learn, XGBoost (Logistic Regression, Random Forest, XGBoost, SVM, MLP)
+- SHAP for explanations
+- joblib for versioned `.pkl` model files
 
-npm install
+## Layout
 
-Install backend dependencies
+```
+backend/
+├── app/                     # FastAPI application
+│   ├── main.py              # entrypoint, CORS, router mounting
+│   ├── config.py            # env vars, paths
+│   ├── schemas.py           # Pydantic request/response models
+│   ├── routers/             # /health /models /predict /metrics /analytics
+│   ├── services/            # registry, features, explain
+│   └── models/              # .pkl files written by training (gitignored)
+├── training/                # one script per disease + common utilities
+├── data/                    # YOU drop CSVs here (gitignored)
+├── requirements.txt
+├── Dockerfile
+└── .gitignore
+```
 
+## Setup
+
+```bash
+cd backend
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+```
 
-Run the frontend
+## Train models
 
-npm run dev
+Drop your CSVs into `backend/data/`:
 
-Run the backend
+| Disease  | File              | Required columns                                                                                              |
+|----------|-------------------|----------------------------------------------------------------------------------------------------------------|
+| Diabetes | `diabetes.csv`    | Age, Gender, BMI, Glucose, Insulin, BloodPressure, SkinThickness, DiabetesPedigreeFunction, Outcome           |
+| Heart    | `heart.csv`       | Age, Gender, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG, MaxHR, ExerciseAngina, STDepression, Outcome |
+| Kidney   | `kidney.csv`      | Age, BloodPressure, SpecificGravity, Albumin, BloodGlucoseRandom, BloodUrea, SerumCreatinine, Hemoglobin, PackedCellVolume, Outcome |
+| Liver    | `liver.csv`       | Age, Gender, TotalBilirubin, DirectBilirubin, AlkalinePhosphotase, SGPT, SGOT, TotalProteins, Albumin, AlbuminAndGlobulinRatio, Outcome |
 
-python app.py
-📷 How It Works
-Open the application.
-Enter patient health details such as age, gender, symptoms, and medical parameters.
-The system validates and preprocesses the input data.
-Engineered features are passed to the trained Machine Learning model.
-The model predicts the probability of disease occurrence.
-The application displays the predicted disease, confidence score, and risk assessment.
-Users can view visual health analytics through the interactive dashboard.
-🧠 AI Pipeline
-Medical Dataset
+`Outcome` is the binary target (0/1). `Gender` accepted as `M/F` or `0/1`.
 
-↓
+Run training (creates `app/models/<disease>_<algo>_v<n>.pkl` + `metrics.json`):
 
-Data Cleaning
+```bash
+python -m training.train_diabetes
+python -m training.train_heart
+python -m training.train_kidney
+python -m training.train_liver
+```
 
-↓
+Each script trains five algorithms, picks the best by ROC-AUC, and (optionally) prints SQL `UPSERT` statements you can paste into the Supabase SQL editor to refresh the `public.models` table with real metrics.
 
-Exploratory Data Analysis
+## Run
 
-↓
+```bash
+uvicorn app.main:app --reload --port 8000
+```
 
-Feature Engineering
+Then in the frontend `.env`:
 
-↓
+```
+VITE_ML_API_URL=http://localhost:8000
+```
 
-Feature Selection
+## Deploy
 
-↓
+Any container host works (Render / Railway / Fly / Cloud Run):
 
-Model Training
+```bash
+docker build -t healthpredict-ml .
+docker run -p 8000:8000 healthpredict-ml
+```
 
-↓
+Set CORS origins via env var `ALLOWED_ORIGINS` (comma-separated). Default allows localhost origins for development.
 
-Hyperparameter Tuning
+## API
 
-↓
+| Method | Path                  | Purpose                                  |
+|--------|-----------------------|------------------------------------------|
+| GET    | `/health`             | Liveness + loaded model count            |
+| GET    | `/models`             | List loaded models                       |
+| GET    | `/metrics`            | Per-disease metrics for all algorithms   |
+| GET    | `/analytics`          | Aggregate stats over recent predictions  |
+| POST   | `/predict/{disease}`  | Prediction + SHAP top factors            |
 
-Disease Prediction
+`{disease}` ∈ `diabetes | heart | kidney | liver`.
 
-↓
+## Disclaimer
 
-Risk Assessment
-
-↓
-
-Dashboard & Reports
-🤖 Machine Learning Workflow
-Medical dataset collection and preparation
-Missing value handling
-Data preprocessing and normalization
-Exploratory Data Analysis (EDA)
-Feature engineering
-Feature selection
-Model training
-Hyperparameter optimization
-Performance evaluation
-Real-time disease prediction
-Deployment
-📊 Model Evaluation Metrics
-Accuracy
-Precision
-Recall
-F1 Score
-ROC-AUC Score
-Confusion Matrix
-Cross Validation
-Classification Report
-📈 Future Enhancements
-Deep Learning-based disease prediction
-Multiple disease prediction in a single assessment
-Personalized health recommendations
-Medication suggestions
-Doctor recommendation system
-Electronic Health Record (EHR) integration
-Wearable device integration
-AI-powered chatbot for healthcare assistance
-Multi-language support
-Cloud deployment
-Mobile application
-Predictive analytics using real-time health monitoring
-🎯 Applications
-Hospitals
-Clinics
-Diagnostic Centers
-Telemedicine Platforms
-Healthcare Startups
-Preventive Healthcare Systems
-Medical Research Organizations
-Health Insurance Risk Assessment
-Smart Healthcare Solutions
-📊 Performance Goals
-High disease prediction accuracy
-Low prediction latency
-Scalable architecture
-Reliable healthcare analytics
-Secure data processing
-Responsive user interface
-Cross-platform compatibility
-🔒 Privacy & Security
-Patient information is securely processed.
-Sensitive healthcare data is protected using secure data handling practices.
-The system is designed with privacy-first principles and supports secure deployment environments.
-
-Disclaimer: This application is intended for educational and research purposes. Predictions generated by the system should not replace professional medical diagnosis or clinical judgment.
-
-👨‍💻 Author
-
-Harish Kanna
-
-AI Engineer | Machine Learning | Healthcare AI | Data Science | Artificial Intelligence
-
-📜 License
-
-This project is licensed under the MIT License.
-
-⭐ Support
-
-If you found this project useful:
-
-⭐ Star the repository
-🍴 Fork the project
-🐛 Report issues
-🚀 Contribute improvements
+This service produces risk estimates for educational and research purposes only. It does not replace professional medical advice.
