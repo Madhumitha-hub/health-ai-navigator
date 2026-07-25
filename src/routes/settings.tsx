@@ -114,20 +114,25 @@ function SettingsPage() {
 
   const isAdmin = profile?.role === "admin";
 
+  useEffect(() => {
+    if (!isAdmin && tab === "system") setTab("profile");
+  }, [isAdmin, tab]);
+
   return (
     <div className="mx-auto max-w-5xl">
       <PageHeader
         title="Settings"
-        description="Profile, system, appearance and about."
+        description="Profile, appearance and system preferences."
         icon={Cog}
       />
 
       <Tabs value={tab} onValueChange={setTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+        <TabsList className={`grid w-full ${isAdmin ? "grid-cols-3" : "grid-cols-2"}`}>
           <TabsTrigger value="profile"><User className="mr-1.5 h-4 w-4" />Profile</TabsTrigger>
-          <TabsTrigger value="system"><Cpu className="mr-1.5 h-4 w-4" />System</TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value="system"><Cpu className="mr-1.5 h-4 w-4" />System</TabsTrigger>
+          )}
           <TabsTrigger value="appearance"><Palette className="mr-1.5 h-4 w-4" />Appearance</TabsTrigger>
-          <TabsTrigger value="about"><Info className="mr-1.5 h-4 w-4" />About</TabsTrigger>
         </TabsList>
 
         {/* ============== Profile ============== */}
